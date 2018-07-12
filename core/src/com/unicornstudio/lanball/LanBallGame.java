@@ -6,11 +6,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.unicornstudio.lanball.io.mappers.MapMapper;
-import com.unicornstudio.lanball.map.MapScene;
-import com.unicornstudio.lanball.map.model.Map;
+import com.unicornstudio.lanball.map.Map;
 import com.unicornstudio.lanball.settings.VideoSettings;
+import com.unicornstudio.lanball.video.BallActor;
 import com.unicornstudio.lanball.video.MapBackground;
 import com.unicornstudio.lanball.video.WorldBackground;
 import com.unicornstudio.lanball.video.renders.Renderer;
@@ -35,19 +36,22 @@ public class LanBallGame extends ApplicationAdapter {
 	public void create () {
 	    //VisUI.load();
 		new VideoSettings().apply();
-        FileHandle fileHandle = new FileHandle("C:\\Users\\Mate_\\Desktop\\haxmaps_152434564783.hbs");
+        FileHandle fileHandle = new FileHandle("exampleMap.lan");
         Map map = MapMapper.map(fileHandle).orElse(null);
         stage = new Stage(new ScreenViewport(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())));
         stage.getCamera().position.set(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 0);
-        stage.getCamera().view.scl(2);
+        //stage.getCamera().view.scl(1);
         Renderers.getRenderers().forEach(
                 Renderer::create
         );
         //new MapChooser().show(stage);
 
-        Renderers.add(new MapScene(map));
-        stage.addActor(new WorldBackground(map));
-        stage.addActor(new MapBackground(map.getBackground()));
+        //Renderers.add(new MapScene(map));
+        stage.addActor(new WorldBackground(map.getWorld().getBackground().getColor()));
+        stage.addActor(new MapBackground(map.getWorld().getSize(), map.getWorld().getForeground()));
+        BallActor ball = new BallActor(map.getSettings().getBall());
+        stage.addActor(ball);
+        ball.addAction(Actions.moveTo(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, 4));
 	}
 
 	@Override

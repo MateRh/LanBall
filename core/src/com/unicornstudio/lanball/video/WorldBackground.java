@@ -1,13 +1,11 @@
 package com.unicornstudio.lanball.video;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.unicornstudio.lanball.map.model.Background;
-import com.unicornstudio.lanball.map.model.BackgroundType;
-import com.unicornstudio.lanball.map.model.Map;
 
 public class WorldBackground extends Actor {
 
@@ -15,21 +13,21 @@ public class WorldBackground extends Actor {
     private int x;
     private int y;
 
-    public WorldBackground(Map map) {
-        texture = provideTexture(map.getWidth(), map.getHeight());
-        x = (Gdx.graphics.getWidth() - map.getWidth())/2;
-        y = (Gdx.graphics.getHeight() - map.getHeight())/2;
+    public WorldBackground(String color) {
+        x = 0;
+        y = 0;
+        texture = provideTexture(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), color);
     }
 
     @Override
-    public void draw (Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         batch.draw(texture, x, y);
     }
 
-    private Texture provideTexture(int width, int height) {
+    private Texture provideTexture(int width, int height, String color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGB888);
-        pixmap.setColor(BackgroundType.WORLD.getColor());
+        pixmap.setColor(Color.valueOf(color));
         pixmap.fillRectangle(0, 0, width, height);
         return new Texture(pixmap);
     }

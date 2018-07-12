@@ -1,0 +1,50 @@
+{
+  "information": {
+    "name": "Example Map",
+    "description": "First ever created map for LanBall! For presentation purposes only.",
+    "version": "1.0",
+    "author": "Mate_",
+    "createdAt": "23:06-12-07.2018"
+  },
+  "settings": {
+    "ball": {
+      "size": 20,
+      "speed": 1,
+      "mass": 1,
+      "damping": 0.01,
+      "color": "#ff9933"
+    },
+    "teams": [
+      {
+        "name": "Red Team",
+        "color": "#ff0000",
+        "startPositionRadius": 50
+      },
+      {
+        "name": "Blue Team",
+        "color": "#0000cc",
+        "startPositionRadius": 50
+      }
+    ]
+  },
+  "world": {
+    "size": {
+      "width": 1050,
+      "height": 680
+    },
+    "foreground": {
+      "color": "#009933",
+      "texture": "GRASS"
+    },
+    "background": {
+      "color": "#666699",
+      "texture": ""
+    },
+    "gates": {
+      "offsetPositionX": 10,
+      "offsetPositionY": 250,
+      "width": 100,
+      "height": 10
+    }
+  }
+}

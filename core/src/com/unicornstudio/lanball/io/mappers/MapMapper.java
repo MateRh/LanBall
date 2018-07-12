@@ -3,7 +3,7 @@ package com.unicornstudio.lanball.io.mappers;
 import com.badlogic.gdx.files.FileHandle;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unicornstudio.lanball.map.model.Map;
+import com.unicornstudio.lanball.map.Map;
 
 import java.io.IOException;
 import java.util.Optional;
