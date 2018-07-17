@@ -8,7 +8,7 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
-import com.unicornstudio.lanball.map.Map;
+import com.unicornstudio.lanball.map.MapDto;
 import com.unicornstudio.lanball.renderer.MapScene;
 import com.unicornstudio.lanball.io.mappers.MapMapper;
 import com.unicornstudio.lanball.video.renders.Renderers;
@@ -46,8 +46,8 @@ public class MapChooser {
             public void selected (Array<FileHandle> files) {
                 file = files.first();
                 textField.setText(file.file().getAbsolutePath());
-                Map map = MapMapper.map(file).orElse(null);
-                Renderers.add(new MapScene(map));
+                MapDto mapDto = MapMapper.map(file).orElse(null);
+                Renderers.add(new MapScene(mapDto));
             }
 
             @Override

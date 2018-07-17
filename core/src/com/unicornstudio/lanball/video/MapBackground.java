@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.unicornstudio.lanball.map.MapBackgroundType;
 import com.unicornstudio.lanball.map.world.GroundPlane;
-import com.unicornstudio.lanball.map.world.Size;
+import com.unicornstudio.lanball.map.world.SizeDto;
 
 public class MapBackground extends Actor {
 
@@ -15,10 +15,10 @@ public class MapBackground extends Actor {
     private int x;
     private int y;
 
-    public MapBackground(Size size, GroundPlane foreground) {
-        texture = provideTexture(size.getWidth(), size.getHeight(), MapBackgroundType.valueOf(foreground.getTexture()), foreground.getColor());
-        x = (Gdx.graphics.getWidth() - size.getWidth())/2;
-        y = (Gdx.graphics.getHeight() - size.getHeight())/2;
+    public MapBackground(SizeDto sizeDto, GroundPlane foreground) {
+        texture = provideTexture(sizeDto.getWidth(), sizeDto.getHeight(), MapBackgroundType.valueOf(foreground.getTexture()), foreground.getColor());
+        x = (Gdx.graphics.getWidth() - sizeDto.getWidth())/2;
+        y = (Gdx.graphics.getHeight() - sizeDto.getHeight())/2;
     }
 
     @Override

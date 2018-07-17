@@ -8,10 +8,10 @@
   },
   "settings": {
     "ball": {
-      "size": 20,
-      "speed": 1,
+      "size": 12,
+      "speed": 0,
       "mass": 1,
-      "damping": 0.01,
+      "damping": 1,
       "color": "#ff9933"
     },
     "teams": [

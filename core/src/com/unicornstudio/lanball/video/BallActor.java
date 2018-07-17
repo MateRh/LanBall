@@ -1,6 +1,5 @@
 package com.unicornstudio.lanball.video;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,8 +12,8 @@ public class BallActor extends Actor {
     private final Texture texture;
 
     public BallActor(Ball ball) {
-        setX((Gdx.graphics.getWidth() - ball.getSize())/2);
-        setY((Gdx.graphics.getHeight() - ball.getSize())/2);
+        setWidth(ball.getSize());
+        setHeight(ball.getSize());
         texture = provideTexture(ball.getSize(), ball.getColor());
     }
 

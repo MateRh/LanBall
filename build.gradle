@@ -56,6 +56,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        compile "com.puppycrawl.tools:checkstyle:8.11"
         providedCompile "org.projectlombok:lombok:1.16.6"
         compile group: 'com.google.inject', name: 'guice', version: '4.2.0'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
