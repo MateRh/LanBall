@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.unicornstudio.lanball.Screen;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
 import com.unicornstudio.lanball.utils.dto.BodyDefinitionDto;
 import com.unicornstudio.lanball.utils.dto.FixtureDefinitionDto;
@@ -16,7 +17,8 @@ import com.unicornstudio.lanball.utils.dto.ShapeDto;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PhysicsEntityCreator {
 
@@ -53,15 +55,15 @@ public class PhysicsEntityCreator {
         switch (shapeDto.getType()) {
             case Circle:
                 CircleShape circleShape = new CircleShape();
-                circleShape.setRadius(shapeDto.getRadius());
+                circleShape.setRadius(shapeDto.getRadius()*Screen.getMeterPerPixel());
                 return circleShape;
             case Polygon:
                 PolygonShape polygonShape = new PolygonShape();
-                polygonShape.set(shapeDto.getVertices());
+                polygonShape.set(scale(shapeDto.getVertices()));
                 return polygonShape;
             case Edge:
                 EdgeShape edgeShape = new EdgeShape();
-                edgeShape.set(shapeDto.getV1(), shapeDto.getV2());
+                edgeShape.set(scale(shapeDto.getV1()), scale(shapeDto.getV2()));
                 return edgeShape;
         }
         return null;
@@ -70,8 +72,9 @@ public class PhysicsEntityCreator {
     private static BodyDef createBodyDefinition(BodyDefinitionDto bodyDefinitionDto) {
         BodyDef bodyDefinition = new BodyDef();
         bodyDefinition.type = bodyDefinitionDto.getType();
-        bodyDefinition.position.set(bodyDefinitionDto.getPosition());
+        bodyDefinition.position.set(scale(bodyDefinitionDto.getPosition()));
         bodyDefinition.linearDamping = bodyDefinitionDto.getLinearDamping();
+        bodyDefinition.fixedRotation = true;
         return bodyDefinition;
     }
 
@@ -83,6 +86,14 @@ public class PhysicsEntityCreator {
         fixtureDefinition.restitution = fixtureDefinitionDto.getRestitution();
         fixtureDefinition.isSensor = fixtureDefinitionDto.isSensor();
         return fixtureDefinition;
+    }
+
+    private static Vector2 scale(Vector2 vector) {
+        return vector.scl(Screen.getMeterPerPixel());
+    }
+
+    private static Vector2[] scale(Vector2[] vector2s) {
+        return Stream.of(vector2s).map(PhysicsEntityCreator::scale).toArray(Vector2[]::new);
     }
 
 }

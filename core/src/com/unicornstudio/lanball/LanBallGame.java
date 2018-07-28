@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
 import com.unicornstudio.lanball.input.KeyboardInput;
 import com.unicornstudio.lanball.io.mappers.MapMapper;
 import com.unicornstudio.lanball.map.MapDto;
@@ -19,6 +20,8 @@ import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
 import com.unicornstudio.lanball.settings.VideoSettings;
+import com.unicornstudio.lanball.ui.scene.MainMenu;
+import com.unicornstudio.lanball.ui.scene.SceneService;
 import com.unicornstudio.lanball.utils.PhysicsEntityCreator;
 import com.unicornstudio.lanball.utils.dto.BodyDefinitionDto;
 import com.unicornstudio.lanball.utils.dto.FixtureDefinitionDto;
@@ -40,24 +43,25 @@ public class LanBallGame extends ApplicationAdapter {
 
 	private PhysicsTimeStep physicsTimeStep;
 
-
 	private EntitiesService entitiesService;
 
 	private KeyboardInput keyboardInput;
 
-	private final BallSensorListener ballSensorListener;
+	private SceneService sceneService;
+
 
 	@Inject
-	public LanBallGame(EntitiesService entitiesService, KeyboardInput keyboardInput, BallSensorListener ballSensorListener) {
+	public LanBallGame(EntitiesService entitiesService, KeyboardInput keyboardInput, SceneService sceneService) {
 		this.entitiesService = entitiesService;
 		this.keyboardInput = keyboardInput;
-		this.ballSensorListener = ballSensorListener;
+		this.sceneService = sceneService;
 	}
 
 
 	@Override
 	public void create () {
-	    //VisUI.load();
+
+	    VisUI.load();
         physicsTimeStep = new PhysicsTimeStep();
         WorldService worldService = new WorldService();
 
@@ -66,14 +70,14 @@ public class LanBallGame extends ApplicationAdapter {
 		new VideoSettings().apply();
         FileHandle fileHandle = new FileHandle("exampleMap.lan");
         MapDto mapDto = MapMapper.map(fileHandle).orElse(null);
-        worldService.create(mapDto);
-        world = worldService.getWorld().getWorld();
-        stage = new Stage(new ScreenViewport(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())));
-        stage.getCamera().position.set(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 0);
-        //stage.getCamera().view.scl(1);
-        //new MapChooser().show(stage);
 
-        //Renderers.add(new MapScene(mapDto));
+        Screen.setWidth(Gdx.graphics.getWidth());
+        Screen.setHeight(Gdx.graphics.getHeight());
+        ScreenViewport viewport = new ScreenViewport(new OrthographicCamera(Screen.getWidth(), Screen.getHeight()));
+        stage = new Stage(viewport);
+        stage.getCamera().position.set(Screen.getWidth()/2, Screen.getHeight()/2, 0);
+		worldService.create(mapDto);
+		world = worldService.getWorld().getWorld();
 
         stage.addActor(worldService.getWorld().getMapBackground());
         //stage.addActor(new WorldBackground(mapDto.getWorld().getBackground().getColor()));
@@ -84,28 +88,27 @@ public class LanBallGame extends ApplicationAdapter {
         PlayerActor playerActor = new PlayerActor(mapDto.getSettings().getTeams().get(0));
         stage.addActor(playerActor);
 
-        //ball.addAction(Actions.moveTo(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/3, 4));
         PhysicsEntity physicsEntity = PhysicsEntityCreator.createEntity(world,
-                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(mapDto.getWorld().getSize().getWidth()/2, mapDto.getWorld().getSize().getHeight()/2), 0.2f),
+                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(mapDto.getWorld().getSize().getWidth()/2, mapDto.getWorld().getSize().getHeight()/2), 0.5f),
                 new ShapeDto(Shape.Type.Circle, mapDto.getSettings().getBall().getSize()/2f, null, null, null),
-                new FixtureDefinitionDto(0f, 0.0001f, 0.1f, false)
+                new FixtureDefinitionDto(0f, 0.00001f, 0.09f, false)
         );
 
         PhysicsEntity playerActorPhysicsEntity = PhysicsEntityCreator.createEntity(world,
-                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(400, 400), 0.1f),
+                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), 1f),
                 new ShapeDto(Shape.Type.Circle, Player.PLAYER_RADIUS /2f, null, null, null),
-                new FixtureDefinitionDto(0.05f, 0.00005f, 0.6f, false)
+                new FixtureDefinitionDto(0.05f, 0f, 0.6f, false)
         );
 
         PhysicsEntity sensor = PhysicsEntityCreator.createEntity(world,
-                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(400, 400), 0.1f),
-                new ShapeDto(Shape.Type.Circle, Player.PLAYER_RADIUS, null, null, null),
+                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(400, 400), 0.0f),
+                new ShapeDto(Shape.Type.Circle, Player.PLAYER_RADIUS / 1.9f, null, null, null),
                 new FixtureDefinitionDto(0f, 0f, 0f, true)
         );
 		entitiesService.addEntity("ball", new Entity(ball, physicsEntity));
 		entitiesService.addEntity("player", new Player(playerActor, playerActorPhysicsEntity, sensor));
-        //physicsEntity.getBody().applyForceToCenter(1.0f, 0.0f, true);
-		world.setContactListener(ballSensorListener);
+		playerActor.setPhysicsEntity(playerActorPhysicsEntity);
+		sceneService.showMainMenuScene();
 	}
 
 	@Override

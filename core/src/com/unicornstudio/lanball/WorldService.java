@@ -44,6 +44,8 @@ public class WorldService {
     }
 
     private List<PhysicsEntity> createPhysicsEntities(SizeDto sizeDto) {
+        Float width = Gdx.graphics.getWidth() * Screen.getPixelPerMeter();
+        Float height = Gdx.graphics.getHeight() * Screen.getPixelPerMeter();
         List<PhysicsEntity> physicsEntities = new ArrayList<>();
         Integer x = (Gdx.graphics.getWidth() - sizeDto.getWidth())/2;
         Integer y = (Gdx.graphics.getHeight() - sizeDto.getHeight())/2;
