@@ -6,12 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisWindow;
-import com.unicornstudio.lanball.LanBallGameModule;
 import com.unicornstudio.lanball.ui.UserInterfaceUtils;
 import com.unicornstudio.lanball.ui.listener.HostActionListener;
 import com.unicornstudio.lanball.ui.listener.JoinActionListener;
@@ -21,7 +18,10 @@ public class MainMenu implements Scene {
 
     private VisWindow window;
 
-    public MainMenu() {
+    private final SceneService sceneService;
+
+    public MainMenu(SceneService sceneService) {
+        this.sceneService = sceneService;
     }
 
     public void create(Stage stage) {
@@ -30,7 +30,7 @@ public class MainMenu implements Scene {
 
         VisImage image = new VisImage(new Texture("logo.png"));
         verticalGroup.addActor(image);
-        verticalGroup.addActor(createTextButton("JOIN", new JoinActionListener()));
+        verticalGroup.addActor(createTextButton("JOIN", new JoinActionListener(sceneService)));
         verticalGroup.addActor(createTextButton("HOST", new HostActionListener()));
         verticalGroup.addActor(createTextButton("SETTINGS", new ClickListener() {
             @Override

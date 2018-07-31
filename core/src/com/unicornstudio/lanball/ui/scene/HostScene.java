@@ -14,7 +14,13 @@ import com.unicornstudio.lanball.ui.UserInterfaceUtils;
 
 public class HostScene implements Scene {
 
+    private final SceneService sceneService;
+
     private VisWindow window;
+
+    public HostScene(SceneService sceneService) {
+        this.sceneService = sceneService;
+    }
 
     public void create(Stage stage) {
         window = UserInterfaceUtils.createWindow("Host game:",852, 480);

@@ -1,21 +1,26 @@
 package com.unicornstudio.lanball.ui.scene;
 
-import com.google.inject.Singleton;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
-@Singleton
 public class SceneService {
+
+    private Stage stage;
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     private Scene scene;
 
     public void showMainMenuScene() {
         remove();
-        scene = new MainMenu();
+        scene = new MainMenu(this);
         create();
     }
 
     public void showHostScene() {
         remove();
-        scene = new HostScene();
+        scene = new HostScene(this);
         create();
     }
 

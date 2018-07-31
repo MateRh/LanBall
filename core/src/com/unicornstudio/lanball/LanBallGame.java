@@ -68,7 +68,13 @@ public class LanBallGame extends ApplicationAdapter {
 
 		debugRenderer = new Box2DDebugRenderer();
 		new VideoSettings().apply();
-        FileHandle fileHandle = new FileHandle("exampleMap.lan");
+		System.out.println(Gdx.files.getExternalStoragePath());
+		System.out.println(Gdx.files.getLocalStoragePath());
+		System.out.println(Gdx.files.isExternalStorageAvailable());
+		System.out.println(Gdx.files.isLocalStorageAvailable());
+		System.out.println();
+		System.out.println();
+        FileHandle fileHandle = new FileHandle(Gdx.files.local("assets/exampleMap.lan").file());
         MapDto mapDto = MapMapper.map(fileHandle).orElse(null);
 
         Screen.setWidth(Gdx.graphics.getWidth());
@@ -108,6 +114,7 @@ public class LanBallGame extends ApplicationAdapter {
 		entitiesService.addEntity("ball", new Entity(ball, physicsEntity));
 		entitiesService.addEntity("player", new Player(playerActor, playerActorPhysicsEntity, sensor));
 		playerActor.setPhysicsEntity(playerActorPhysicsEntity);
+		sceneService.setStage(stage);
 		sceneService.showMainMenuScene();
 	}
 

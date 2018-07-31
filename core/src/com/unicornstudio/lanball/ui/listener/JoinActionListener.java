@@ -4,12 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.unicornstudio.lanball.ui.scene.SceneService;
 
-import javax.inject.Inject;
-
 public class JoinActionListener extends ClickListener {
 
-    @Inject
-    private SceneService sceneService;
+    private  final SceneService sceneService;
+
+    public JoinActionListener(SceneService sceneService) {
+        this.sceneService = sceneService;
+    }
 
     @Override
     public void clicked(InputEvent event, float x, float y) {
