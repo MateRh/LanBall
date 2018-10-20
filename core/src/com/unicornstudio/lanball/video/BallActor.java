@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.unicornstudio.lanball.map.settings.Ball;
+import com.unicornstudio.lanball.map.settings.BallSettings;
+import com.unicornstudio.lanball.utils.TextureCreator;
 
 public class BallActor extends Actor {
 
     private final Texture texture;
 
-    public BallActor(Ball ball) {
-        setWidth(ball.getSize());
-        setHeight(ball.getSize());
-        texture = provideTexture(ball.getSize(), ball.getColor());
+    public BallActor(BallSettings ballSettings) {
+        setWidth(ballSettings.getSize());
+        setHeight(ballSettings.getSize());
+        texture = provideTexture(ballSettings.getSize(), ballSettings.getColor());
     }
 
     @Override
@@ -24,10 +25,6 @@ public class BallActor extends Actor {
     }
 
     private Texture provideTexture(int size, String color) {
-        Pixmap pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.valueOf(color));
-        pixmap.setFilter(Pixmap.Filter.BiLinear);
-        pixmap.fillCircle(size/2, size/2, (size/2)-1);
-        return new Texture(pixmap);
+        return TextureCreator.createCircleTexture(size, color);
     }
 }

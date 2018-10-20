@@ -1,32 +1,41 @@
 package com.unicornstudio.lanball.ui.scene;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.unicornstudio.lanball.stage.StageService;
 
+@Singleton
 public class SceneService {
 
-    private Stage stage;
+    @Inject
+    private StageService stageService;
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
+    @Inject
+    private MainMenu mainMenuScene;
+
+    @Inject
+    private HostScene hostScene;
+
+    @Inject
+    private JoinScene joinScene;
 
     private Scene scene;
 
     public void showMainMenuScene() {
         remove();
-        scene = new MainMenu(this);
+        scene = mainMenuScene;
         create();
     }
 
     public void showHostScene() {
         remove();
-        scene = new HostScene(this);
+        scene = hostScene;
         create();
     }
 
     public void showJoinScene() {
         remove();
-        scene = new JoinScene();
+        scene = joinScene;
         create();
     }
 
@@ -37,7 +46,7 @@ public class SceneService {
     }
 
     private void create() {
-        scene.create(stage);
+        scene.create(stageService.getStage());
     }
 
 }

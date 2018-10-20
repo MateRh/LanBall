@@ -5,7 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.unicornstudio.lanball.ui.scene.SceneService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class MainMenuActionListener extends ClickListener {
 
     @Inject

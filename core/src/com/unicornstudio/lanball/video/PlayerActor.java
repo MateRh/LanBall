@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.unicornstudio.lanball.map.settings.Team;
-import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
 import com.unicornstudio.lanball.utils.TextureCreator;
 import lombok.Setter;
@@ -18,10 +17,10 @@ public class PlayerActor extends Actor {
 
     private PhysicsEntity physicsEntity;
 
-    public PlayerActor(Team team) {
-        setWidth(Player.PLAYER_RADIUS);
-        setHeight(Player.PLAYER_RADIUS);
-        texture = provideTexture(team.getColor());
+    public PlayerActor(Team team, Float radius) {
+        setWidth(radius);
+        setHeight(radius);
+        texture = provideTexture(team.getColor(), radius);
     }
 
     @Override
@@ -35,7 +34,7 @@ public class PlayerActor extends Actor {
         }
     }
 
-    private Texture provideTexture(String color) {
-        return TextureCreator.createCircleTexture(Player.PLAYER_RADIUS.intValue(), color);
+    private Texture provideTexture(String color, Float radius) {
+        return TextureCreator.createCircleTexture(radius.intValue(), color);
     }
 }

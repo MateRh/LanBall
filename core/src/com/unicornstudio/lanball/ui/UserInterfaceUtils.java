@@ -2,12 +2,17 @@ package com.unicornstudio.lanball.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisList;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisWindow;
+
+import java.util.List;
 
 public class UserInterfaceUtils {
 
@@ -19,8 +24,14 @@ public class UserInterfaceUtils {
         return window;
     }
 
-    public static VisScrollPane createVisScrollPane(int alignment, Color color, String[] list) {
-        VisScrollPane visScrollPane = new VisScrollPane(createVisList(alignment, color, list));
+    public static VisTextButton createTextButton(String text, ClickListener listener) {
+        VisTextButton button = new VisTextButton(text);
+        button.addListener(listener);
+        return button;
+    }
+
+    public static VisScrollPane createVisScrollPane(int alignment, Color color, List<String> list, EventListener eventListener) {
+        VisScrollPane visScrollPane = new VisScrollPane(createVisList(alignment, color, list, eventListener));
         visScrollPane.setStyle(getScrollPaneStyle());
         return visScrollPane;
     }
@@ -30,11 +41,12 @@ public class UserInterfaceUtils {
         table.row();
     }
 
-    private static VisList createVisList(int alignment, Color color, String[] list) {
+    private static VisList createVisList(int alignment, Color color, List<String> list, EventListener eventListener) {
         VisList<String> visList = new VisList<>();
         visList.setAlignment(alignment);
         visList.setColor(color);
-        visList.setItems(mockArray());
+        visList.setItems(list.toArray(new String[0]));
+        visList.addListener(eventListener);
         return visList;
     }
 
@@ -42,16 +54,6 @@ public class UserInterfaceUtils {
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         scrollPaneStyle.background = VisUI.getSkin().getDrawable("grey");
         return scrollPaneStyle;
-    }
-
-    private static String[] mockArray() {
-        String[] array = new String[5];
-        array[0] = "Test 1";
-        array[1] = "Test 2";
-        array[2] = "Test 3";
-        array[3] = "Test 4";
-        array[4] = "Test 5";
-        return array;
     }
 
 }

@@ -62,7 +62,8 @@ project(":desktop") {
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.5'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
         compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
-
+        compile group: 'com.google.guava', name: 'guava-gwt', version: '25.1-jre'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     }
 }
 
@@ -70,8 +71,6 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java"
     apply plugin: "war"
-
-
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -89,6 +88,8 @@ project(":core") {
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.5'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
         compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
+        compile group: 'com.google.guava', name: 'guava-gwt', version: '25.1-jre'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     }
 }
 

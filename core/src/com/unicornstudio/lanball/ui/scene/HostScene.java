@@ -1,45 +1,85 @@
 package com.unicornstudio.lanball.ui.scene;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.google.inject.Inject;
 import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisList;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisWindow;
-import com.unicornstudio.lanball.network.GameServer;
+import com.unicornstudio.lanball.io.MapChooser;
+import com.unicornstudio.lanball.model.TeamType;
+import com.unicornstudio.lanball.network.server.ServerService;
+import com.unicornstudio.lanball.network.common.Ports;
+import com.unicornstudio.lanball.network.server.Player;
+import com.unicornstudio.lanball.stage.StageService;
 import com.unicornstudio.lanball.ui.UserInterfaceUtils;
+import com.unicornstudio.lanball.ui.listener.MainMenuActionListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HostScene implements Scene {
 
-    private final SceneService sceneService;
+    private static final Map<String, Actor> elements = new HashMap<>();
+
+    @Inject
+    private SceneService sceneService;
+
+    @Inject
+    private StageService stageService;
+
+    @Inject
+    private ServerService serverService;
+
+    @Inject
+    private MainMenuActionListener mainMenuActionListener;
 
     private VisWindow window;
 
-    public HostScene(SceneService sceneService) {
-        this.sceneService = sceneService;
-    }
+    private Timer listUpdateTimer;
+
 
     public void create(Stage stage) {
+        listUpdateTimer = new Timer("listUpdateTimer", true);
         window = UserInterfaceUtils.createWindow("Host game:",852, 480);
         VisTable table = new VisTable(true);
         table.setFillParent(true);
         table.add(new VisTextButton("Red Team"));
         table.add(new VisTextButton("Players"));
         table.add(new VisTextButton("Blue Team")).row();
-        table.add(UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 0f, 0f, 0.1f), new String[1])).size(200, 280);
-        table.add(UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 1, 1, 0.1f), new String[1])).size(300, 280);
-        table.add(UserInterfaceUtils.createVisScrollPane(Align.center, new Color(0.0f, 0.0f, 1, 0.1f), new String[1])).size(200, 280);
+        VisScrollPane redTeamPane = UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 0f, 0f, 0.1f), Collections.emptyList(), Event::getBubbles);
+        elements.put("redTeamPane", redTeamPane);
+        table.add(redTeamPane).size(200, 280);
+        VisScrollPane spectatorsPane = UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 1, 1, 0.1f), Collections.emptyList(), Event::getBubbles);
+        elements.put("spectatorsPane", spectatorsPane);
+        table.add(spectatorsPane).size(300, 280);
+        VisScrollPane blueTeamPane = UserInterfaceUtils.createVisScrollPane(Align.center, new Color(0.0f, 0.0f, 1, 0.1f), Collections.emptyList(), Event::getBubbles);
+        elements.put("blueTeamPane", blueTeamPane);
+        table.add(blueTeamPane).size(200, 280);
         table.row();
         table.add(createButtonActionsTable()).size(200, 100);
         table.add(createSettingsTable());
         table.add(createStartActionTable()).row();
         window.addActor(table);
         stage.addActor(window);
-        new GameServer().start();
-        delete();
+        serverService.start(Ports.getList().get(0));
+        listUpdateTimer.scheduleAtFixedRate(getUpdatePanesTask(), 50, 50);
+        //window.setScale(0);
     }
 
     @Override
@@ -47,6 +87,46 @@ public class HostScene implements Scene {
         if (window != null) {
             window.remove();
         }
+        serverService.stop();
+        listUpdateTimer.cancel();
+    }
+
+    private TimerTask getUpdatePanesTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                serverService.getData().getPlayers().forEach(HostScene::updatePanes);
+            }
+        };
+    }
+
+    private static void updatePanes(Player player) {
+        VisScrollPane pane = getPaneByTeamType(player.getTeamType());
+        if (pane != null) {
+            VisList list = (VisList) pane.getActor();
+            list.clearItems();
+            Array<String> array = list.getItems();
+            array.add(player.getName());
+            list.setItems(array);
+        }
+    }
+
+    private static VisScrollPane getPaneByTeamType(TeamType teamType) {
+        VisScrollPane pane;
+        switch (teamType) {
+            case SPECTATORS:
+                pane = (VisScrollPane) elements.get("spectatorsPane");
+                break;
+            case TEAM1:
+                pane = (VisScrollPane) elements.get("redTeamPane");
+                break;
+            case TEAM2:
+                pane = (VisScrollPane) elements.get("blueTeamPane");
+                break;
+            default:
+                pane = null;
+        }
+        return pane;
     }
 
     private VisTable createButtonActionsTable() {
@@ -70,7 +150,7 @@ public class HostScene implements Scene {
         table.row();
         table.add(new VisLabel("Stadium:"));
         table.add(new VisLabel("Classic"));
-        table.add(new VisTextButton("Pick"));
+        table.add(UserInterfaceUtils.createTextButton("Pick", getMapChooserClickListener()));
         table.row();
         return table;
     }
@@ -87,8 +167,19 @@ public class HostScene implements Scene {
         visTextButton.setColor(Color.GREEN);
         visTextButton.setRound(true);
         table.add(visTextButton).row();
-        table.add(new VisTextButton("Back")).row();
+        table.add(UserInterfaceUtils.createTextButton("Back", mainMenuActionListener)).row();
         return table;
+    }
+
+    private ClickListener getMapChooserClickListener() {
+        return new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try {
+                    new MapChooser().show(stageService.getStage());
+                } catch (Exception ignored) {}
+            }
+        };
     }
 
 }

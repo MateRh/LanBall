@@ -10,7 +10,6 @@ public class VideoSettings implements Settings {
 
     private boolean fullScreen = false;
 
-
     @Override
     public void apply() {
         if (!fullScreen) {

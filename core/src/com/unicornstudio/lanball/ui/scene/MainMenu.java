@@ -10,19 +10,18 @@ import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import com.unicornstudio.lanball.ui.UserInterfaceUtils;
-import com.unicornstudio.lanball.ui.listener.HostActionListener;
-import com.unicornstudio.lanball.ui.listener.JoinActionListener;
 import com.unicornstudio.lanball.ui.listener.QuitActionListener;
+import com.unicornstudio.lanball.ui.listener.SceneActionListenerService;
+
+import javax.inject.Inject;
 
 public class MainMenu implements Scene {
 
+    @Inject
+    private SceneActionListenerService sceneActionListenerService;
+
+
     private VisWindow window;
-
-    private final SceneService sceneService;
-
-    public MainMenu(SceneService sceneService) {
-        this.sceneService = sceneService;
-    }
 
     public void create(Stage stage) {
         window = UserInterfaceUtils.createWindow("LanBall", 300, 400);
@@ -30,8 +29,8 @@ public class MainMenu implements Scene {
 
         VisImage image = new VisImage(new Texture("logo.png"));
         verticalGroup.addActor(image);
-        verticalGroup.addActor(createTextButton("JOIN", new JoinActionListener(sceneService)));
-        verticalGroup.addActor(createTextButton("HOST", new HostActionListener()));
+        verticalGroup.addActor(createTextButton("JOIN", sceneActionListenerService.getJoinSceneActionListener()));
+        verticalGroup.addActor(createTextButton("HOST", sceneActionListenerService.getHostSceneActionListener()));
         verticalGroup.addActor(createTextButton("SETTINGS", new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

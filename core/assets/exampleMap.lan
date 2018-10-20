@@ -8,13 +8,22 @@
   },
   "settings": {
     "ball": {
-      "size": 12,
+      "positionX": 525,
+      "positionY": 340,
+      "size": 15,
       "speed": 0,
-      "mass": 1,
-      "damping": 1,
+      "linearDamping": 0.5,
+      "friction": 0,
+      "restitution": 0,
+      "density": 0.09,
       "color": "#ff9933"
     },
     "teams": [
+      {
+        "name": "Spectators",
+        "color": "#ffffff",
+        "startPositionRadius": 0
+      },
       {
         "name": "Red Team",
         "color": "#ff0000",
@@ -25,7 +34,17 @@
         "color": "#0000cc",
         "startPositionRadius": 50
       }
-    ]
+    ],
+    "player":
+      {
+        "radius": 25,
+        "velocity": 0.75,
+        "maxVelocity": 10,
+        "linearDamping": 1.0,
+        "friction": 0.05,
+        "restitution": 0.0,
+        "density": 0.6
+      }
   },
   "world": {
     "size": {

@@ -13,6 +13,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Injector injector = Guice.createInjector(new LanBallGameModule());
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.depth = 24;
+		config.samples = 4;
 		new LwjglApplication(injector.getInstance(LanBallGame.class), config);
 	}
 }
