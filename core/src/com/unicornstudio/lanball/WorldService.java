@@ -31,14 +31,20 @@ public class WorldService {
 
     private static final Vector2 WORLD_GRAVITY_VECTOR = new Vector2(0, 0);
 
+    private final World world;
+
     private MapWorld mapWorld;
+
+    public WorldService() {
+        world = createWorld();
+    }
 
     @Inject
     private StageService stageService;
 
     public void create(MapDto mapDto) {
         mapWorld = new MapWorld();
-        mapWorld.setWorld(createWorld());
+        mapWorld.setWorld(world);
         mapWorld.setMapBackground(createMapBackground(mapDto.getWorld()));
         mapWorld.setPhysicsEntities(createPhysicsEntities(mapDto.getWorld().getSize()));
         stageService.addActor(getMapBackground());
@@ -66,9 +72,7 @@ public class WorldService {
     }
 
     private List<PhysicsEntity> createPhysicsEntities(SizeDto sizeDto) {
-        Float width = Gdx.graphics.getWidth() * Screen.getPixelPerMeter();
-        Float height = Gdx.graphics.getHeight() * Screen.getPixelPerMeter();
-        List<PhysicsEntity> physicsEntities = new ArrayList<>();
+        List<PhysicsEntity> physicsEntities = new ArrayList<PhysicsEntity>();
         Integer x = (Gdx.graphics.getWidth() - sizeDto.getWidth())/2;
         Integer y = (Gdx.graphics.getHeight() - sizeDto.getHeight())/2;
 

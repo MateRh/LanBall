@@ -15,7 +15,7 @@ public class VideoSettings implements Settings {
         if (!fullScreen) {
             Gdx.graphics.setWindowedMode(width, height);
         } else {
-            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayModes()[Gdx.graphics.getDisplayModes().length-1]);
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayModes()[Gdx.graphics.getDisplayModes().length - 1]);
         }
     }
 }

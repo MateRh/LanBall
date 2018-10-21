@@ -16,4 +16,11 @@ public class TextureCreator {
         return new Texture(pixmap);
     }
 
+    public static Texture createSolidColorTexture(int width, int height, String color) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.valueOf(color));
+        pixmap.fillRectangle(0, 0, width, height);
+        return new Texture(pixmap);
+    }
+
 }

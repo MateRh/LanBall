@@ -20,7 +20,6 @@ public class MainMenu implements Scene {
     @Inject
     private SceneActionListenerService sceneActionListenerService;
 
-
     private VisWindow window;
 
     public void create(Stage stage) {

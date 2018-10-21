@@ -2,6 +2,7 @@ package com.unicornstudio.lanball.ui.scene;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.kotcrab.vis.ui.VisUI;
 import com.unicornstudio.lanball.stage.StageService;
 
 @Singleton

@@ -3,8 +3,11 @@ package com.unicornstudio.lanball.ui.scene;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -23,19 +26,15 @@ import com.unicornstudio.lanball.network.server.ServerService;
 import com.unicornstudio.lanball.network.common.Ports;
 import com.unicornstudio.lanball.network.server.Player;
 import com.unicornstudio.lanball.stage.StageService;
+import com.unicornstudio.lanball.ui.SceneElementsContainer;
 import com.unicornstudio.lanball.ui.UserInterfaceUtils;
 import com.unicornstudio.lanball.ui.listener.MainMenuActionListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class HostScene implements Scene {
-
-    private static final Map<String, Actor> elements = new HashMap<>();
 
     @Inject
     private SceneService sceneService;
@@ -49,10 +48,15 @@ public class HostScene implements Scene {
     @Inject
     private MainMenuActionListener mainMenuActionListener;
 
+    @Inject
+    private MapChooser mapChooser;
+
+    @Inject
+    private SceneElementsContainer container;
+
     private VisWindow window;
 
     private Timer listUpdateTimer;
-
 
     public void create(Stage stage) {
         listUpdateTimer = new Timer("listUpdateTimer", true);
@@ -62,15 +66,24 @@ public class HostScene implements Scene {
         table.add(new VisTextButton("Red Team"));
         table.add(new VisTextButton("Players"));
         table.add(new VisTextButton("Blue Team")).row();
-        VisScrollPane redTeamPane = UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 0f, 0f, 0.1f), Collections.emptyList(), Event::getBubbles);
-        elements.put("redTeamPane", redTeamPane);
-        table.add(redTeamPane).size(200, 280);
-        VisScrollPane spectatorsPane = UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 1, 1, 0.1f), Collections.emptyList(), Event::getBubbles);
-        elements.put("spectatorsPane", spectatorsPane);
-        table.add(spectatorsPane).size(300, 280);
-        VisScrollPane blueTeamPane = UserInterfaceUtils.createVisScrollPane(Align.center, new Color(0.0f, 0.0f, 1, 0.1f), Collections.emptyList(), Event::getBubbles);
-        elements.put("blueTeamPane", blueTeamPane);
-        table.add(blueTeamPane).size(200, 280);
+        table.add(
+                container.add("redTeamPane",
+                        UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 0f, 0f, 0.1f),
+                                Collections.emptyList(), Event::getBubbles)
+                )
+        ).size(200, 280);
+        table.add(
+                container.add("spectatorsPane",
+                        UserInterfaceUtils.createVisScrollPane(Align.center, new Color(1, 1, 1, 0.1f),
+                                Collections.emptyList(), Event::getBubbles)
+                )
+        ).size(300, 280);
+        table.add(
+                container.add("blueTeamPane",
+                        UserInterfaceUtils.createVisScrollPane(Align.center, new Color(0.0f, 0.0f, 1, 0.1f),
+                                Collections.emptyList(), Event::getBubbles)
+                )
+        ).size(200, 280);
         table.row();
         table.add(createButtonActionsTable()).size(200, 100);
         table.add(createSettingsTable());
@@ -80,6 +93,7 @@ public class HostScene implements Scene {
         serverService.start(Ports.getList().get(0));
         listUpdateTimer.scheduleAtFixedRate(getUpdatePanesTask(), 50, 50);
         //window.setScale(0);
+        mapChooser.initialize();
     }
 
     @Override
@@ -176,7 +190,7 @@ public class HostScene implements Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 try {
-                    new MapChooser().show(stageService.getStage());
+                    mapChooser.show(stageService.getStage());
                 } catch (Exception ignored) {}
             }
         };

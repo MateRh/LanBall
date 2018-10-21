@@ -43,10 +43,10 @@ public class LanBallGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-	    VisUI.load();
+		VisUI.load();
 		new VideoSettings().apply();
 		stageService.init();
-		mapService.loadMap("exampleMap.lan");
+	//	mapService.loadMap("core/assets/exampleMap.lan");
 		sceneService.showMainMenuScene();
 	}
 
@@ -61,13 +61,14 @@ public class LanBallGame extends ApplicationAdapter {
 		if (worldService.isCreated()) {
 			physicsTimeStep.processStep(worldService.getWorld());
 			entitiesService.synchronizeEntitiesPosition();
-			stageService.render();
+
 			//debugRenderer.render(worldService.getWorld(), stageService.getCamera().combined);
 			keyboardInput.onInput();
 			for (GameListener gameListener : gameListenerService.getGameListeners()) {
 				gameListener.update();
 			}
 		}
+		stageService.render();
 		super.render();
 	}
 	

@@ -67,7 +67,6 @@ public class EntitiesService {
                 new FixtureDefinitionDto(0f, 0f, 0f, true)
         );
         PlayerActor actor = new PlayerActor(team, playerSettings.getRadius());
-        actor.setPhysicsEntity(playerActorPhysicsEntity);
         stageService.addActor(actor);
         addEntity("player", new Player(actor, playerActorPhysicsEntity, sensor));
     }
