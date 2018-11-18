@@ -2,6 +2,7 @@ package com.unicornstudio.lanball.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -30,7 +31,7 @@ public class UserInterfaceUtils {
         return button;
     }
 
-    public static VisScrollPane createVisScrollPane(int alignment, Color color, List<String> list, EventListener eventListener) {
+    public static VisScrollPane createVisScrollPane(int alignment, Color color, List<Actor> list, EventListener eventListener) {
         VisScrollPane visScrollPane = new VisScrollPane(createVisList(alignment, color, list, eventListener));
         visScrollPane.setStyle(getScrollPaneStyle());
         return visScrollPane;
@@ -41,11 +42,11 @@ public class UserInterfaceUtils {
         table.row();
     }
 
-    private static VisList createVisList(int alignment, Color color, List<String> list, EventListener eventListener) {
-        VisList<String> visList = new VisList<>();
+    private static VisList createVisList(int alignment, Color color, List<Actor> list, EventListener eventListener) {
+        VisList<Actor> visList = new VisList<>();
         visList.setAlignment(alignment);
         visList.setColor(color);
-        visList.setItems(list.toArray(new String[0]));
+        visList.setItems(list.toArray(new Actor[0]));
         visList.addListener(eventListener);
         return visList;
     }

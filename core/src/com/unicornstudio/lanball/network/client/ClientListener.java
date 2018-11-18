@@ -26,24 +26,17 @@ public class ClientListener extends Listener {
             CreateRemotePlayerNetworkObject request = (CreateRemotePlayerNetworkObject) object;
             System.out.println(request.getName());
             System.out.println(request.getTeamType());
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    entitiesService.createContestant(connection.getID(), request.getName(), mapService.getMap().getSettings().getTeams().get(0));
-                }
-            });
+            Gdx.app.postRunnable(() -> entitiesService.
+                    createContestant(connection.getID(), request.getName(), mapService.getMap().getSettings().getTeams().get(0)));
         }
         if (object instanceof MotionUpdateNetworkObject) {
             MotionUpdateNetworkObject request = (MotionUpdateNetworkObject) object;
             Contestant contestant = (Contestant) entitiesService.getEntity("contestant_" + connection.getID());
             if (contestant != null) {
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println(request.getPositionY());
-                        contestant.getPhysicsEntity().getBody().setTransform(request.getPositionX(), request.getPositionY(), 0f);
-                        contestant.getPhysicsEntity().getBody().setLinearVelocity(request.getVelocityX(), request.getVelocityY());
-                    }
+                Gdx.app.postRunnable(() -> {
+                    System.out.println(request.getPositionY());
+                    contestant.getPhysicsEntity().getBody().setTransform(request.getPositionX(), request.getPositionY(), 0f);
+                    contestant.getPhysicsEntity().getBody().setLinearVelocity(request.getVelocityX(), request.getVelocityY());
                 });
             }
         }

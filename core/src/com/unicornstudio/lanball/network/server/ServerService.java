@@ -8,6 +8,7 @@ import com.google.inject.Singleton;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.common.NetworkClassRegisterer;
 import com.unicornstudio.lanball.network.protocol.JoinReportNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.GetPlayersListNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateNetworkObject;
 import com.unicornstudio.lanball.network.common.NetworkObject;
 import lombok.Getter;
@@ -83,6 +84,9 @@ public class ServerService {
                             propagateData(ServerRequestBuilder.createMotionUpdateRequest(player), player);
                         }
                     );
+                }
+                if (object instanceof GetPlayersListNetworkObject) {
+                    send(connection, ServerResponseBuilder.createPlayersListNetworkObject(data.getPlayers()));
                 }
             }
 

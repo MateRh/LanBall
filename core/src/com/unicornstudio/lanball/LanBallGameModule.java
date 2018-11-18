@@ -6,7 +6,7 @@ public class LanBallGameModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(LanBallGame.class);
+        bind(Game.class);
     }
 
 }

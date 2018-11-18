@@ -40,7 +40,7 @@ public class JoinScene implements Scene {
         VisTable table = new VisTable();
         table.setFillParent(true);
         List<String> servers = clientService.getServers();
-        elements.put("ServerScrollPane", UserInterfaceUtils.createVisScrollPane(Align.topLeft, Color.WHITE, servers, getChangeListener()));
+     //   elements.put("ServerScrollPane", UserInterfaceUtils.createVisScrollPane(Align.topLeft, Color.WHITE, servers, getChangeListener()));
         table.add(elements.get("ServerScrollPane")).size(832, 390);
         table.row();
         UserInterfaceUtils.addClearSeparator(table);

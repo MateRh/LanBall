@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<:window title="@servers" titleAlign="left" defaultPad="4"
+        defaultGrowX="true" oneColumn="true">
+    <buttongroup>
+        <textButton width="448">Name</textButton>
+        <textButton width="256">IP</textButton>
+        <textButton width="64">Ping</textButton>
+    </buttongroup>
+    <table id="listViewTable"  width="768" height="384">
+    </table>
+    <buttongroup defaultspaceleft="5">
+        <textButton onClick="join">Join</textButton>
+        <textButton onclick="refresh">Refresh</textButton>
+        <textButton onChange="setView" id="com.unicornstudio.lanball.views.Menu">Back</textButton>
+    </buttongroup>
+</:window>

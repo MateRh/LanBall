@@ -109,12 +109,12 @@ public class HostScene implements Scene {
         return new TimerTask() {
             @Override
             public void run() {
-                serverService.getData().getPlayers().forEach(HostScene::updatePanes);
+                serverService.getData().getPlayers().forEach(player -> updatePanes(player));
             }
         };
     }
 
-    private static void updatePanes(Player player) {
+    private void updatePanes(Player player) {
         VisScrollPane pane = getPaneByTeamType(player.getTeamType());
         if (pane != null) {
             VisList list = (VisList) pane.getActor();
@@ -125,17 +125,17 @@ public class HostScene implements Scene {
         }
     }
 
-    private static VisScrollPane getPaneByTeamType(TeamType teamType) {
+    private VisScrollPane getPaneByTeamType(TeamType teamType) {
         VisScrollPane pane;
         switch (teamType) {
             case SPECTATORS:
-                pane = (VisScrollPane) elements.get("spectatorsPane");
+                pane = (VisScrollPane) container.get("spectatorsPane");
                 break;
             case TEAM1:
-                pane = (VisScrollPane) elements.get("redTeamPane");
+                pane = (VisScrollPane) container.get("redTeamPane");
                 break;
             case TEAM2:
-                pane = (VisScrollPane) elements.get("blueTeamPane");
+                pane = (VisScrollPane) container.get("blueTeamPane");
                 break;
             default:
                 pane = null;

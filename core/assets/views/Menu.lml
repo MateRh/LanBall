@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<:window-menu title="@menu" titleAlign="center" defaultHeight="32" defaultwidth="384" defaultPad="4"
+        defaultGrowX="true" oneColumn="true">
+	<visimage width="300" height="150" style="logo"/>
+	<textButton onChange="setView" id="com.unicornstudio.lanball.views.ServerBrowser">
+		@servers
+	</textButton>
+	<textButton onChange="setView" id="com.unicornstudio.lanball.views.HostServer">
+		@host
+	</textButton>
+	<textButton onChange="setView" id="com.github.czyzby.views.Images">
+		@settings
+	</textButton>
+	<textButton onChange="setView" id="com.github.czyzby.views.Images">
+		@help
+	</textButton>
+	<textButton onChange="exit" id="com.github.czyzby.views.Images">
+		@quit
+	</textButton>
+	<label style="small" height="20" textAlign="right">@credits</label>
+</:window-menu>
