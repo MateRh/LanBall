@@ -31,7 +31,15 @@ public class ServerData {
     }
 
     public Optional<Player> findById(int id) {
-        return players.stream().filter(player -> player.getId() == id).findAny();
+        return players.stream()
+                .filter(player -> player.getId() == id)
+                .findAny();
+    }
+
+    public Optional<Player> findByName(String name) {
+        return players.stream()
+                .filter(player -> name.equals(player.getName()))
+                .findFirst();
     }
 
 }

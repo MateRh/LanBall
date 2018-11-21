@@ -11,6 +11,8 @@ import com.unicornstudio.lanball.map.MapService;
 import com.unicornstudio.lanball.model.Contestant;
 import com.unicornstudio.lanball.network.protocol.request.CreateRemotePlayerNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.MotionUpdateNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.PlayersListNetworkObject;
+import com.unicornstudio.lanball.views.HostServer;
 
 @Singleton
 public class ClientListener extends Listener {
@@ -20,6 +22,9 @@ public class ClientListener extends Listener {
 
     @Inject
     private MapService mapService;
+
+    @Inject
+    private HostServer hostServer;
 
     public void received (Connection connection, Object object) {
         if (object instanceof CreateRemotePlayerNetworkObject) {
@@ -39,6 +44,9 @@ public class ClientListener extends Listener {
                     contestant.getPhysicsEntity().getBody().setLinearVelocity(request.getVelocityX(), request.getVelocityY());
                 });
             }
+        }
+        if (object instanceof PlayersListNetworkObject) {
+            hostServer.updateTeamsDragPanels(((PlayersListNetworkObject) object).getPlayers());
         }
     }
 

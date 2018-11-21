@@ -7,11 +7,16 @@ import com.unicornstudio.lanball.network.protocol.JoinReportNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.CreateRemotePlayerNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.GetPlayersListNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.MotionUpdateNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.PlayersListNetworkObject;
+
+import java.util.ArrayList;
 
 public class NetworkClassRegisterer {
 
     public static void register(Kryo kryo) {
+        kryo.register(ArrayList.class);
         kryo.register(JoinReportNetworkObject.class);
         kryo.register(CreateRemotePlayerNetworkObject.class);
         kryo.register(TeamType.class);
@@ -19,5 +24,7 @@ public class NetworkClassRegisterer {
         kryo.register(PlayerUpdateNetworkObject.class);
         kryo.register(MotionUpdateNetworkObject.class);
         kryo.register(GetPlayersListNetworkObject.class);
+        kryo.register(PlayersListNetworkObject.class);
+        kryo.register(PlayerChangeTeamNetworkObject.class);
     }
 }
