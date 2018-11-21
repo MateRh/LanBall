@@ -9,6 +9,7 @@ import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.common.NetworkClassRegisterer;
 import com.unicornstudio.lanball.network.protocol.JoinReportNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.GetPlayersListNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateNetworkObject;
 import com.unicornstudio.lanball.network.common.NetworkObject;
 import lombok.Getter;
@@ -87,6 +88,13 @@ public class ServerService {
                 }
                 if (object instanceof GetPlayersListNetworkObject) {
                     send(connection, ServerResponseBuilder.createPlayersListNetworkObject(data.getPlayers()));
+                }
+                if (object instanceof PlayerChangeTeamNetworkObject) {
+                    PlayerChangeTeamNetworkObject request = (PlayerChangeTeamNetworkObject) object;
+                    data.findByName(request.getPlayerName())
+                            .ifPresent(
+                                    player -> player.setTeamType(request.getTeamType())
+                            );
                 }
             }
 
