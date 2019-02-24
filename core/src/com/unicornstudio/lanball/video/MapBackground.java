@@ -17,8 +17,10 @@ public class MapBackground extends Actor {
 
     public MapBackground(SizeDto sizeDto, GroundPlane foreground) {
         texture = provideTexture(sizeDto.getWidth(), sizeDto.getHeight(), MapBackgroundType.valueOf(foreground.getTexture()), foreground.getColor());
-        x = (Gdx.graphics.getWidth() - sizeDto.getWidth())/2;
-        y = (Gdx.graphics.getHeight() - sizeDto.getHeight())/2;
+        //x = (Gdx.graphics.getWidth() - sizeDto.getWidth())/2;
+        //y = (Gdx.graphics.getHeight() - sizeDto.getHeight())/2;
+        x = 0;
+        y = 0;
     }
 
     @Override

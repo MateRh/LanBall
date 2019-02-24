@@ -30,6 +30,8 @@ public class LanBallGame extends LmlApplicationListener {
 
 	private Injector injector;
 
+	private static Stage stage;
+
 	//private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
 	@Override
@@ -42,9 +44,15 @@ public class LanBallGame extends LmlApplicationListener {
 		injector = Guice.createInjector(new LanBallGameModule());
 		game = injector.getInstance(Game.class);
 		game.getStageService().init();
-	//	mapService.loadMap("core/assets/exampleMap.lan");
+		stage = game.getStageService().getStage();
+
 		//game.getSceneService().showMainMenuScene();
-		setView(Menu.class);
+
+		setView(com.unicornstudio.lanball.views.Game.class);
+		com.unicornstudio.lanball.views.Game gameView = (com.unicornstudio.lanball.views.Game)getCurrentView();
+		game.getStageService().setGroup(gameView.getWindow());
+		//stage.setRoot(gameView.getWindow());
+		game.getMapService().loadMap("exampleMap.lan");
 		game.getServerService().start(Ports.getList().get(0));
 	}
 
@@ -68,6 +76,10 @@ public class LanBallGame extends LmlApplicationListener {
 
 	public static Stage newStage() {
 		return new Stage(new ScreenViewport(new OrthographicCamera(Screen.getWidth(), Screen.getHeight())));
+	}
+
+	public static Stage getStage() {
+		return stage;
 	}
 
 	@Override

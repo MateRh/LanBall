@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.annotation.LmlAfter;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
@@ -37,11 +38,11 @@ public class HostServer extends AbstractLmlView {
     @LmlActor("teamTwoDragPane")
     private DragPane teamTwoDragPane;
 
-    @LmlActor("timeLimitTextField")
-    private VisTextField timeLimitTextField;
+    @LmlActor("timeLimitSelectBox")
+    private SelectBox<Label> timeLimitSelectBox;
 
-    @LmlActor("scoreLimitTextField")
-    private VisTextField scoreLimitTextField;
+    @LmlActor("scoreLimitSelectBox")
+    private SelectBox<Label> scoreLimitSelectBox;
 
     @LmlActor("pickMapButton")
     private Button pickMapButton;

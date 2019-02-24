@@ -19,11 +19,19 @@
     <table width="768" defaultspace="5" align="top">
         <:tablerow>
             Time Limit
-            <textfield id="timeLimitTextField" textalign="center">05:00</textfield>
+            <selectbox id="timeLimitSelectBox" selected="4">
+                <:loop times="10">
+                    <:if test="{loop:index}<9">0</:if>{={loop:index}+1}:00
+                </:loop>
+            </selectbox>
         </:tablerow>
         <:tablerow>
             Score Limit
-            <textfield id="scoreLimitTextField" digitsonly="true" textalign="center">5</textfield>
+            <selectbox id="scoreLimitSelectBox" selected="4">
+                <:loop times="10">
+                    {={loop:index}+1}
+                </:loop>
+            </selectbox>
         </:tablerow>
         <:tablerow>
             Map

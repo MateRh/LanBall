@@ -38,7 +38,7 @@ public class MapService {
         worldService.create(map);
         ballService.createBall(getMapSettings().getBallSettings());
         entitiesService.createPlayer(map.getSettings().getTeams().get(0));
-        stageService.addActor(new FPSCounterActor());
+        //stageService.addActor(new FPSCounterActor());
     }
 
     public void loadMap(String name) {
