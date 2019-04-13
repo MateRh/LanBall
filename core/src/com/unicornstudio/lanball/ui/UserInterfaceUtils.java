@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.BusyBar;
 import com.kotcrab.vis.ui.widget.VisList;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -40,6 +42,15 @@ public class UserInterfaceUtils {
     public static void addClearSeparator(VisTable table) {
         table.addSeparator().getActor().setColor(Color.CLEAR);
         table.row();
+    }
+
+    public static Dialog createLoadingDialog() {
+        Dialog dialog = new Dialog("Loading...", VisUI.getSkin());
+        BusyBar busyBar = new BusyBar();
+        busyBar.setWidth(200);
+        busyBar.setHeight(50);
+        dialog.add(busyBar);
+        return dialog;
     }
 
     private static VisList createVisList(int alignment, Color color, List<Actor> list, EventListener eventListener) {

@@ -2,7 +2,7 @@ package com.unicornstudio.lanball.input;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -10,6 +10,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.unicornstudio.lanball.EntitiesService;
 import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
+import com.unicornstudio.lanball.network.client.ClientDataService;
+import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
+import com.unicornstudio.lanball.network.client.ClientService;
+import com.unicornstudio.lanball.prefernces.SettingsKeys;
+import com.unicornstudio.lanball.prefernces.SettingsType;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -20,8 +25,17 @@ public class KeyboardInput {
     private final EntitiesService entitiesService;
 
     @Inject
+    private ClientService clientService;
+
+    @Inject
+    private ClientDataService clientDataService;
+
+    private Preferences preferences;
+
+    @Inject
     public KeyboardInput(EntitiesService entitiesService) {
         this.entitiesService = entitiesService;
+        preferences = SettingsType.CONTROL.getPreference();
     }
 
     public void onInput() {
@@ -30,42 +44,43 @@ public class KeyboardInput {
             Vector2 velocity = playerBody.getLinearVelocity();
             Vector2 position = playerBody.getPosition();
 
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            if (isPressed(SettingsKeys.SHOT_CONTROL, SettingsKeys.SHOT_CONTROL_ALTERNATIVE)) {
                 Body ballBody = getBallBody();
                 Body sensorBody = getPlayerSensor();
-                getContact(ballBody, sensorBody).ifPresent(
-                        contact -> {
-                            //Vector2 force = playerBody.getLinearVelocity().add(getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)));
-                            Vector2 force = getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody));
-                            //ballBody.applyLinearImpulse(force.x, force.y, ballBody.getPosition().x, ballBody.getPosition().y, true);
-                            ballBody.applyLinearImpulse(force, contact.getWorldManifold().getNormal(), false);
-                           // ballBody.applyForceToCenter(force, true);
-                        }
-                );
-
+                if (ballBody != null && sensorBody != null) {
+                    getContact(ballBody, sensorBody).ifPresent(
+                            contact -> {
+                                clientService.sendRequest(
+                                        ClientRequestBuilder.createPlayerKickBallClientRequest(
+                                                clientDataService.getRemotePlayer().getId(),
+                                                getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)),
+                                                contact.getWorldManifold().getNormal())
+                                );
+                            }
+                    );
+                }
             }
 
             if (velocity.len() < Player.MAX_VELOCITY) {
-                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                if (isPressed(SettingsKeys.LEFT_CONTROL, SettingsKeys.LEFT_CONTROL_ALTERNATIVE)) {
                     playerBody.applyLinearImpulse(-Player.VELOCITY, 0, position.x, position.y, true);
                 }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                if (isPressed(SettingsKeys.RIGHT_CONTROL, SettingsKeys.RIGHT_CONTROL_ALTERNATIVE)) {
                     playerBody.applyLinearImpulse(Player.VELOCITY, 0, position.x, position.y, true);
                 }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                if (isPressed(SettingsKeys.DOWN_CONTROL, SettingsKeys.DOWN_CONTROL_ALTERNATIVE)) {
                     playerBody.applyLinearImpulse(0, -Player.VELOCITY, position.x, position.y, true);
                 }
 
-                if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                if (isPressed(SettingsKeys.UP_CONTROL, SettingsKeys.UP_CONTROL_ALTERNATIVE)) {
                     playerBody.applyLinearImpulse(0, Player.VELOCITY, position.x, position.y, true);
                 }
             }
 
         }
     }
-
 
     private float getAngleBetweenTwoBodies(Body ballBody, Body playerBody) {
         return calculateAngle(playerBody.getPosition().x, playerBody.getPosition().y, ballBody.getPosition().x, ballBody.getPosition().y).floatValue();
@@ -106,21 +121,21 @@ public class KeyboardInput {
         return entity.getPhysicsEntity().getBody();
     }
 
-    private Double calculateAngle(double x1, double y1, double x2, double y2)
-    {
+    private Double calculateAngle(double x1, double y1, double x2, double y2) {
         double angle = Math.toDegrees(Math.atan2(x2 - x1, y2 - y1));
         angle = angle + Math.ceil( -angle / 360 ) * 360;
-
         return angle;
     }
 
     private Vector2 getForceFromAngle(float angle) {
         double a = Math.toRadians(90 - angle);
+        double dx = Math.cos(a);
+        double dy = Math.sin(a);
+        return new Vector2((float) dx, (float) dy);
+    }
 
-        Double dx = Math.cos(a);
-        Double dy = Math.sin(a);
-
-        return new Vector2(dx.floatValue() * 0.3f, dy.floatValue() * 0.3f);
+    private boolean isPressed(String key, String alternativeKey) {
+        return Gdx.input.isKeyPressed(preferences.getInteger(key)) || Gdx.input.isKeyPressed(preferences.getInteger(alternativeKey));
     }
 
 }

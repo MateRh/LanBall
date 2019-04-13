@@ -6,8 +6,12 @@ import lombok.Data;
 @Data
 public class PlayerDto {
 
+    private int id;
+
     private String name;
 
-    private TeamType type;
+    private TeamType teamType;
+
+    private boolean remotePlayer;
 
 }

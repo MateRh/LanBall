@@ -1,5 +1,4 @@
 buildscript {
-    
 
     repositories {
         mavenLocal()
@@ -10,7 +9,6 @@ buildscript {
     }
     dependencies {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.15"
-
     }
 }
 
@@ -20,7 +18,7 @@ allprojects {
     apply plugin: "idea"
 
 
-    version = '1.0'
+    version = "0.1-pre-alpha-build-" + getDate()
     ext {
         appName = "LanBall"
         gdxVersion = '1.9.8'
@@ -31,6 +29,17 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
         lombokVersion = '1.16.20'
+        gdxLmlVersion = '1.9.1.9.6'
+        libGdxUtilsVersion = '0.13.4'
+        libGdxUtilsBox2dVersion = '0.13.4'
+        visUiVersion = '1.3.0'
+        lombokVersion = '1.16.6'
+        googleInjectVersion = '4.2.0'
+        jacksonVersion = '2.9.5'
+        kyronetVersion = '2.22.0-RC1'
+        guavaVersion = '27.0-jre'
+        apacheCommonsVersion = '3.7'
+        jerseyVersion = '2.28'
     }
 
     repositories {
@@ -46,27 +55,14 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java"
-    apply plugin: "war"
 
     dependencies {
         compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
-        compile "com.github.czyzby:gdx-lml:1.9.1.9.6"
-        compile "com.github.czyzby:gdx-lml-vis:1.9.1.9.6"
-        compile "com.puppycrawl.tools:checkstyle:8.11"
-        providedCompile "org.projectlombok:lombok:1.16.6"
-        compile group: 'com.google.inject', name: 'guice', version: '4.2.0'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.5'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
-        compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
-        compile group: 'com.google.guava', name: 'guava', version: '27.0-jre'
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     }
 }
 
@@ -76,28 +72,38 @@ project(":core") {
     apply plugin: "war"
 
     dependencies {
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.github.czyzby:gdx-lml:1.9.1.9.6"
-        compile "com.github.czyzby:gdx-lml-vis:1.9.1.9.6"
-        compile "com.github.czyzby:gdx-kiwi:1.9.1.9.6"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.4"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.4"
-        compile "com.kotcrab.vis:vis-ui:1.3.0"
-        providedCompile "org.projectlombok:lombok:1.16.6"
-        compile group: 'com.google.inject', name: 'guice', version: '4.2.0'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.5'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.5'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+        compile "com.github.czyzby:gdx-lml:$gdxLmlVersion"
+        compile "com.github.czyzby:gdx-lml-vis:$gdxLmlVersion"
+        compile "com.github.czyzby:gdx-kiwi:$gdxLmlVersion"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils:$libGdxUtilsVersion"
+        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$libGdxUtilsBox2dVersion"
+        compile "com.kotcrab.vis:vis-ui:$visUiVersion"
+        compile "com.google.inject:guice:$googleInjectVersion"
+        compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+        compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+        compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+        compile "com.google.guava:guava:$guavaVersion"
+        compile "org.apache.commons:commons-lang3:$apacheCommonsVersion"
+        compile "org.glassfish.jersey.core:jersey-client:$jerseyVersion"
+        compile "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion"
+        compile "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion"
         compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
-        compile group: 'com.google.guava', name: 'guava', version: '27.0-jre'
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+        providedCompile "org.projectlombok:lombok:$lombokVersion"
     }
 }
 
 tasks.eclipse.doLast {
     delete ".project"
+}
+
+static def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
 }

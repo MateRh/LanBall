@@ -2,6 +2,7 @@ package com.unicornstudio.lanball.network.protocol.request;
 
 import java.util.List;
 import com.unicornstudio.lanball.network.common.NetworkObject;
+import com.unicornstudio.lanball.network.common.NetworkObjectType;
 import com.unicornstudio.lanball.network.dto.PlayerDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +13,8 @@ public class PlayersListNetworkObject implements NetworkObject {
 
     private List<PlayerDto> players;
 
+    @Override
+    public NetworkObjectType getType() {
+        return NetworkObjectType.PLAYERS_LIST;
+    }
 }

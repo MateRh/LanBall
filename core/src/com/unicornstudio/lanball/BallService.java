@@ -42,7 +42,9 @@ public class BallService {
                         ballSettings.getFriction(),
                         ballSettings.getRestitution(),
                         ballSettings.getDensity(),
-                        false)
+                        false,
+                        EntitiesService.BIT_BALL,
+                        (short)(EntitiesService.BIT_PLAYER | EntitiesService.BIT_BALL_BOUND))
         );
         entitiesService.addEntity("ball", new Ball(actor, physicsEntity));
         stageService.addActor(actor);

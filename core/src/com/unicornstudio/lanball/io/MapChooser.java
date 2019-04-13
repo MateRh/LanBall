@@ -9,12 +9,17 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 import com.kotcrab.vis.ui.widget.file.FileTypeFilter;
 import com.unicornstudio.lanball.map.MapService;
+import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
+import com.unicornstudio.lanball.network.client.ClientService;
 import lombok.Getter;
 
 public class MapChooser {
 
     @Inject
     private MapService mapService;
+
+    @Inject
+    private ClientService clientService;
 
     private final static String DEFAULT_PREFS_NAME = "com.unicornstudio.lanball.filechooser";
     private final static String FILE_TYPE_FILTER_DESCRIPTION = "LanBall map (*.lan)";
@@ -44,10 +49,12 @@ public class MapChooser {
             public void selected (Array<FileHandle> files) {
                 file = files.first();
                 mapService.loadMap(file);
+                clientService.sendRequest(ClientRequestBuilder.createMapLoadClientRequest(file));
             }
 
             @Override
             public void canceled () {
+                fileChooser.remove();
             }
 
         });

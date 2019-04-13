@@ -1,7 +1,7 @@
 package com.unicornstudio.lanball.map;
 
 public enum MapBackgroundType {
-    GRASS("grass.png");
+    GRASS_PATTERN_ONE("grass_pattern_1.png");
 
     private final String texture;
 

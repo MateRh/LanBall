@@ -12,12 +12,23 @@ import com.google.inject.Inject;
 import com.kotcrab.vis.ui.widget.ListView;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientService;
+import com.unicornstudio.lanball.network.dto.Host;
+import com.unicornstudio.lanball.network.server.dto.PlayerRole;
+import com.unicornstudio.lanball.ui.UserInterfaceUtils;
 import com.unicornstudio.lanball.utils.adapter.ListAdapter;
 import com.unicornstudio.lanball.utils.adapter.dto.ListRow;
 import com.unicornstudio.lanball.utils.adapter.dto.ListRowElement;
 import java.util.List;
+import java.util.Random;
 
 public class ServerBrowser extends AbstractLmlView {
+
+    private static final String NAME_ROW_LABEL = "name";
+    private static final String HOST_ROW_LABEL = "host";
+    private static final String PING_ROW_LABEL = "ping";
+    private static final float NAME_ROW_WIDTH = 448f;
+    private static final float HOST_ROW_WIDTH = 256f;
+    private static final float PING_ROW_WIDTH = 48f;
 
     @Inject
     private ClientService clientService;
@@ -57,23 +68,28 @@ public class ServerBrowser extends AbstractLmlView {
     @LmlAction("join")
     private void join() {
         adapter.getSelection().forEach(
-                selection -> clientService.connect(selection.get("host").getLabel())
+                selection -> {
+                    UserInterfaceUtils.createLoadingDialog().show(getStage());
+                    if (clientService.connect(selection.get(HOST_ROW_LABEL).getLabel(), PlayerRole.PLAYER)) {
+                        ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
+                    }
+                }
         );
     }
 
-    private void parseServerListToView(List<String> servers) {
+    private void parseServerListToView(List<Host> servers) {
         servers.forEach(
                 server -> {
-                    adapter.add(createListRow("localhost", server, "1"));
+                    adapter.add(createListRow(server.getName(), server.getAddress(), String.valueOf(new Random().nextInt(5))));
                 }
         );
     }
 
     private ListRow createListRow(String name, String host, String ping) {
         ListRow listRow = new ListRow();
-        listRow.put("name", new ListRowElement(name, 448f));
-        listRow.put("host", new ListRowElement(host, 256f));
-        listRow.put("ping", new ListRowElement(ping, 48f));
+        listRow.put(NAME_ROW_LABEL, new ListRowElement(name, NAME_ROW_WIDTH));
+        listRow.put(HOST_ROW_LABEL, new ListRowElement(host, HOST_ROW_WIDTH));
+        listRow.put(PING_ROW_LABEL, new ListRowElement(ping, PING_ROW_WIDTH));
         return listRow;
     }
 

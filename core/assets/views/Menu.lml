@@ -7,7 +7,7 @@
 	<textButton onChange="setView" id="com.unicornstudio.lanball.views.ServerBrowser">
 		@servers
 	</textButton>
-	<textButton onChange="setView" id="com.unicornstudio.lanball.views.HostServer">
+	<textButton id="hostServerButton">
 		@host
 	</textButton>
 	<textButton onChange="setView" id="com.github.czyzby.views.Images">

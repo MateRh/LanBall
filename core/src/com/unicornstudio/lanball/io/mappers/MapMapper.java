@@ -16,7 +16,15 @@ public class MapMapper {
         try {
         return Optional.ofNullable(mapper.readValue(mapFile.file(), MapDto.class));
         } catch (IOException e) {
-            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+    public static Optional<MapDto> map(String mapString) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        try {
+        return Optional.ofNullable(mapper.readValue(mapString, MapDto.class));
+        } catch (IOException e) {
             return Optional.empty();
         }
     }

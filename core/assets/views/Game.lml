@@ -2,6 +2,15 @@
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 
 <:window-game title="" titleAlign="left" defaultPad="0" defaultGrowX="true" oneColumn="true">
+    <table defaultspace="5" background="list" defaultpadleft="5" defaultpadright="5" defaultpadbottom="10" height="30">
+            <label id="firstTeamName" color="vis-red" height="10">Read Team</label>
+            <label id="firstTeamScore" height="10">0</label>
+            <label height="10">:</label>
+            <label id="secondTeamName" height="10">0</label>
+            <label id="secondTeamScore" height="10" color="vis-blue">Blue Team</label>
+             <:cell height="10" space="100"/>
+            <label id="time" height="10">00:00</label>
+    </table>
     <window id="core" width="1052" height="680" bg="background">
 
     </window>

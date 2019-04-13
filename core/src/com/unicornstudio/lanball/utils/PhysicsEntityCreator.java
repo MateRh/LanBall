@@ -85,6 +85,12 @@ public class PhysicsEntityCreator {
         fixtureDefinition.friction = fixtureDefinitionDto.getFriction();
         fixtureDefinition.restitution = fixtureDefinitionDto.getRestitution();
         fixtureDefinition.isSensor = fixtureDefinitionDto.isSensor();
+        if (fixtureDefinitionDto.getCategoryBits() != null) {
+            fixtureDefinition.filter.categoryBits = fixtureDefinitionDto.getCategoryBits();
+        }
+        if (fixtureDefinitionDto.getMaskBits() != null) {
+            fixtureDefinition.filter.maskBits = fixtureDefinitionDto.getMaskBits();
+        }
         return fixtureDefinition;
     }
 

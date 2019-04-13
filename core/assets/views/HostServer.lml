@@ -19,7 +19,7 @@
     <table width="768" defaultspace="5" align="top">
         <:tablerow>
             Time Limit
-            <selectbox id="timeLimitSelectBox" selected="4">
+            <selectbox id="timeLimitSelectBox">
                 <:loop times="10">
                     <:if test="{loop:index}<9">0</:if>{={loop:index}+1}:00
                 </:loop>
@@ -27,7 +27,7 @@
         </:tablerow>
         <:tablerow>
             Score Limit
-            <selectbox id="scoreLimitSelectBox" selected="4">
+            <selectbox id="scoreLimitSelectBox">
                 <:loop times="10">
                     {={loop:index}+1}
                 </:loop>
@@ -43,5 +43,5 @@
             <button id="startTheGameButton">Start the game!</button>
         </:tablerow>
     </table>
-    <textButton onChange="setView" id="com.unicornstudio.lanball.views.Menu">Back</textButton>
+    <textButton id="backToMenuTextMenu">Back</textButton>
 </:window>

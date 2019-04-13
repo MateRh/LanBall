@@ -15,4 +15,8 @@ public class FixtureDefinitionDto {
 
     private boolean sensor;
 
+    private Short categoryBits;
+
+    private Short maskBits;
+
 }

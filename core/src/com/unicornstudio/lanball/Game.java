@@ -4,10 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.unicornstudio.lanball.input.KeyboardInput;
 import com.unicornstudio.lanball.map.MapService;
+import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.server.ServerService;
 import com.unicornstudio.lanball.stage.StageService;
-import com.unicornstudio.lanball.ui.scene.SceneService;
-import com.unicornstudio.lanball.views.ServerBrowser;
 import lombok.Getter;
 
 import javax.inject.Inject;
@@ -20,9 +19,6 @@ public class Game {
 
     @Inject
     private KeyboardInput keyboardInput;
-
-    @Inject
-    private SceneService sceneService;
 
     @Inject
     private WorldService worldService;
@@ -41,6 +37,9 @@ public class Game {
 
     @Inject
     private ServerService serverService;
+
+    @Inject
+    private ClientService clientService;
 
 
     public void render () {

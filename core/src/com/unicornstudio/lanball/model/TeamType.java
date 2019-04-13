@@ -10,4 +10,8 @@ public enum TeamType {
     TeamType(int type) {
         this.type = type;
     }
+
+    public int getType() {
+        return type;
+    }
 }

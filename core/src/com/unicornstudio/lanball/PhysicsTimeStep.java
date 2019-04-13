@@ -5,8 +5,8 @@ import com.badlogic.gdx.physics.box2d.World;
 public class PhysicsTimeStep  {
 
     private final static float SECOND_IN_MS = 1000f;
-    private final static int VELOCITY_ITERATIONS = 6;
-    private final static int POSITION_ITERATIONS = 2;
+    private final static int VELOCITY_ITERATIONS = 10;
+    private final static int POSITION_ITERATIONS = 10;
 
     private double lastStepTime;
 

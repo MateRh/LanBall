@@ -28,7 +28,7 @@
 </:macro>
 <:macro alias="window-menu" replace="content" title="" pad="2" oneColumn="true">
 <window oneColumn="true" background="white">
-	<table width="1280" height="880" onecolumn="true" background="background">
+	<table width="1454" height="1000" onecolumn="true" background="background">
 		<:tablerow>
 			<separator expandy="true"/>
 		</:tablerow>
@@ -53,13 +53,14 @@
 			{content}
 		</:tablerow>
 		<:tablerow height="220">
-			<window onecolumn="true" width="1454">
+			<separator expandy="true"/>
+<!--			<window onecolumn="true" width="1454">
 				<textarea width="800" height="140" readonly="true">
 				</textarea>
 				<separator/>
 				<textarea width="800" height="30">
 				</textarea>
-			</window>
+			</window>-->
 		</:tablerow>
 	</table>
 </window>

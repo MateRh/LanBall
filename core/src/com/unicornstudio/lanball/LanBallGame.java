@@ -1,9 +1,10 @@
 package com.unicornstudio.lanball;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -16,10 +17,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.kotcrab.vis.ui.VisUI;
 import com.unicornstudio.lanball.actions.GlobalActions;
-import com.unicornstudio.lanball.network.common.Ports;
+import com.unicornstudio.lanball.prefernces.DefaultSettings;
 import com.unicornstudio.lanball.settings.VideoSettings;
-import com.unicornstudio.lanball.views.Menu;
-import com.unicornstudio.lanball.views.ServerBrowser;
 
 
 public class LanBallGame extends LmlApplicationListener {
@@ -32,10 +31,11 @@ public class LanBallGame extends LmlApplicationListener {
 
 	private static Stage stage;
 
-	//private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+	private Box2DDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
+		DefaultSettings.generate();
 		batch = new SpriteBatch();
 		VisUI.load("skins/vis/x1/uiskin.json");
 		super.create();
@@ -47,13 +47,24 @@ public class LanBallGame extends LmlApplicationListener {
 		stage = game.getStageService().getStage();
 
 		//game.getSceneService().showMainMenuScene();
-
+		setView(com.unicornstudio.lanball.views.Menu.class);
+/*
 		setView(com.unicornstudio.lanball.views.Game.class);
 		com.unicornstudio.lanball.views.Game gameView = (com.unicornstudio.lanball.views.Game)getCurrentView();
 		game.getStageService().setGroup(gameView.getWindow());
 		//stage.setRoot(gameView.getWindow());
+
 		game.getMapService().loadMap("exampleMap.lan");
-		game.getServerService().start(Ports.getList().get(0));
+		String ip = game.getClientService().scanPort(Ports.getList().get(1));
+		if (ip != null) {
+			System.out.println("client");
+			game.getClientService().connect("localhost:" + Ports.getList().get(1), PlayerRole.PLAYER);
+		} else {
+			System.out.println("server");
+			game.getServerService().start(Ports.getList().get(1));
+		}
+		*/
+		debugRenderer = new Box2DDebugRenderer();
 	}
 
 	@Override
@@ -72,6 +83,11 @@ public class LanBallGame extends LmlApplicationListener {
 	public void render () {
 		game.render();
 		super.render();
+		if (game.getWorldService().getMapWorld() != null) {
+			Matrix4 matrix4 = new Matrix4(new OrthographicCamera(Screen.getWidth(), Screen.getHeight()).combined);
+			matrix4.scale(10f, 10f, 1f);
+			debugRenderer.render(game.getWorldService().getWorld(), matrix4);
+		}
 	}
 
 	public static Stage newStage() {
@@ -98,6 +114,10 @@ public class LanBallGame extends LmlApplicationListener {
 		AbstractLmlView view = injector.getInstance(viewClass);
 		initiateView(view);
 		setView(view, null);
+		if (view instanceof com.unicornstudio.lanball.views.Game) {
+			com.unicornstudio.lanball.views.Game gameView = (com.unicornstudio.lanball.views.Game) view;
+			game.getStageService().setGroup(gameView.getWindow());
+		}
 	}
 
 }
