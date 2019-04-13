@@ -12,4 +12,5 @@ public class GlobalActions implements ActionContainer {
     void setViewToMenu() {
         ((LanBallGame) Gdx.app.getApplicationListener()).setView(Menu.class);
     }
+
 }

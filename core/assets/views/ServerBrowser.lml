@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 
-<:window title="@servers" titleAlign="left" defaultPad="4"
+<:window-simple title="@servers" titleAlign="left" defaultPad="4"
         defaultGrowX="true" oneColumn="true">
     <buttongroup>
         <textButton width="448">Name</textButton>
@@ -15,4 +15,4 @@
         <textButton onclick="refresh">Refresh</textButton>
         <textButton onChange="setView" id="com.unicornstudio.lanball.views.Menu">Back</textButton>
     </buttongroup>
-</:window>
+</:window-simple>

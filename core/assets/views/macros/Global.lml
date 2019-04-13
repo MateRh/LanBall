@@ -26,7 +26,7 @@
 		</table>
 	</window>
 </:macro>
-<:macro alias="window-menu" replace="content" title="" pad="2" oneColumn="true">
+<:macro alias="window-simple" replace="content" title="" pad="2" oneColumn="true">
 <window oneColumn="true" background="white">
 	<table width="1280" height="880" onecolumn="true" background="background">
 		<:tablerow>
