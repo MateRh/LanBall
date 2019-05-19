@@ -9,12 +9,14 @@ import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.protocol.PlayerJoinClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.GameStartClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.GateContactClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientRequest;
 import com.unicornstudio.lanball.network.server.dto.PlayerRole;
+import com.unicornstudio.lanball.util.CompressionUtil;
 
 public class ClientRequestBuilder {
 
@@ -38,7 +40,8 @@ public class ClientRequestBuilder {
     }
 
     public static MapLoadClientRequest createMapLoadClientRequest(FileHandle mapFile) {
-        return new MapLoadClientRequest(mapFile.readString());
+        return new MapLoadClientRequest(
+                CompressionUtil.compress(mapFile.readString()));
     }
 
     public static PlayerChangeTeamClientRequest createPlayerChangeTeamClientRequest(Integer id, TeamType type) {
@@ -55,6 +58,10 @@ public class ClientRequestBuilder {
 
     public static PlayerKickBallClientRequest createPlayerKickBallClientRequest(Integer playerId, Vector2 force, Vector2 point) {
         return new PlayerKickBallClientRequest(playerId, force.x, force.y, point.x, point.y);
+    }
+
+    public static GateContactClientRequest createGateContactClientRequest(TeamType teamType) {
+        return new GateContactClientRequest(teamType);
     }
 
     private static Vector2 getPosition(Entity entity) {

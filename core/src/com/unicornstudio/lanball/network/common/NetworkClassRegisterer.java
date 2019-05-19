@@ -8,11 +8,14 @@ import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientReques
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.GameStartClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.GameStartServerRequest;
+import com.unicornstudio.lanball.network.protocol.request.GateContactClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadServerRequest;
+import com.unicornstudio.lanball.network.protocol.request.MatchEndServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallServerRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerSetStartPositionServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.RemotePlayerServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.CreateRemotePlayersNetworkObject;
 import com.unicornstudio.lanball.network.protocol.request.GetPlayersListNetworkObject;
@@ -20,6 +23,7 @@ import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateServerRequ
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayersListNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.ScoreUpdateRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.ServerStateServerRequest;
@@ -59,5 +63,10 @@ public class NetworkClassRegisterer {
         kryo.register(SelectBoxUpdateServerRequest.class);
         kryo.register(PlayerKickBallClientRequest.class);
         kryo.register(PlayerKickBallServerRequest.class);
+        kryo.register(GateContactClientRequest.class);
+        kryo.register(MatchEndServerRequest.class);
+        kryo.register(ScoreUpdateRequest.class);
+        kryo.register(PlayerSetStartPositionServerRequest.class);
+        kryo.register(byte[].class);
     }
 }

@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class PlayerUpdateServerRequest implements NetworkObject {
 
+    private boolean remote;
+
     private Integer id;
 
     private Float positionX;

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MapLoadClientRequest implements NetworkObject {
 
-    private String mapData;
+    private byte[] mapData;
 
     @Override
     public NetworkObjectType getType() {

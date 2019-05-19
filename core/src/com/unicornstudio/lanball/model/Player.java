@@ -10,7 +10,7 @@ public class Player extends Entity {
 
     public final static Float MAX_VELOCITY = 10f;
 
-    public final static Float VELOCITY = 0.75f;
+    public final static Float VELOCITY = 0.8f;
 
     private PhysicsEntity sensor;
 

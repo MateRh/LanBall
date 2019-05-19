@@ -799,3 +799,10 @@ window-resizable
   orig: 27, 43
   offset: 0, 0
   index: -1
+transparent
+  rotate: false
+  xy: 30, 2
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1

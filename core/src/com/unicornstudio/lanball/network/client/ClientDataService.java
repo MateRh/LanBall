@@ -25,13 +25,19 @@ public class ClientDataService {
 
     private PlayerDto remotePlayer;
 
-    private GameState gameState = GameState.IN_LOBBY;
+    private GameState gameState = GameState.LOBBY;
 
     private Integer timeLimitSelectBoxIndex;
 
     private Integer scoreLimitSelectBoxIndex;
 
-    private Integer timeLimit;
+    private Long timeLimit;
+
+    private Long lastTimeMillis;
+
+    private Integer team1Score = 0;
+
+    private Integer team2Score = 0;
 
     public ClientDataService() {
         players = new HashMap<>();
@@ -46,7 +52,7 @@ public class ClientDataService {
 
     public void setTimeLimitSelectBoxIndex(Integer timeLimitSelectBoxIndex) {
         this.timeLimitSelectBoxIndex = timeLimitSelectBoxIndex;
-        timeLimit = (timeLimitSelectBoxIndex + 1) * 1000;
+        timeLimit = (long) ((timeLimitSelectBoxIndex + 1) * 60 * 1000);
     }
 
     public void addPlayer(PlayerDto player, TeamType teamType) {
@@ -75,13 +81,9 @@ public class ClientDataService {
     }
 
     public void changePlayerTeam(PlayerDto player, TeamType previousTeam, TeamType newTeamType) {
-        System.out.println("-----------------------");
-        System.out.println(players.get(previousTeam));
         removePlayer(player, previousTeam);
-        System.out.println(players.get(previousTeam));
-        System.out.println(players.get(newTeamType));
         addPlayer(player, newTeamType);
-        System.out.println(players.get(newTeamType));
+        players.size();
     }
 
     public List<PlayerDto> getPlayersByTeam(TeamType teamType) {
@@ -91,6 +93,15 @@ public class ClientDataService {
     public CRC32 getPlayersListCrcByTeam(TeamType teamType) {
         return playersCRC.get(teamType);
     }
+
+    public void updateTimer() {
+        if (lastTimeMillis == null) {
+            lastTimeMillis = System.currentTimeMillis();
+        }
+        timeLimit = timeLimit - (System.currentTimeMillis() - lastTimeMillis);
+        lastTimeMillis = System.currentTimeMillis();
+    }
+
 
     private CRC32 createCrcOfList(TeamType teamType) {
         CRC32 crc = new CRC32();

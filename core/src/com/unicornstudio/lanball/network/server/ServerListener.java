@@ -4,21 +4,26 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.common.GameState;
 import com.unicornstudio.lanball.network.common.NetworkObject;
 import com.unicornstudio.lanball.network.protocol.PlayerJoinClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.GateContactClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientRequest;
+import com.unicornstudio.lanball.network.server.dto.MatchEndReason;
 import com.unicornstudio.lanball.network.server.dto.Player;
 import com.unicornstudio.lanball.network.server.util.ServerRequestBuilder;
 import com.unicornstudio.lanball.network.server.util.ServerResponseBuilder;
 import com.unicornstudio.lanball.network.server.util.ServerUtils;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
+import com.unicornstudio.lanball.util.WorldUtilService;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Singleton
@@ -26,6 +31,9 @@ public class ServerListener extends Listener {
 
     @Inject
     private ServerDataService serverDataService;
+
+    @Inject
+    private WorldUtilService worldUtilService;
 
     public void connected (Connection connection) {
         if (serverDataService.getPlayerByConnection(connection) == null) {
@@ -41,6 +49,20 @@ public class ServerListener extends Listener {
     public void received(Connection connection, Object object) {
         if (object instanceof NetworkObject){
             networkObjectReceived(connection, (NetworkObject) object);
+        }
+    }
+
+    public void idle(Connection connection) {
+        if (serverDataService.getGameState() == GameState.IN_PROGRESS) {
+            serverDataService.updateTimer();
+            if (serverDataService.getTimeLimit() <= 0) {
+                serverDataService.setGameState(GameState.LOBBY);
+                if (serverDataService.getTeam1Score() > serverDataService.getTeam2Score()) {
+                    ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_1_VICTORY_TIME_OUT);
+                } else if (serverDataService.getTeam2Score() > serverDataService.getTeam1Score()) {
+                    ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_2_VICTORY_TIME_OUT);
+                }
+            }
         }
     }
 
@@ -74,12 +96,30 @@ public class ServerListener extends Listener {
             case BALL_KICK:
                 onBallKick((PlayerKickBallClientRequest) networkObject);
                 break;
+            case GATE_CONTACT:
+                onGateContact((GateContactClientRequest) networkObject);
+                break;
         }
     }
 
     private void onStartGame(Connection connection) {
         serverDataService.setGameState(GameState.IN_PROGRESS);
         ServerUtils.propagateData(ServerRequestBuilder.createGameStartServerRequest(), serverDataService.getPlayers(), null);
+        setPlayersStartPosition(TeamType.TEAM1);
+        setPlayersStartPosition(TeamType.TEAM2);
+        setPlayersStartPosition(TeamType.SPECTATORS);
+    }
+
+    private void setPlayersStartPosition(TeamType teamType) {
+        Map<Connection, Player> players = serverDataService.getPlayersByTeamType(teamType);
+        System.out.println(teamType);
+        int i = 3;
+        System.out.println(i);
+        players.forEach((key, value) -> {
+            ServerUtils.propagateData(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, true, teamType, i),
+                    serverDataService.getPlayers(), key);
+            key.sendUDP(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, false, teamType, i));
+        });
     }
 
     private void onMapLoad(Connection connection, MapLoadClientRequest request) {
@@ -114,7 +154,7 @@ public class ServerListener extends Listener {
         player.setPositionY(object.getPositionY());
         player.setVelocityX(object.getVelocityX());
         player.setVelocityY(object.getVelocityY());
-        ServerUtils.propagateData(ServerRequestBuilder.createPlayerUpdateServerRequest(player), serverDataService.getPlayers(), connection);
+        ServerUtils.propagateData(ServerRequestBuilder.createPlayerUpdateServerRequest(player, true), serverDataService.getPlayers(), connection);
     }
 
     private void onGetPlayersList(Connection connection) {
@@ -125,18 +165,16 @@ public class ServerListener extends Listener {
         Player remotePlayer = serverDataService.getPlayerById(object.getId());
         if (remotePlayer != null) {
             remotePlayer.setTeamType(object.getTeamType());
-            ServerUtils.propagateData(ServerRequestBuilder.createPlayerChangeTeamServerRequest(player), serverDataService.getPlayers(), null);
+            ServerUtils.propagateData(ServerRequestBuilder.createPlayerChangeTeamServerRequest(remotePlayer), serverDataService.getPlayers(), null);
         }
     }
 
     private void onSelectBoxUpdate(SelectBoxUpdateClientRequest object) {
         if (object.getSelectBoxName().equals(SettingsKeys.TIME_LIMIT)) {
             serverDataService.setTimeLimitSelectBoxIndex(object.getSelectedIndex());
-            System.out.println(object.getSelectBoxName() + " " + serverDataService.getTimeLimitSelectBoxIndex());
         }
         if (object.getSelectBoxName().equals(SettingsKeys.SCORE_LIMIT)) {
             serverDataService.setScoreLimitSelectBoxIndex(object.getSelectedIndex());
-            System.out.println(object.getSelectBoxName() + " " + serverDataService.getScoreLimitSelectBoxIndex());
         }
         ServerUtils.propagateData(
                 ServerRequestBuilder.createSelectBoxUpdateServerRequest(object.getSelectBoxName(), object.getSelectedIndex()),
@@ -150,6 +188,38 @@ public class ServerListener extends Listener {
                 serverDataService.getPlayers(),
                 null
         );
+    }
+
+    private void onGateContact(GateContactClientRequest object) {
+        if (object.getTeamType().equals(TeamType.TEAM1)) {
+            serverDataService.setGameState(GameState.PENDING);
+            serverDataService.setTeam1Score(serverDataService.getTeam1Score() + 1);
+            ServerUtils.propagateData(
+                    ServerRequestBuilder.createScoreUpdateRequest(TeamType.TEAM1, serverDataService.getTeam1Score()),
+                    serverDataService.getPlayers(),
+                    null);
+        } else if (object.getTeamType().equals(TeamType.TEAM2)) {
+            serverDataService.setGameState(GameState.PENDING);
+            serverDataService.setTeam2Score(serverDataService.getTeam2Score() + 1);
+            ServerUtils.propagateData(
+            ServerRequestBuilder.createScoreUpdateRequest(TeamType.TEAM2, serverDataService.getTeam2Score()),
+                    serverDataService.getPlayers(),
+                    null);
+        }
+        if (serverDataService.getTeam1Score() >= serverDataService.getScoreLimit()) {
+            serverDataService.setGameState(GameState.LOBBY);
+            ServerUtils.propagateData(
+            ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_1_VICTORY),
+                    serverDataService.getPlayers(),
+                    null);
+        } else if (serverDataService.getTeam2Score() >= serverDataService.getScoreLimit()) {
+            serverDataService.setGameState(GameState.LOBBY);
+            ServerUtils.propagateData(
+            ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_2_VICTORY),
+                    serverDataService.getPlayers(),
+                    null);
+        }
+
     }
 
 }

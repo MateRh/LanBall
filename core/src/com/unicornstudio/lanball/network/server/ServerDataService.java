@@ -1,5 +1,6 @@
 package com.unicornstudio.lanball.network.server;
 
+import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.common.GameState;
 import com.unicornstudio.lanball.network.server.dto.Ball;
 import com.unicornstudio.lanball.network.server.dto.Player;
@@ -21,23 +22,28 @@ public class ServerDataService {
     private Map<Connection, Player> players = new HashMap<>();
 
     @Setter
-    private String mapData;
+    private byte[] mapData;
 
     private Ball ball = new Ball();
 
-    private String host;
+    private Long timeLimit;
 
-    private Integer port;
+    private Long lastTimeMillis;
 
     @Setter
-    private GameState gameState = GameState.IN_LOBBY;
+    private GameState gameState = GameState.LOBBY;
 
     private Integer timeLimitSelectBoxIndex;
 
-    @Setter
     private Integer scoreLimitSelectBoxIndex;
 
-    private Integer timeLimit;
+    @Setter
+    private Integer team1Score = 0;
+
+    @Setter
+    private Integer team2Score = 0;
+
+    private Integer scoreLimit;
 
     public void addPlayer(Connection connection, Player player) {
         players.put(connection, player);
@@ -65,8 +71,14 @@ public class ServerDataService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<Player> getPlayersSet( ) {
+    public Set<Player> getPlayersSet() {
         return new HashSet<>(players.values());
+    }
+
+    public  Map<Connection, Player> getPlayersByTeamType(TeamType teamType) {
+        return players.entrySet().stream()
+                .filter(entry -> entry.getValue().getTeamType().equals(teamType))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public void updateBall(Float positionX, Float positionY, Float velocityX, Float velocityY) {
@@ -78,7 +90,19 @@ public class ServerDataService {
 
     public void setTimeLimitSelectBoxIndex(Integer timeLimitSelectBoxIndex) {
         this.timeLimitSelectBoxIndex = timeLimitSelectBoxIndex;
-        this.timeLimit = (timeLimitSelectBoxIndex + 1) * 1000;
+        timeLimit = (long) ((timeLimitSelectBoxIndex + 1) * 60 * 1000);
+    }
+
+    public void updateTimer() {
+        if (lastTimeMillis == null) {
+            lastTimeMillis = System.currentTimeMillis();
+        }
+        timeLimit = timeLimit - (System.currentTimeMillis() - lastTimeMillis);
+        lastTimeMillis = System.currentTimeMillis();
+    }
+    public void setScoreLimitSelectBoxIndex(Integer scoreLimitSelectBoxIndex) {
+        this.scoreLimitSelectBoxIndex = scoreLimitSelectBoxIndex;
+        scoreLimit = scoreLimitSelectBoxIndex + 1;
     }
 
 }

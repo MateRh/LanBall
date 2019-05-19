@@ -2,8 +2,8 @@ package com.unicornstudio.lanball.network.client;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.unicornstudio.lanball.EntitiesService;
-import com.unicornstudio.lanball.GameListener;
+import com.unicornstudio.lanball.service.EntitiesService;
+import com.unicornstudio.lanball.core.GameListener;
 import com.unicornstudio.lanball.model.Ball;
 import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.network.common.GameState;
@@ -22,7 +22,7 @@ public class ClientSynchronizerService implements GameListener {
 
     @Override
     public void update() {
-        if (clientDataService.getGameState().equals(GameState.IN_LOBBY)) {
+        if (!clientDataService.getGameState().equals(GameState.IN_PROGRESS) && !clientDataService.getGameState().equals(GameState.PAUSE)) {
             return;
         }
 

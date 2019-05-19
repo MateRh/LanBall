@@ -47,12 +47,15 @@
 <window oneColumn="true" background="white" >
 	<table width="1454" height="1000" onecolumn="true" background="background">
 		<:tablerow>
+			<table id="hudWindow" oneColumn="true" height="42" defaultpad="10" background="slider"/>
+
 			<separator expandy="true"/>
 		</:tablerow>
 		<:tablerow>
 			{content}
 		</:tablerow>
-		<:tablerow height="220">
+		<:tablerow>
+			<window oneColumn="true" height="64" background="transparent" defaultpad="10"/>
 			<separator expandy="true"/>
 <!--			<window onecolumn="true" width="1454">
 				<textarea width="800" height="140" readonly="true">

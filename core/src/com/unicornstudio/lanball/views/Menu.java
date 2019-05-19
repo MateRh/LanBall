@@ -12,10 +12,12 @@ import com.google.inject.Inject;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.common.Ports;
 import com.unicornstudio.lanball.network.server.ServerService;
-import com.unicornstudio.lanball.ui.UserInterfaceUtils;
+import com.unicornstudio.lanball.util.UserInterfaceUtils;
 
+import javax.inject.Singleton;
 import java.util.Random;
 
+@Singleton
 public class Menu extends AbstractLmlView {
 
     @Inject

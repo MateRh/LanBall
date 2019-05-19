@@ -71,6 +71,10 @@ public class ClientService {
         client.sendUDP(networkObject);
     }
 
+    public void sendRequestTCP(NetworkObject networkObject) {
+        client.sendTCP(networkObject);
+    }
+
     private Host scanPort(int port) {
         return Optional.ofNullable(client.discoverHost(port, DISCOVERY_TIMEOUT))
                 .map(address -> new Host(address.getHostAddress() + SEPARATOR + port, address.getHostName()))

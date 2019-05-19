@@ -22,17 +22,59 @@
       {
         "name": "Spectators",
         "color": "#ffffff",
-        "startPositionRadius": 0
+        "positions": null
       },
       {
         "name": "Red Team",
-        "color": "#ff0000",
-        "startPositionRadius": 50
+        "color": "#e56e56",
+        "positions": [
+            {
+                "angle": 344,
+                "distance": 150
+            },
+            {
+                "angle": 307,
+                "distance": 150
+            },
+            {
+                "angle": 270,
+                "distance": 150
+            },
+            {
+                "angle": 233,
+                "distance": 150
+            },
+            {
+                "angle": 196,
+                "distance": 150
+            }
+        ]
       },
       {
         "name": "Blue Team",
-        "color": "#0000cc",
-        "startPositionRadius": 50
+        "color": "#5689e5",
+        "positions": [
+            {
+                "angle": 16,
+                "distance": 100
+            },
+            {
+                "angle": 53,
+                "distance": 150
+            },
+            {
+                "angle": 90,
+                "distance": 150
+            },
+            {
+                "angle": 127,
+                "distance": 150
+            },
+            {
+                "angle": 164,
+                "distance": 150
+            }
+        ]
       }
     ],
     "player":
@@ -48,8 +90,8 @@
   },
   "world": {
     "size": {
-      "width": 1200,
-      "height": 739
+      "width": 1052,
+      "height": 680
     },
     "foreground": {
       "color": "#009933",

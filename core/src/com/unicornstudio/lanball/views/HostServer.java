@@ -28,12 +28,14 @@ import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.prefernces.SettingsType;
 
 
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.CRC32;
 
+@Singleton
 public class HostServer extends AbstractLmlView {
 
     @Inject

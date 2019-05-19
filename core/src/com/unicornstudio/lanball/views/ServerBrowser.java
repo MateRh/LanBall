@@ -14,10 +14,10 @@ import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.dto.Host;
 import com.unicornstudio.lanball.network.server.dto.PlayerRole;
-import com.unicornstudio.lanball.ui.UserInterfaceUtils;
-import com.unicornstudio.lanball.utils.adapter.ListAdapter;
-import com.unicornstudio.lanball.utils.adapter.dto.ListRow;
-import com.unicornstudio.lanball.utils.adapter.dto.ListRowElement;
+import com.unicornstudio.lanball.util.UserInterfaceUtils;
+import com.unicornstudio.lanball.util.adapter.ListAdapter;
+import com.unicornstudio.lanball.util.adapter.dto.ListRow;
+import com.unicornstudio.lanball.util.adapter.dto.ListRowElement;
 import java.util.List;
 import java.util.Random;
 

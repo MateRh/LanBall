@@ -2,7 +2,7 @@ package com.unicornstudio.lanball.model;
 
 import com.badlogic.gdx.physics.box2d.World;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
-import com.unicornstudio.lanball.video.MapBackground;
+import com.unicornstudio.lanball.model.actors.MapBackground;
 import lombok.Data;
 
 import java.util.List;

@@ -13,5 +13,9 @@ public enum NetworkObjectType {
     MAP_LOAD,
     START_GAME,
     SELECT_BOX_UPDATE,
-    BALL_KICK
+    BALL_KICK,
+    GATE_CONTACT,
+    MATCH_END,
+    SCORE_UPDATE,
+    START_POSITION
 }

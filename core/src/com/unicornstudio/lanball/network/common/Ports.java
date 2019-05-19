@@ -12,7 +12,6 @@ public class Ports {
 
     static {
         list = Lists.newArrayList(
-                666,
                 2033,
                 2056,
                 2302,

@@ -16,9 +16,11 @@ import com.github.czyzby.lml.vis.util.VisLml;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.kotcrab.vis.ui.VisUI;
-import com.unicornstudio.lanball.actions.GlobalActions;
+import com.unicornstudio.lanball.core.GlobalActions;
+import com.unicornstudio.lanball.core.Game;
+import com.unicornstudio.lanball.core.Screen;
 import com.unicornstudio.lanball.prefernces.DefaultSettings;
-import com.unicornstudio.lanball.settings.VideoSettings;
+import com.unicornstudio.lanball.prefernces.VideoSettings;
 
 
 public class LanBallGame extends LmlApplicationListener {
@@ -86,7 +88,7 @@ public class LanBallGame extends LmlApplicationListener {
 		if (game.getWorldService().getMapWorld() != null) {
 			Matrix4 matrix4 = new Matrix4(new OrthographicCamera(Screen.getWidth(), Screen.getHeight()).combined);
 			matrix4.scale(10f, 10f, 1f);
-			debugRenderer.render(game.getWorldService().getWorld(), matrix4);
+			//debugRenderer.render(game.getWorldService().getWorld(), matrix4);
 		}
 	}
 
