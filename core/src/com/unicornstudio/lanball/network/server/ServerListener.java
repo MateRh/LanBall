@@ -25,6 +25,8 @@ import com.unicornstudio.lanball.util.WorldUtilService;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Singleton
 public class ServerListener extends Listener {
@@ -218,8 +220,20 @@ public class ServerListener extends Listener {
             ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_2_VICTORY),
                     serverDataService.getPlayers(),
                     null);
+        } else {
+            Timer resetPositionsTimer = new Timer("resetPositionsTimer");
+            resetPositionsTimer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            setPlayersStartPosition(TeamType.TEAM1);
+                            setPlayersStartPosition(TeamType.TEAM2);
+                            setPlayersStartPosition(TeamType.SPECTATORS);
+                            resetPositionsTimer.cancel();
+                        }
+                    },
+            2000);
         }
-
     }
 
 }
