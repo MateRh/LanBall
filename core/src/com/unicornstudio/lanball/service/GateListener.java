@@ -6,13 +6,17 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.unicornstudio.lanball.model.TeamType;
+import com.unicornstudio.lanball.network.client.ClientDataService;
 import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
+import com.unicornstudio.lanball.network.common.GameState;
 import lombok.Setter;
 
 public class GateListener implements ContactListener {
 
     private final ClientService clientService;
+
+    private final ClientDataService clientDataService;
 
     private final Body leftGateSensor;
 
@@ -23,8 +27,9 @@ public class GateListener implements ContactListener {
     @Setter
     private boolean contactEnabled = true;
 
-    public GateListener(ClientService clientService, Body leftGateSensor, Body rightGateSensor, Body ballBody) {
+    public GateListener(ClientService clientService, ClientDataService clientDataService, Body leftGateSensor, Body rightGateSensor, Body ballBody) {
         this.clientService = clientService;
+        this.clientDataService = clientDataService;
         this.leftGateSensor = leftGateSensor;
         this.rightGateSensor = rightGateSensor;
         this.ballBody = ballBody;
@@ -32,18 +37,16 @@ public class GateListener implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        if (!contactEnabled) {
+        if (!clientDataService.getGameState().equals(GameState.IN_PROGRESS)) {
             return;
         }
         if ((contact.getFixtureA().getBody().equals(leftGateSensor) && contact.getFixtureB().getBody().equals(ballBody)) ||
                         (contact.getFixtureA().getBody().equals(ballBody) && contact.getFixtureB().getBody().equals(leftGateSensor))) {
-            contactEnabled = false;
             clientService.sendRequest(
                     ClientRequestBuilder.createGateContactClientRequest(TeamType.TEAM2));
         }
         if ((contact.getFixtureA().getBody().equals(rightGateSensor) && contact.getFixtureB().getBody().equals(ballBody)) ||
                         (contact.getFixtureA().getBody().equals(ballBody) && contact.getFixtureB().getBody().equals(rightGateSensor))) {
-            contactEnabled = false;
             clientService.sendRequest(
                     ClientRequestBuilder.createGateContactClientRequest(TeamType.TEAM1));
         }

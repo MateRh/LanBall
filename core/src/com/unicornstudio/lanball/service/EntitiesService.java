@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.unicornstudio.lanball.core.Screen;
+import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.model.map.settings.PlayerSettings;
 import com.unicornstudio.lanball.model.map.settings.Team;
@@ -30,13 +31,15 @@ import com.unicornstudio.lanball.model.actors.PlayerActor;
 @Singleton
 public class EntitiesService {
 
-    public final static short BIT_PLAYER = 0x0001;
+    public final static short BIT_PLAYER_TEAM1 = 0x0001;
 
-    public final static short BIT_BALL = 0x0002;
+    public final static short BIT_PLAYER_TEAM2 = 0x0002;
 
-    public final static short BIT_PLAYER_BOUND = 0x0004;
+    public final static short BIT_BALL = 0x0004;
 
-    public final static short BIT_BALL_BOUND = 0x0008;
+    public final static short BIT_PLAYER_BOUND = 0x0008;
+
+    public final static short BIT_BALL_BOUND = 0x0016;
 
     @Inject
     private WorldService worldService;
@@ -65,30 +68,32 @@ public class EntitiesService {
         return PhysicsEntityCreator.createEntity(worldService.getWorld(), bodyDefinitionDto, shapeDto, fixtureDefinitionDto);
     }
 
-    public void createPlayer(Team team) {
+    public void createPlayer(Team team, TeamType teamType) {
+        short playerBit = getPlayerBit(teamType);
         PlayerSettings playerSettings = mapService.getMapSettings().getPlayerSettings();
         PhysicsEntity playerActorPhysicsEntity = createEntity(
                 new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(Screen.getHalfWidth(), Screen.getHalfHeight()), 1f),
                 new ShapeDto(Shape.Type.Circle, playerSettings.getRadius() / 2f, null, null, null),
-                new FixtureDefinitionDto(playerSettings.getFriction(), playerSettings.getRestitution(), playerSettings.getDensity(), false, BIT_PLAYER, (short) (BIT_PLAYER | BIT_BALL | BIT_PLAYER_BOUND))
+                new FixtureDefinitionDto(playerSettings.getFriction(), playerSettings.getRestitution(), playerSettings.getDensity(), false, playerBit, (short) (playerBit | BIT_BALL | BIT_PLAYER_BOUND))
         );
         PhysicsEntity sensor = createEntity(
                 new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(Screen.getHalfWidth(), Screen.getHalfHeight()), 0f),
                 new ShapeDto(Shape.Type.Circle, playerSettings.getRadius() / 1.9f, null, null, null),
-                new FixtureDefinitionDto(0f, 0f, 0f, true,  BIT_PLAYER, (short) (BIT_PLAYER | BIT_BALL | BIT_PLAYER_BOUND))
+                new FixtureDefinitionDto(0f, 0f, 0f, true,  playerBit, (short) (playerBit | BIT_BALL | BIT_PLAYER_BOUND))
         );
         PlayerActor actor = new PlayerActor(team, playerSettings.getRadius());
         stageService.addActor(actor);
         addEntity("player", new Player(actor, playerActorPhysicsEntity, sensor));
     }
 
-    public void createContestant(Integer id, String name, Team team) {
+    public void createContestant(Integer id, String name, Team team, TeamType teamType) {
+        short playerBit = getPlayerBit(teamType);
         PlayerSettings playerSettings = mapService.getMapSettings().getPlayerSettings();
         PhysicsEntity contestantActorPhysicsEntity = PhysicsEntityCreator.createEntity(worldService.getWorld(),
                 new BodyDefinitionDto(BodyDef.BodyType.DynamicBody,
                         new Vector2(Screen.getHalfWidth() + new Random().nextInt(25), Screen.getHalfHeight() + new Random().nextInt(25) ), 1f),
                 new ShapeDto(Shape.Type.Circle, playerSettings.getRadius() / 2f, null, null, null),
-                new FixtureDefinitionDto(playerSettings.getFriction(), playerSettings.getRestitution(), playerSettings.getDensity(), false,  BIT_PLAYER, (short) (BIT_PLAYER | BIT_BALL | BIT_PLAYER_BOUND))
+                new FixtureDefinitionDto(playerSettings.getFriction(), playerSettings.getRestitution(), playerSettings.getDensity(), false,  playerBit, (short) (playerBit | BIT_BALL | BIT_PLAYER_BOUND))
         );
         ContestantActor actor = new ContestantActor(team, name, playerSettings.getRadius());
         stageService.addActor(actor);
@@ -132,6 +137,14 @@ public class EntitiesService {
         if (entity.getType() == EntityType.PLAYER) {
             Player player = (Player) entity;
             player.getSensor().getBody().setTransform(position, 0);
+        }
+    }
+
+    private short getPlayerBit(TeamType teamType) {
+        if (teamType.equals(TeamType.TEAM1)) {
+            return BIT_PLAYER_TEAM1;
+        } else {
+            return BIT_PLAYER_TEAM2;
         }
     }
 

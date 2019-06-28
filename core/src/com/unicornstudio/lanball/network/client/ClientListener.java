@@ -14,6 +14,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.unicornstudio.lanball.network.protocol.request.RoundResetRequest;
+import com.unicornstudio.lanball.service.BallService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.audio.SoundService;
@@ -38,6 +40,7 @@ import com.unicornstudio.lanball.network.protocol.request.ScoreUpdateRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.ServerStateServerRequest;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
+import com.unicornstudio.lanball.service.WorldService;
 import com.unicornstudio.lanball.util.CompressionUtil;
 import com.unicornstudio.lanball.util.FontProvider;
 import com.unicornstudio.lanball.util.WorldUtilService;
@@ -63,6 +66,12 @@ public class ClientListener extends Listener {
 
     @Inject
     private WorldUtilService worldUtilService;
+
+    @Inject
+    private WorldService worldService;
+
+    @Inject
+    private BallService ballService;
 
     public void received(Connection connection, Object object) {
         if (object instanceof NetworkObject) {
@@ -114,7 +123,21 @@ public class ClientListener extends Listener {
             case START_POSITION:
                 onSetStartPosition((PlayerSetStartPositionServerRequest) object);
                 break;
+            case ROUND_RESET:
+                onRoundReset((RoundResetRequest) object);
+                break;
+            case BALL_CONTACT:
+                onBallContact();
+                break;
         }
+    }
+
+    private void onRoundReset(RoundResetRequest request) {
+        clientDataService.setGameState(GameState.IN_PROGRESS);
+        worldService.setInitialRoundBoundsActive(request.getStartingTeam().equals(clientDataService.getRemotePlayer().getTeamType()));
+        worldService.updateInitialRoundBoundsFilter(clientDataService.getRemotePlayer().getTeamType());
+        ballService.reset();
+        ballService.setListenerStatus(!request.getStartingTeam().equals(clientDataService.getRemotePlayer().getTeamType()));
     }
 
     private void onStartGame() {
@@ -122,6 +145,12 @@ public class ClientListener extends Listener {
             clientDataService.setGameState(GameState.IN_PROGRESS);
             ((LanBallGame) Gdx.app.getApplicationListener()).setView(Game.class);
             mapService.initialize(clientDataService.getPlayers());
+            if (clientDataService.getRemotePlayer().getTeamType().equals(TeamType.TEAM2)) {
+                worldService.setInitialRoundBoundsActive(true);
+            } else {
+                ballService.setListenerStatus(true);
+            }
+            worldService.updateInitialRoundBoundsFilter(clientDataService.getRemotePlayer().getTeamType());
         });
     }
 
@@ -154,7 +183,6 @@ public class ClientListener extends Listener {
                         new Vector2(object.getVelocityX(), object.getVelocityY()));
             }
         });
-        System.out.println("PlayerUpdateServerRequest: " + object);
     }
 
     private void onSetStartPosition(PlayerSetStartPositionServerRequest object) {
@@ -238,10 +266,15 @@ public class ClientListener extends Listener {
         }
     }
 
+    private void onBallContact() {
+        ballService.setListenerStatus(false);
+        worldService.setInitialRoundBoundsActive(false);
+    }
+
     private void createContestant(RemotePlayerServerRequest request) {
         clientDataService.addPlayer(PlayerDtoMapper.createPlayer(request), request.getTeamType());
         if (!clientDataService.getGameState().equals(GameState.LOBBY) && !request.isRemotePlayer()) {
-            Gdx.app.postRunnable(() -> entitiesService.createContestant(request.getId(), request.getName(), getTeamByType(request.getTeamType())));
+            Gdx.app.postRunnable(() -> entitiesService.createContestant(request.getId(), request.getName(), getTeamByType(request.getTeamType()), request.getTeamType()));
         }
     }
 
@@ -285,7 +318,7 @@ public class ClientListener extends Listener {
                         dialog.remove();
                         timer.purge();
                     }
-                }, 2000
+                }, 4000
         );
     }
 

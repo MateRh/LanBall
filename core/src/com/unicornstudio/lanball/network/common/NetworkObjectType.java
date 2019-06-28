@@ -17,5 +17,7 @@ public enum NetworkObjectType {
     GATE_CONTACT,
     MATCH_END,
     SCORE_UPDATE,
-    START_POSITION
+    START_POSITION,
+    ROUND_RESET,
+    BALL_CONTACT
 }

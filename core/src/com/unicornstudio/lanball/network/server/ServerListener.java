@@ -101,6 +101,9 @@ public class ServerListener extends Listener {
             case GATE_CONTACT:
                 onGateContact((GateContactClientRequest) networkObject);
                 break;
+            case BALL_CONTACT:
+                onBallContact();
+                break;
         }
     }
 
@@ -232,8 +235,28 @@ public class ServerListener extends Listener {
                             resetPositionsTimer.cancel();
                         }
                     },
-            2000);
+            4000);
+            Timer roundResetTimer = new Timer("roundResetTimer");
+            roundResetTimer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            ServerUtils.propagateData(
+                                    ServerRequestBuilder.createRoundResetRequest(object.getTeamType() == TeamType.TEAM1 ? TeamType.TEAM2 : TeamType.TEAM1),
+                                    serverDataService.getPlayers(),
+                                    null);
+                            roundResetTimer.cancel();
+                        }
+                    },
+            5000);
         }
+    }
+
+    private void onBallContact() {
+        ServerUtils.propagateData(
+                ServerRequestBuilder.createBallContactRequest(),
+                serverDataService.getPlayers(),
+                null);
     }
 
 }

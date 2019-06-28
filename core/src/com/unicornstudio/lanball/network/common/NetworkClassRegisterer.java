@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.dto.PlayerDto;
 import com.unicornstudio.lanball.network.protocol.PlayerJoinClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.BallContactRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.GameStartClientRequest;
@@ -23,6 +24,7 @@ import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateServerRequ
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayersListNetworkObject;
+import com.unicornstudio.lanball.network.protocol.request.RoundResetRequest;
 import com.unicornstudio.lanball.network.protocol.request.ScoreUpdateRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
@@ -67,6 +69,8 @@ public class NetworkClassRegisterer {
         kryo.register(MatchEndServerRequest.class);
         kryo.register(ScoreUpdateRequest.class);
         kryo.register(PlayerSetStartPositionServerRequest.class);
+        kryo.register(RoundResetRequest.class);
+        kryo.register(BallContactRequest.class);
         kryo.register(byte[].class);
     }
 }

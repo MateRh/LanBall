@@ -7,6 +7,7 @@ import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.protocol.PlayerJoinClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.BallContactRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.GameStartClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.GateContactClientRequest;
@@ -62,6 +63,10 @@ public class ClientRequestBuilder {
 
     public static GateContactClientRequest createGateContactClientRequest(TeamType teamType) {
         return new GateContactClientRequest(teamType);
+    }
+
+    public static BallContactRequest createBallContactRequest() {
+        return new BallContactRequest();
     }
 
     private static Vector2 getPosition(Entity entity) {

@@ -14,7 +14,6 @@ import com.unicornstudio.lanball.model.map.settings.Settings;
 import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.dto.PlayerDto;
 import com.unicornstudio.lanball.service.StageService;
-import com.unicornstudio.lanball.model.actors.FPSCounterActor;
 import lombok.Data;
 
 import java.io.File;
@@ -70,16 +69,15 @@ public class MapService {
         worldService.initialize();
         ballService.createBall(getMapSettings().getBallSettings());
         players.forEach((key, value) -> value.forEach(this::createPlayer));
-        stageService.addActor(new FPSCounterActor());
         gateService.initialize();
     }
 
     private void createPlayer(PlayerDto player) {
         if (player.isRemotePlayer()) {
-            entitiesService.createPlayer(map.getSettings().getTeams().get(player.getTeamType().getType()));
+            entitiesService.createPlayer(map.getSettings().getTeams().get(player.getTeamType().getType()), player.getTeamType());
         } else {
             entitiesService.createContestant(player.getId(), player.getName(),
-                    map.getSettings().getTeams().get(player.getTeamType().getType()));
+                    map.getSettings().getTeams().get(player.getTeamType().getType()), player.getTeamType());
         }
     }
 

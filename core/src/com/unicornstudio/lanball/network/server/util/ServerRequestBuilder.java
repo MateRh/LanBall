@@ -2,6 +2,7 @@ package com.unicornstudio.lanball.network.server.util;
 
 import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.common.GameState;
+import com.unicornstudio.lanball.network.protocol.request.BallContactRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.GameStartServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadServerRequest;
@@ -11,6 +12,7 @@ import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallServerRe
 import com.unicornstudio.lanball.network.protocol.request.PlayerSetStartPositionServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.RemotePlayerServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateServerRequest;
+import com.unicornstudio.lanball.network.protocol.request.RoundResetRequest;
 import com.unicornstudio.lanball.network.protocol.request.ScoreUpdateRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.ServerStateServerRequest;
@@ -100,6 +102,14 @@ public class ServerRequestBuilder {
 
     public static ScoreUpdateRequest createScoreUpdateRequest(TeamType teamType, Integer score) {
         return new ScoreUpdateRequest(teamType, score);
+    }
+
+    public static RoundResetRequest createRoundResetRequest(TeamType teamType) {
+        return new RoundResetRequest(teamType);
+    }
+
+    public static BallContactRequest createBallContactRequest() {
+        return new BallContactRequest();
     }
 
 }

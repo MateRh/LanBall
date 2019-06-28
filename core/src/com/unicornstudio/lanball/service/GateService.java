@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.unicornstudio.lanball.network.client.ClientDataService;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.util.PhysicsEntityBuilder;
 import com.unicornstudio.lanball.util.PhysicsEntityDtoBuilder;
@@ -23,6 +24,9 @@ public class GateService {
     @Inject
     private ClientService clientService;
 
+    @Inject
+    private ClientDataService clientDataService;
+
     private Body leftGateSensor;
 
     private Body rightGateSensor;
@@ -38,7 +42,7 @@ public class GateService {
     public void initialize() {
         if (clientService.isHost()) {
             worldService.getMapWorld().getWorld().setContactListener(
-                    new GateListener(clientService, leftGateSensor, rightGateSensor, entitiesService.getEntity("ball").getPhysicsEntity().getBody()));
+                    new GateListener(clientService, clientDataService, leftGateSensor, rightGateSensor, entitiesService.getEntity("ball").getPhysicsEntity().getBody()));
         }
     }
 

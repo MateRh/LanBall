@@ -3,10 +3,12 @@ package com.unicornstudio.lanball.service;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.model.map.MapDto;
 import com.unicornstudio.lanball.model.map.world.SizeDto;
 import com.unicornstudio.lanball.model.map.world.WorldDto;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 
 import static com.unicornstudio.lanball.model.actors.MapBackground.GATE_SIZE;
 import static com.unicornstudio.lanball.model.actors.MapBackground.LINE_SPACE;
+import static com.unicornstudio.lanball.service.EntitiesService.BIT_PLAYER_TEAM1;
+import static com.unicornstudio.lanball.service.EntitiesService.BIT_PLAYER_TEAM2;
 
 @Data
 @Singleton
@@ -46,6 +50,8 @@ public class WorldService {
     private StageService stageService;
 
     private MapWorld mapWorld;
+
+    private List<PhysicsEntity> initialRoundBounds = new ArrayList<>();
 
     public WorldService() {
         world = createWorld();
@@ -73,6 +79,17 @@ public class WorldService {
 
     public MapBackground getMapBackground() {
         return mapWorld.getMapBackground();
+    }
+
+    public void setInitialRoundBoundsActive(boolean active) {
+        initialRoundBounds.forEach(physicsEntity -> physicsEntity.getBody().setActive(active));
+    }
+
+    public void updateInitialRoundBoundsFilter(TeamType teamType) {
+        initialRoundBounds.forEach(
+                physicsEntity -> physicsEntity.getBody().getFixtureList().
+                        forEach(fixture -> fixture.getFilterData().maskBits = getPlayerBit(teamType))
+        );
     }
 
     private World createWorld() {
@@ -104,6 +121,7 @@ public class WorldService {
         List<PhysicsEntityDto> bounds = new ArrayList<>();
         createWorldInnerBounds(bounds, sizeDto.getWidth(), sizeDto.getHeight());
         createWorldOuterBounds(bounds, sizeDto.getWidth(), sizeDto.getHeight());
+        createCenterBounds(sizeDto.getWidth(), sizeDto.getHeight());
 
         return bounds.stream()
                 .map(dto -> PhysicsEntityBuilder.buildPhysicsEntity(getWorld(), dto))
@@ -115,7 +133,7 @@ public class WorldService {
                 0f, 1f, 1f, false, EntitiesService.BIT_BALL_BOUND, EntitiesService.BIT_BALL);
 
         FixtureDefinitionDto gateFixtureDefinition = PhysicsEntityDtoBuilder.buildFixtureDefinitionDto(
-                0f, 1f, 1f, false, EntitiesService.BIT_BALL_BOUND, (short) (EntitiesService.BIT_PLAYER | EntitiesService.BIT_BALL));
+                0f, 1f, 1f, false, EntitiesService.BIT_BALL_BOUND, (short) (BIT_PLAYER_TEAM1 | BIT_PLAYER_TEAM2 | EntitiesService.BIT_BALL));
 
         bounds.add(
                 PhysicsEntityDtoBuilder.buildPhysicsEntityDto(
@@ -246,7 +264,7 @@ public class WorldService {
 
     private void createWorldInnerBounds(List<PhysicsEntityDto> bounds, int width, int height) {
         FixtureDefinitionDto fixtureDefinition = PhysicsEntityDtoBuilder.buildFixtureDefinitionDto(
-                0f, 1f, 1f, false, EntitiesService.BIT_PLAYER_BOUND,  EntitiesService.BIT_PLAYER);
+                0f, 1f, 1f, false, EntitiesService.BIT_PLAYER_BOUND, (short) (BIT_PLAYER_TEAM1 | BIT_PLAYER_TEAM2));
 
         bounds.add(
                 PhysicsEntityDtoBuilder.buildPhysicsEntityDto(
@@ -281,12 +299,45 @@ public class WorldService {
         );
     }
 
+    private void createCenterBounds(int width, int height) {
+        FixtureDefinitionDto fixtureDefinition = PhysicsEntityDtoBuilder.buildFixtureDefinitionDto(
+                0f, 1f, 1f, false, EntitiesService.BIT_PLAYER_BOUND, BIT_PLAYER_TEAM1);
+        int x = LINE_SPACE + (width - 2 * LINE_SPACE) / 2;
+        int y = LINE_SPACE + (height - 2 * LINE_SPACE) / 2;
+
+        initialRoundBounds.add(PhysicsEntityBuilder.buildPhysicsEntity(getWorld(),
+            PhysicsEntityDtoBuilder.buildPhysicsEntityDto(
+                    PhysicsEntityDtoBuilder.buildShapeDto(Shape.Type.Circle, null, null, GATE_SIZE * 0.75f),
+                    buildBodyDefinitionDto(x, y),
+                    fixtureDefinition
+        )));
+
+        initialRoundBounds.add(PhysicsEntityBuilder.buildPhysicsEntity(getWorld(),
+            PhysicsEntityDtoBuilder.buildPhysicsEntityDto(
+                    buildShapeDto(1f, height),
+                    buildBodyDefinitionDto(width / 2, 0),
+                    fixtureDefinition
+        )));
+
+        initialRoundBounds.forEach(physicsEntity -> physicsEntity.getBody().setActive(false));
+        updateInitialRoundBoundsFilter(TeamType.TEAM2);
+    }
+
     private BodyDefinitionDto buildBodyDefinitionDto(int x, int y) {
         return PhysicsEntityDtoBuilder.buildBodyDefinitionDto(BodyDef.BodyType.StaticBody, new Vector2(x, y), 1f);
     }
 
     private ShapeDto buildShapeDto(float width, float height) {
         return PhysicsEntityDtoBuilder.buildShapeDto(Shape.Type.Edge, width, height, null);
+    }
+
+
+    private short getPlayerBit(TeamType teamType) {
+        if (teamType.equals(TeamType.TEAM1)) {
+            return BIT_PLAYER_TEAM1;
+        } else {
+            return BIT_PLAYER_TEAM2;
+        }
     }
 
 }
