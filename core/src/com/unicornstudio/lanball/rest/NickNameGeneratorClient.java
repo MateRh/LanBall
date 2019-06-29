@@ -12,7 +12,7 @@ import java.util.Optional;
 public class NickNameGeneratorClient {
 
     private static final String API_URL = "https://api.codetunnel.net/random-nick";
-    private static final Integer LIMIT = 32;
+    private static final Integer LIMIT = 16;
 
     private final Client client;
 

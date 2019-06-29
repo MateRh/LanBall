@@ -9,8 +9,8 @@ import static com.unicornstudio.lanball.prefernces.SettingsKeys.*;
 public class DefaultSettings {
 
     private static final float CURRENT_SETTINGS_VERSION = 0.01f;
-    private static final int DEFAULT_WIDTH = 1454;
-    private static final int DEFAULT_HEIGHT = 1000;
+    private static final int DEFAULT_WIDTH = 1392;
+    private static final int DEFAULT_HEIGHT = 783;
     private static final boolean DEFAULT_FULL_SCREEN = false;
     private static final int DEFAULT_TIME_LIMIT = 4;
     private static final int DEFAULT_SCORE_LIMIT = 4;

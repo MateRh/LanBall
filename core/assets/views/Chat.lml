@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE window SYSTEM "../../lml.dtd">
-<table width="1280" height="880">
+<table width="1392" height="880">
 
     <:tablerow>
         <textarea width="600" height="200">

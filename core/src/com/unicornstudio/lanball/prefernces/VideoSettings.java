@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 
 public class VideoSettings {
 
-    private int width = 1454;
+    private int width = 1392;
 
-    private int height = 1000;
+    private int height = 783;
 
     private boolean fullScreen = false;
 
