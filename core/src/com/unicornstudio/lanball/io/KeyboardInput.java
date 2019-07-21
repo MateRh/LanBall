@@ -2,11 +2,15 @@ package com.unicornstudio.lanball.io;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.unicornstudio.lanball.LanBallGame;
+import com.unicornstudio.lanball.network.common.GameState;
+import com.unicornstudio.lanball.network.dto.Host;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
@@ -15,6 +19,8 @@ import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.prefernces.SettingsType;
+import com.unicornstudio.lanball.views.Game;
+import com.unicornstudio.lanball.views.HostServer;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -82,6 +88,17 @@ public class KeyboardInput {
 
                 if (isPressed(SettingsKeys.UP_CONTROL, SettingsKeys.UP_CONTROL_ALTERNATIVE)) {
                     playerBody.applyLinearImpulse(0, Player.VELOCITY, position.x, position.y, true);
+                }
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                if (clientDataService.getGameState() == GameState.LOBBY) {
+                    return;
+                }
+                if (((LanBallGame) Gdx.app.getApplicationListener()).getCurrentView() instanceof Game) {
+                    ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
+                } else if (((LanBallGame) Gdx.app.getApplicationListener()).getCurrentView() instanceof HostServer) {
+                    ((LanBallGame) Gdx.app.getApplicationListener()).setView(Game.class);
                 }
             }
 

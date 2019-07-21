@@ -2,7 +2,6 @@ package com.unicornstudio.lanball.service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -21,10 +20,6 @@ import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.EntityType;
 import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
-import com.unicornstudio.lanball.util.PhysicsEntityCreator;
-import com.unicornstudio.lanball.util.dto.BodyDefinitionDto;
-import com.unicornstudio.lanball.util.dto.FixtureDefinitionDto;
-import com.unicornstudio.lanball.util.dto.ShapeDto;
 import com.unicornstudio.lanball.model.actors.ContestantActor;
 import com.unicornstudio.lanball.model.actors.PlayerActor;
 
@@ -50,6 +45,9 @@ public class EntitiesService {
     @Inject
     private MapService mapService;
 
+    @Inject
+    private BallListener ballListener;
+
     private Map<String, Entity> entities = new HashMap<>();
 
     public void addEntity(String key, Entity entity) {
@@ -64,37 +62,29 @@ public class EntitiesService {
         entities.values().forEach(this::synchronizeEntityPosition);
     }
 
-    public PhysicsEntity createEntity(BodyDefinitionDto bodyDefinitionDto, ShapeDto shapeDto, FixtureDefinitionDto fixtureDefinitionDto) {
-        return PhysicsEntityCreator.createEntity(worldService.getWorld(), bodyDefinitionDto, shapeDto, fixtureDefinitionDto);
-    }
-
     public void createPlayer(Team team, TeamType teamType) {
         short playerBit = getPlayerBit(teamType);
         PlayerSettings playerSettings = mapService.getMapSettings().getPlayerSettings();
-        PhysicsEntity playerActorPhysicsEntity = createEntity(
-                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(Screen.getHalfWidth(), Screen.getHalfHeight()), 1f),
-                new ShapeDto(Shape.Type.Circle, playerSettings.getRadius() / 2f, null, null, null),
-                new FixtureDefinitionDto(playerSettings.getFriction(), playerSettings.getRestitution(), playerSettings.getDensity(), false, playerBit, (short) (playerBit | BIT_BALL | BIT_PLAYER_BOUND))
-        );
-        PhysicsEntity sensor = createEntity(
-                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody, new Vector2(Screen.getHalfWidth(), Screen.getHalfHeight()), 0f),
-                new ShapeDto(Shape.Type.Circle, playerSettings.getRadius() / 1.9f, null, null, null),
-                new FixtureDefinitionDto(0f, 0f, 0f, true,  playerBit, (short) (playerBit | BIT_BALL | BIT_PLAYER_BOUND))
-        );
+        PhysicsEntity playerActorPhysicsEntity = createPlayerPhysicsEntity(playerSettings, playerBit);
+        PhysicsEntity sensor = new com.unicornstudio.lanball.builder.PhysicsEntityBuilder()
+                .world(worldService.getWorld())
+                .bodyType(BodyDef.BodyType.DynamicBody)
+                .position(0, 0)
+                .sensor(true)
+                .categoryBits(playerBit)
+                .maskBits((short) (BIT_PLAYER_TEAM1 | BIT_PLAYER_TEAM2 | BIT_BALL | BIT_PLAYER_BOUND))
+                .shapeType(Shape.Type.Circle)
+                .radius(playerSettings.getRadius() / 1.9f)
+                .build();
         PlayerActor actor = new PlayerActor(team, playerSettings.getRadius());
         stageService.addActor(actor);
         addEntity("player", new Player(actor, playerActorPhysicsEntity, sensor));
+        ballListener.setPlayerBody(playerActorPhysicsEntity.getBody());
     }
 
     public void createContestant(Integer id, String name, Team team, TeamType teamType) {
-        short playerBit = getPlayerBit(teamType);
         PlayerSettings playerSettings = mapService.getMapSettings().getPlayerSettings();
-        PhysicsEntity contestantActorPhysicsEntity = PhysicsEntityCreator.createEntity(worldService.getWorld(),
-                new BodyDefinitionDto(BodyDef.BodyType.DynamicBody,
-                        new Vector2(Screen.getHalfWidth() + new Random().nextInt(25), Screen.getHalfHeight() + new Random().nextInt(25) ), 1f),
-                new ShapeDto(Shape.Type.Circle, playerSettings.getRadius() / 2f, null, null, null),
-                new FixtureDefinitionDto(playerSettings.getFriction(), playerSettings.getRestitution(), playerSettings.getDensity(), false,  playerBit, (short) (playerBit | BIT_BALL | BIT_PLAYER_BOUND))
-        );
+        PhysicsEntity contestantActorPhysicsEntity = createPlayerPhysicsEntity(playerSettings, getPlayerBit(teamType));
         ContestantActor actor = new ContestantActor(team, name, playerSettings.getRadius());
         stageService.addActor(actor);
         addEntity("contestant_" + id, new Contestant(actor, contestantActorPhysicsEntity));
@@ -146,6 +136,22 @@ public class EntitiesService {
         } else {
             return BIT_PLAYER_TEAM2;
         }
+    }
+
+    private PhysicsEntity createPlayerPhysicsEntity(PlayerSettings playerSettings, short categoryBits) {
+        return new com.unicornstudio.lanball.builder.PhysicsEntityBuilder()
+                .world(worldService.getWorld())
+                .bodyType(BodyDef.BodyType.DynamicBody)
+                .position(0, 0)
+                .linearDamping(playerSettings.getLinearDamping())
+                .friction(playerSettings.getFriction())
+                .restitution(playerSettings.getRestitution())
+                .density(playerSettings.getDensity())
+                .categoryBits(categoryBits)
+                .maskBits((short) (BIT_PLAYER_TEAM1 | BIT_PLAYER_TEAM2 | BIT_BALL | BIT_PLAYER_BOUND))
+                .shapeType(Shape.Type.Circle)
+                .radius(playerSettings.getRadius() / 2f)
+                .build();
     }
 
 }

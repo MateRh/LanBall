@@ -1,10 +1,13 @@
 package com.unicornstudio.lanball.model.map;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryo.io.Input;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
+import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.service.GateService;
 import com.unicornstudio.lanball.service.BallService;
 import com.unicornstudio.lanball.service.EntitiesService;
@@ -24,6 +27,8 @@ import java.util.Map;
 @Singleton
 public class MapService {
 
+    private static final String DEFAULT_MAP_FILE_NAME = "default.lan";
+
     @Inject
     private WorldService worldService;
 
@@ -39,7 +44,14 @@ public class MapService {
     @Inject
     private GateService gateService;
 
+    @Inject
+    private ClientService clientService;
+
     private MapDto map;
+
+    public void loadDefaultMap() {
+        clientService.sendRequestTCP(ClientRequestBuilder.createMapLoadClientRequest(Gdx.files.internal(DEFAULT_MAP_FILE_NAME)));
+    }
 
     public void loadMap(FileHandle fileHandle) {
         map = MapMapper.map(fileHandle)

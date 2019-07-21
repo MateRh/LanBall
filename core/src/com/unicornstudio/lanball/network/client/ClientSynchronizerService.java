@@ -22,7 +22,7 @@ public class ClientSynchronizerService implements GameListener {
 
     @Override
     public void update() {
-        if (!clientDataService.getGameState().equals(GameState.IN_PROGRESS) && !clientDataService.getGameState().equals(GameState.PAUSE)) {
+        if (clientDataService.getGameState().equals(GameState.LOBBY)) {
             return;
         }
 

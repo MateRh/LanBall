@@ -100,6 +100,7 @@ public class ServerDataService {
         timeLimit = timeLimit - (System.currentTimeMillis() - lastTimeMillis);
         lastTimeMillis = System.currentTimeMillis();
     }
+
     public void setScoreLimitSelectBoxIndex(Integer scoreLimitSelectBoxIndex) {
         this.scoreLimitSelectBoxIndex = scoreLimitSelectBoxIndex;
         scoreLimit = scoreLimitSelectBoxIndex + 1;

@@ -35,7 +35,7 @@
         </:tablerow>
         <:tablerow>
             Map
-            <vislabel id="mapNameLabel">Classic</vislabel>
+            <vislabel id="mapNameLabel">Default</vislabel>
             <button id="pickMapButton">Pick</button>
         </:tablerow>
         <:tablerow>

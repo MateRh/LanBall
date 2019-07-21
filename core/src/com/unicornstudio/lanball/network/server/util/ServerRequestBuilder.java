@@ -55,9 +55,10 @@ public class ServerRequestBuilder {
     }
 
     public static ServerStateServerRequest createServerStateServerRequest(Set<Player> players, Player player, GameState state,
-            Integer scoreLimitSelectedIndex, Integer timeLimitSelectedIndex) {
+            Integer scoreLimitSelectedIndex, Integer timeLimitSelectedIndex, byte[] mapData) {
         ServerStateServerRequest serverStateServerRequest = new ServerStateServerRequest();
         serverStateServerRequest.setGameState(state);
+        serverStateServerRequest.setMapData(mapData);
         serverStateServerRequest.setPlayers(
                 players.stream()
                         .map(p -> ServerRequestBuilder.createRemotePlayerRequest(p, p.equals(player)))

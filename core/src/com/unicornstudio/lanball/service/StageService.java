@@ -48,4 +48,10 @@ public class StageService {
         group.addActor(actor);
     }
 
+    public void unload() {
+        if (group != null) {
+            group.clear();
+        }
+    }
+
 }

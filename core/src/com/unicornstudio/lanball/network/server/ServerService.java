@@ -1,9 +1,11 @@
 package com.unicornstudio.lanball.network.server;
 
+import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.common.NetworkClassRegisterer;
 import com.unicornstudio.lanball.network.server.dto.PlayerRole;
@@ -19,6 +21,9 @@ public class ServerService {
 
     @Inject
     private ServerListener serverListener;
+
+    @Inject
+    private MapService mapService;
 
     private final Server server;
 
@@ -44,6 +49,7 @@ public class ServerService {
         if (!connected) {
             stop();
         }
+        mapService.loadDefaultMap();
         return connected;
     }
 

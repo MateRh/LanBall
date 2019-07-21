@@ -8,12 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.annotation.LmlAfter;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
-import com.kotcrab.vis.ui.widget.Separator;
+import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientDataService;
+import com.unicornstudio.lanball.service.StageService;
 import com.unicornstudio.lanball.util.FontProvider;
 
 import javax.inject.Inject;
@@ -21,8 +21,6 @@ import javax.inject.Singleton;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @Singleton
 public class Game extends AbstractLmlView {
@@ -30,17 +28,26 @@ public class Game extends AbstractLmlView {
     @Inject
     private ClientDataService clientDataService;
 
+    @Inject
+    private StageService stageService;
+
     @LmlActor("core")
     private Window window;
 
     @LmlActor("hudWindow")
     private VisTable hudTable;
 
+    @LmlActor("timeLabel")
     private VisLabel timeLabel;
 
+    @LmlActor("teamScore")
     private VisLabel teamScore;
 
-    private Timer updateTimer = new Timer("GameViewMainTimer");
+    @LmlActor("team1Square")
+    private VisImage team1Square;
+
+    @LmlActor("team2Square")
+    private VisImage team2Square;
 
     private DateFormat timeFormat = new SimpleDateFormat("mm:ss");
 
@@ -49,9 +56,9 @@ public class Game extends AbstractLmlView {
     }
 
     @Override
-    public void dispose() {
-        updateTimer.purge();
-        super.dispose();
+    public void render(final float delta) {
+        updateHudElements();
+        super.render(delta);
     }
 
     @Override
@@ -70,35 +77,11 @@ public class Game extends AbstractLmlView {
 
     @LmlAfter
     private void initialize() {
-        timeLabel = new VisLabel();
-        Label.LabelStyle timeLabelStyle = timeLabel.getStyle();
-        timeLabelStyle.font = FontProvider.provide("DS-DIGIB", 32, Color.WHITE);
-        timeLabel.setStyle(timeLabelStyle);
-
-        Label.LabelStyle scoreLabelStyle = timeLabel.getStyle();
-        scoreLabelStyle.font = FontProvider.provide("DS-DIGIB", 32, Color.WHITE);
-        teamScore = new VisLabel();
-        teamScore.setStyle(scoreLabelStyle);
-
-        VisTextButton redTeamButton = new VisTextButton("");
-        redTeamButton.setColor(Color.RED);
-        VisTextButton blueRedButton = new VisTextButton("");
-        blueRedButton.setColor(Color.BLUE);
-
-        hudTable.add(redTeamButton);
-        hudTable.add(teamScore);
-        hudTable.add(blueRedButton);
-        for (int i = 0; i < 10; i++) {
-            hudTable.add(new Separator());
-        }
-        hudTable.add(timeLabel);
-        hudTable.setWidth(768);
-        updateTimer.scheduleAtFixedRate(
-                new TimerTask() {
-                    public void run() {
-                        updateHudElements();
-                    }
-                }, 500, 500);
+        stageService.setGroup(window);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(timeLabel.getStyle());
+        labelStyle.font = FontProvider.provide("DS-DIGIB", 32, Color.WHITE);
+        timeLabel.setStyle(labelStyle);
+        teamScore.setStyle(labelStyle);
     }
 
     private void updateHudElements() {

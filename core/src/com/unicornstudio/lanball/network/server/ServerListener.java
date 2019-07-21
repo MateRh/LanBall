@@ -108,7 +108,7 @@ public class ServerListener extends Listener {
     }
 
     private void onStartGame(Connection connection) {
-        serverDataService.setGameState(GameState.IN_PROGRESS);
+        serverDataService.setGameState(GameState.PENDING);
         ServerUtils.propagateData(ServerRequestBuilder.createGameStartServerRequest(), serverDataService.getPlayers(), null);
         setPlayersStartPosition(TeamType.TEAM1);
         setPlayersStartPosition(TeamType.TEAM2);
@@ -129,7 +129,7 @@ public class ServerListener extends Listener {
 
     private void onMapLoad(Connection connection, MapLoadClientRequest request) {
         serverDataService.setMapData(request.getMapData());
-        ServerUtils.propagateData(ServerRequestBuilder.createMapLoadServerRequest(request.getMapData()), serverDataService.getPlayers(), connection);
+        ServerUtils.propagateData(ServerRequestBuilder.createMapLoadServerRequest(request.getMapData()), serverDataService.getPlayers(), null);
     }
 
     private void onBallUpdate(Connection connection, BallUpdateClientRequest request) {
@@ -148,7 +148,8 @@ public class ServerListener extends Listener {
                 player,
                 serverDataService.getGameState(),
                 serverDataService.getScoreLimitSelectBoxIndex(),
-                serverDataService.getTimeLimitSelectBoxIndex()));
+                serverDataService.getTimeLimitSelectBoxIndex(),
+                serverDataService.getMapData()));
     }
 
     private void onPlayerUpdate(Connection connection, Player player, PlayerUpdateClientRequest object) {
@@ -242,7 +243,7 @@ public class ServerListener extends Listener {
                         @Override
                         public void run() {
                             ServerUtils.propagateData(
-                                    ServerRequestBuilder.createRoundResetRequest(object.getTeamType() == TeamType.TEAM1 ? TeamType.TEAM2 : TeamType.TEAM1),
+                                    ServerRequestBuilder.createRoundResetRequest(object.getTeamType() == TeamType.TEAM1 ? TeamType.TEAM1 : TeamType.TEAM2),
                                     serverDataService.getPlayers(),
                                     null);
                             roundResetTimer.cancel();
@@ -257,6 +258,7 @@ public class ServerListener extends Listener {
                 ServerRequestBuilder.createBallContactRequest(),
                 serverDataService.getPlayers(),
                 null);
+        serverDataService.setGameState(GameState.IN_PROGRESS);
     }
 
 }

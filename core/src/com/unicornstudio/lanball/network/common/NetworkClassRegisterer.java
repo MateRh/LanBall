@@ -30,6 +30,7 @@ import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientR
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.ServerStateServerRequest;
 import com.unicornstudio.lanball.network.server.dto.Ball;
+import com.unicornstudio.lanball.network.server.dto.MatchEndReason;
 import com.unicornstudio.lanball.network.server.dto.PlayerRole;
 
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class NetworkClassRegisterer {
         kryo.register(PlayerSetStartPositionServerRequest.class);
         kryo.register(RoundResetRequest.class);
         kryo.register(BallContactRequest.class);
+        kryo.register(MatchEndReason.class);
         kryo.register(byte[].class);
     }
 }

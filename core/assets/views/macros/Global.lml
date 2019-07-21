@@ -47,8 +47,13 @@
 <window oneColumn="true" background="white" >
 	<table width="1392" height="783" onecolumn="true" background="background">
 		<:tablerow>
-			<table id="hudWindow" oneColumn="true" height="42" defaultpad="10" background="slider"/>
-
+			<table id="hudWindow" height="42" width="512" defaultpad="10" background="translucent">
+				<visimage id="team1Square" width="24" height="24" style="square" r="0.89f" b="0.098f" g="0.098f" a="0.89f"/>
+				<vislabel id="teamScore" width="64"/>
+				<visimage id="team2Square" width="24" height="24" style="square" r="0.098f" b="0.89f" g="0.098f" a="0.89f"/>
+				<separator width="192"/>
+				<vislabel id="timeLabel" width="64"/>
+			</table>
 			<separator expandy="true"/>
 		</:tablerow>
 		<:tablerow>

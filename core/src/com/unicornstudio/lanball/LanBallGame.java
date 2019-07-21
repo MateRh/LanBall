@@ -112,14 +112,8 @@ public class LanBallGame extends LmlApplicationListener {
 	}
 
 	@Override
-	public void setView(final Class<? extends AbstractLmlView> viewClass) {
-		AbstractLmlView view = injector.getInstance(viewClass);
-		initiateView(view);
-		setView(view, null);
-		if (view instanceof com.unicornstudio.lanball.views.Game) {
-			com.unicornstudio.lanball.views.Game gameView = (com.unicornstudio.lanball.views.Game) view;
-			game.getStageService().setGroup(gameView.getWindow());
-		}
+	protected AbstractLmlView getInstanceOf(final Class<? extends AbstractLmlView> viewClass) {
+		return injector.getInstance(viewClass);
 	}
 
 }

@@ -6,13 +6,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.builder.PhysicsEntityBuilder;
 import com.unicornstudio.lanball.core.Screen;
+import com.unicornstudio.lanball.listner.WorldContactListener;
 import com.unicornstudio.lanball.model.map.settings.BallSettings;
 import com.unicornstudio.lanball.model.Ball;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
-import com.unicornstudio.lanball.util.dto.BodyDefinitionDto;
-import com.unicornstudio.lanball.util.dto.FixtureDefinitionDto;
-import com.unicornstudio.lanball.util.dto.ShapeDto;
 import com.unicornstudio.lanball.model.actors.BallActor;
 import lombok.Data;
 
@@ -26,6 +25,13 @@ public class BallService {
     @Inject
     private EntitiesService entitiesService;
 
+    @Inject
+    private WorldContactListener contactListener;
+
+    @Inject
+    private WorldService worldService;
+
+    @Inject
     private BallListener ballListener;
 
     private BallSettings ballSettings;
@@ -33,28 +39,32 @@ public class BallService {
     public void createBall(BallSettings ballSettings) {
         this.ballSettings = ballSettings;
         BallActor actor = new BallActor(ballSettings);
-        PhysicsEntity physicsEntity = entitiesService.createEntity(
-                new BodyDefinitionDto(
-                        BodyDef.BodyType.DynamicBody,
-                        new Vector2(ballSettings.getPositionX(), ballSettings.getPositionY()),
-                        ballSettings.getLinearDamping()),
-                new ShapeDto(
-                        Shape.Type.Circle,
-                        ballSettings.getSize()/2f,
-                        null,
-                        null,
-                        null),
-                new FixtureDefinitionDto(
-                        ballSettings.getFriction(),
-                        ballSettings.getRestitution(),
-                        ballSettings.getDensity(),
-                        false,
-                        EntitiesService.BIT_BALL,
-                        (short)(EntitiesService.BIT_PLAYER_TEAM1 | EntitiesService.BIT_PLAYER_TEAM2 |  EntitiesService.BIT_BALL_BOUND))
-        );
+        PhysicsEntity physicsEntity = new PhysicsEntityBuilder()
+                .world(worldService.getWorld())
+                .bodyType(BodyDef.BodyType.DynamicBody)
+                .position(ballSettings.getPositionX().intValue(), ballSettings.getPositionY().intValue())
+                .linearDamping(ballSettings.getLinearDamping())
+                .friction(ballSettings.getFriction())
+                .restitution(ballSettings.getRestitution())
+                .density(ballSettings.getDensity())
+                .categoryBits(EntitiesService.BIT_BALL)
+                .maskBits((short)(EntitiesService.BIT_PLAYER_TEAM1 | EntitiesService.BIT_PLAYER_TEAM2 | EntitiesService.BIT_BALL_BOUND))
+                .shapeType(Shape.Type.Circle)
+                .radius(ballSettings.getSize() / 2f)
+                .build();
         entitiesService.addEntity("ball", new Ball(actor, physicsEntity));
         stageService.addActor(actor);
-        ballListener = new BallListener(physicsEntity.getBody());
+        PhysicsEntity sensor = new PhysicsEntityBuilder()
+                .world(worldService.getWorld())
+                .bodyType(BodyDef.BodyType.StaticBody)
+                .position(ballSettings.getPositionX().intValue(), ballSettings.getPositionY().intValue())
+                .sensor(true)
+                .categoryBits(EntitiesService.BIT_BALL)
+                .maskBits((short)(EntitiesService.BIT_PLAYER_TEAM1 | EntitiesService.BIT_PLAYER_TEAM2 | EntitiesService.BIT_BALL_BOUND))
+                .shapeType(Shape.Type.Circle)
+                .radius(ballSettings.getSize() / 1.85f)
+                .build();
+        ballListener.setBallBody(sensor.getBody());
     }
 
     public Ball getBall() {
@@ -69,6 +79,10 @@ public class BallService {
 
     public void setListenerStatus(boolean status) {
         ballListener.setStatus(status);
+    }
+
+    public void addBallListener() {
+        contactListener.addListener(ballListener);
     }
 
 }

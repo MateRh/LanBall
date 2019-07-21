@@ -40,11 +40,13 @@ import com.unicornstudio.lanball.network.protocol.request.ScoreUpdateRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.ServerStateServerRequest;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
+import com.unicornstudio.lanball.service.StageService;
 import com.unicornstudio.lanball.service.WorldService;
 import com.unicornstudio.lanball.util.CompressionUtil;
 import com.unicornstudio.lanball.util.FontProvider;
 import com.unicornstudio.lanball.util.WorldUtilService;
 import com.unicornstudio.lanball.views.Game;
+import com.unicornstudio.lanball.views.HostServer;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -72,6 +74,9 @@ public class ClientListener extends Listener {
 
     @Inject
     private BallService ballService;
+
+    @Inject
+    private StageService stageService;
 
     public void received(Connection connection, Object object) {
         if (object instanceof NetworkObject) {
@@ -134,23 +139,22 @@ public class ClientListener extends Listener {
 
     private void onRoundReset(RoundResetRequest request) {
         clientDataService.setGameState(GameState.IN_PROGRESS);
-        worldService.setInitialRoundBoundsActive(request.getStartingTeam().equals(clientDataService.getRemotePlayer().getTeamType()));
-        worldService.updateInitialRoundBoundsFilter(clientDataService.getRemotePlayer().getTeamType());
+        worldService.updateInitialRoundBoundsFilter(request.getStartingTeam());
+        worldService.setInitialRoundBoundsActive(true);
         ballService.reset();
         ballService.setListenerStatus(!request.getStartingTeam().equals(clientDataService.getRemotePlayer().getTeamType()));
     }
 
     private void onStartGame() {
         Gdx.app.postRunnable(() -> {
-            clientDataService.setGameState(GameState.IN_PROGRESS);
+            clientDataService.setGameState(GameState.PENDING);
             ((LanBallGame) Gdx.app.getApplicationListener()).setView(Game.class);
             mapService.initialize(clientDataService.getPlayers());
-            if (clientDataService.getRemotePlayer().getTeamType().equals(TeamType.TEAM2)) {
-                worldService.setInitialRoundBoundsActive(true);
-            } else {
+            ballService.addBallListener();
+            if (clientDataService.getRemotePlayer().getTeamType().equals(TeamType.TEAM1)) {
                 ballService.setListenerStatus(true);
             }
-            worldService.updateInitialRoundBoundsFilter(clientDataService.getRemotePlayer().getTeamType());
+            worldService.updateInitialRoundBoundsFilter(TeamType.TEAM2);
         });
     }
 
@@ -206,6 +210,10 @@ public class ClientListener extends Listener {
         if (object.getTimeLimitSelectBoxIndex() != null) {
             clientDataService.setTimeLimitSelectBoxIndex(object.getTimeLimitSelectBoxIndex());
         }
+        if (object.getMapData() != null) {
+            Gdx.app.postRunnable(() ->
+                    mapService.loadMap(CompressionUtil.decompress(object.getMapData())));
+        }
     }
 
     private void onPlayerChangeTeam(PlayerChangeTeamServerRequest object) {
@@ -234,24 +242,44 @@ public class ClientListener extends Listener {
     }
 
     private void onMatchEnd(MatchEndServerRequest object) {
-        clientDataService.setGameState(GameState.LOBBY);
-        switch (object.getEndReason()) {
-            case CANCELED:
-                showMatchEndModal("Match canceled.", "");
-                break;
-            case TEAM_1_VICTORY:
-                showMatchEndModal("Team 1 won the match.", "Time's up.");
-                break;
-            case TEAM_2_VICTORY:
-                showMatchEndModal("Team 2 won the match.", "Time's up.");
-                break;
-            case TEAM_1_VICTORY_TIME_OUT:
-                showMatchEndModal("Team 1 won the match.", "");
-                break;
-            case TEAM_2_VICTORY_TIME_OUT:
-                showMatchEndModal("Team 2 won the match.", "");
-                break;
-        }
+        clientDataService.setGameState(GameState.PENDING);
+        Timer timer = new Timer("matchEnd");
+        Timer timer_backToMenu = new Timer("matchEnd_backToMenu");
+        timer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        switch (object.getEndReason()) {
+                            case CANCELED:
+                                Gdx.app.postRunnable(() -> showMatchEndModal("Match canceled.", ""));
+                                break;
+                            case TEAM_1_VICTORY:
+                                Gdx.app.postRunnable(() -> showMatchEndModal("Team 1 won the match.", ""));
+                                break;
+                            case TEAM_2_VICTORY:
+                                Gdx.app.postRunnable(() -> showMatchEndModal("Team 2 won the match.", ""));
+                                break;
+                            case TEAM_1_VICTORY_TIME_OUT:
+                                Gdx.app.postRunnable(() -> showMatchEndModal("Team 1 won the match.", "Time's up."));
+                                break;
+                            case TEAM_2_VICTORY_TIME_OUT:
+                                Gdx.app.postRunnable(() -> showMatchEndModal("Team 2 won the match.", "Time's up."));
+                                break;
+                        }
+                    }
+                }, 4500
+        );
+        timer_backToMenu.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        System.out.println("matchEnd_backToMenu");
+                        clientDataService.setGameState(GameState.LOBBY);
+                        ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
+                    }
+                }, 9500
+        );
     }
 
     private void onScoreUpdate(ScoreUpdateRequest object) {
@@ -269,6 +297,7 @@ public class ClientListener extends Listener {
     private void onBallContact() {
         ballService.setListenerStatus(false);
         worldService.setInitialRoundBoundsActive(false);
+        clientDataService.setGameState(GameState.IN_PROGRESS);
     }
 
     private void createContestant(RemotePlayerServerRequest request) {
@@ -297,12 +326,12 @@ public class ClientListener extends Listener {
         VerticalGroup verticalGroup = new VerticalGroup();
         verticalGroup.space(10f);
         VisLabel titleLabel = new VisLabel();
-        Label.LabelStyle titleLabelStyle = titleLabel.getStyle();
+        Label.LabelStyle titleLabelStyle = new Label.LabelStyle(titleLabel.getStyle());
         titleLabelStyle.font = FontProvider.provide("CuteFont-Regular", 64, Color.RED, 2);
         titleLabel.setText(title);
         titleLabel.setStyle(titleLabelStyle);
         VisLabel subTitleLabel = new VisLabel();
-        Label.LabelStyle subTitleLabelStyle = titleLabel.getStyle();
+        Label.LabelStyle subTitleLabelStyle = new Label.LabelStyle(titleLabel.getStyle());
         subTitleLabelStyle.font = FontProvider.provide("CuteFont-Regular", 32, Color.WHITE, 1);
         subTitleLabel.setText(subTitle);
         subTitleLabel.setStyle(subTitleLabelStyle);

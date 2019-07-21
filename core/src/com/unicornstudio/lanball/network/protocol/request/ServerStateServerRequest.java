@@ -12,6 +12,8 @@ public class ServerStateServerRequest implements NetworkObject {
 
     private GameState gameState;
 
+    private byte[] mapData;
+
     private Set<RemotePlayerServerRequest> players;
 
     private Integer timeLimitSelectBoxIndex;

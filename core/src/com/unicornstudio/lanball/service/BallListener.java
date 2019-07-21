@@ -6,21 +6,24 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
+import lombok.Setter;
 
+@Singleton
 public class BallListener implements ContactListener {
 
     @Inject
     private ClientService clientService;
 
-    private final Body ballBody;
+    @Setter
+    private Body ballBody;
+
+    @Setter
+    private Body playerBody;
 
     private boolean enabled = false;
-
-    public BallListener(Body ballBody) {
-        this.ballBody = ballBody;
-    }
 
     public void setStatus(boolean status) {
         enabled = status;
@@ -28,7 +31,12 @@ public class BallListener implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        if (enabled && (contact.getFixtureA().getBody().equals(ballBody) || contact.getFixtureB().getBody().equals(ballBody))) {
+        if (!clientService.isConnected()) {
+            return;
+        }
+        if (enabled
+                && ( (contact.getFixtureA().getBody().equals(ballBody) && contact.getFixtureB().getBody().equals(playerBody))
+                    || (contact.getFixtureB().getBody().equals(ballBody) && contact.getFixtureA().getBody().equals(playerBody)))) {
             enabled = false;
             clientService.sendRequest(
                     ClientRequestBuilder.createBallContactRequest()
