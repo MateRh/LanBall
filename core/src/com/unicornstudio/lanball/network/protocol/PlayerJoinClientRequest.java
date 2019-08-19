@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class PlayerJoinClientRequest implements NetworkObject {
 
+    private Integer networkProtocolVersion;
+
     private Integer id;
 
     private String name;

@@ -12,9 +12,10 @@ import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.unicornstudio.lanball.LanBallGame;
+import com.unicornstudio.lanball.builder.FontBuilder;
+import com.unicornstudio.lanball.model.actors.DebugInformationActor;
 import com.unicornstudio.lanball.network.client.ClientDataService;
 import com.unicornstudio.lanball.service.StageService;
-import com.unicornstudio.lanball.util.FontProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +31,9 @@ public class Game extends AbstractLmlView {
 
     @Inject
     private StageService stageService;
+
+    @Inject
+    private DebugInformationActor debugInformationActor;
 
     @LmlActor("core")
     private Window window;
@@ -58,7 +62,11 @@ public class Game extends AbstractLmlView {
     @Override
     public void render(final float delta) {
         updateHudElements();
-        super.render(delta);
+        try {
+            super.render(delta);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -79,13 +87,19 @@ public class Game extends AbstractLmlView {
     private void initialize() {
         stageService.setGroup(window);
         Label.LabelStyle labelStyle = new Label.LabelStyle(timeLabel.getStyle());
-        labelStyle.font = FontProvider.provide("DS-DIGIB", 32, Color.WHITE);
+        labelStyle.font = new FontBuilder()
+                .name("DS-DIGIB")
+                .size(32)
+                .color(Color.WHITE)
+                .build();
         timeLabel.setStyle(labelStyle);
         teamScore.setStyle(labelStyle);
+        stageService.addFPSCounterActor();
+        stageService.getStage().addActor(debugInformationActor);
     }
 
     private void updateHudElements() {
-        timeLabel.setText(timeFormat.format(new Date(clientDataService.getTimeLimit())));
+        timeLabel.setText(timeFormat.format(new Date(clientDataService.getTimerTime())));
         teamScore.setText(clientDataService.getTeam1Score() + " - " + clientDataService.getTeam2Score());
     }
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.inject.Singleton;
 
 import com.unicornstudio.lanball.core.Screen;
+import com.unicornstudio.lanball.model.actors.FPSCounterActor;
 import lombok.Data;
 
 
@@ -52,6 +53,10 @@ public class StageService {
         if (group != null) {
             group.clear();
         }
+    }
+
+    public void addFPSCounterActor() {
+        stage.addActor(new FPSCounterActor());
     }
 
 }

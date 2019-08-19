@@ -2,10 +2,12 @@ package com.unicornstudio.lanball.service;
 
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.unicornstudio.lanball.listner.WorldContactListener;
@@ -50,6 +52,8 @@ public class WorldService {
 
     private List<PhysicsEntity> initialRoundBounds = new ArrayList<>();
 
+    private SizeDto sizeDto;
+
     public WorldService() {
         world = createWorld();
     }
@@ -59,12 +63,22 @@ public class WorldService {
         mapWorld = new MapWorld();
         mapWorld.setWorld(world);
         mapWorld.setMapBackground(createMapBackground(mapDto.getWorld()));
-        _createWorldBounds(mapDto.getWorld().getSize());
+        sizeDto = mapDto.getWorld().getSize();
     }
 
     public void initialize() {
+        _createWorldBounds(sizeDto);
         stageService.addActor(getMapBackground());
         world.setContactListener(contactListener);
+    }
+
+    public void dispose() {
+        stageService.unload();
+        //stageService.dispose();
+        Array<Body> bodies = new Array<>();
+        world.getBodies(bodies);
+        bodies.forEach(world::destroyBody);
+        contactListener.clear();
     }
 
     public World getWorld() {

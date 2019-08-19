@@ -1,6 +1,5 @@
 package com.unicornstudio.lanball.network.server;
 
-import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.google.inject.Inject;
@@ -23,6 +22,9 @@ public class ServerService {
     private ServerListener serverListener;
 
     @Inject
+    private ServerDataService serverDataService;
+
+    @Inject
     private MapService mapService;
 
     private final Server server;
@@ -42,6 +44,7 @@ public class ServerService {
         try {
             server.bind(port, port);
         } catch (IOException e) {
+            System.out.println(e);
             return false;
         }
         server.addListener(serverListener);
@@ -49,6 +52,7 @@ public class ServerService {
         if (!connected) {
             stop();
         }
+        running = true;
         mapService.loadDefaultMap();
         return connected;
     }
@@ -56,8 +60,10 @@ public class ServerService {
     public void stop() {
         if (running) {
             clientService.disconnect();
+            server.removeListener(serverListener);
             server.stop();
             running = false;
+            serverDataService.clear();
         }
     }
 

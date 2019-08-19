@@ -1,11 +1,12 @@
 package com.unicornstudio.lanball.model.actors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.unicornstudio.lanball.model.map.settings.Team;
-import com.unicornstudio.lanball.util.TextureCreator;
-
 
 public class PlayerActor extends Actor {
 
@@ -14,16 +15,15 @@ public class PlayerActor extends Actor {
     public PlayerActor(Team team, Float radius) {
         setWidth(radius);
         setHeight(radius);
-        texture = provideTexture(team.getColor(), radius);
+        setColor(Color.valueOf(team.getColor()));
+        texture = new Texture(new Pixmap(Gdx.files.internal("images/player.png")), true);
     }
 
     @Override
     public void draw (Batch batch, float parentAlpha) {
+        batch.setColor(getColor());
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
-        batch.draw(texture, getX(), getY());
     }
 
-    private Texture provideTexture(String color, Float radius) {
-        return TextureCreator.createCircleTexture(radius.intValue(), color, 4);
-    }
 }

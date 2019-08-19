@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -74,6 +75,9 @@ public class HostServer extends AbstractLmlView {
     @LmlActor("backToMenuTextMenu")
     private TextButton backToMenuTextMenu;
 
+    @LmlActor("mainTable")
+    private Table mainTable;
+
     private Map<TeamType, CRC32> previousPlayersCRC;
 
     public HostServer() {
@@ -90,6 +94,13 @@ public class HostServer extends AbstractLmlView {
         return "hostServer";
     }
 
+    @Override
+    public void render() {
+        updateTeamDragPanels();
+        updateSelectBoxes();
+        super.render();
+    }
+
     @LmlAfter
     private void initialize() {
         addListeners();
@@ -100,6 +111,7 @@ public class HostServer extends AbstractLmlView {
     }
 
     private void addListeners() {
+        backToMenuTextMenu.addListener(createBackToMenuChangeListener());
         if (!clientService.isHost()) {
             return;
         }
@@ -109,7 +121,6 @@ public class HostServer extends AbstractLmlView {
         teamSpectatorsDragPane.setListener(dragPaneListener);
         pickMapButton.addListener(createPickupMapListener());
         startTheGameButton.addListener(createStartButtonListener());
-        backToMenuTextMenu.addListener(createBackToMenuChangeListener());
         timeLimitSelectBox.addListener(createPreferencesUpdateChangeListener());
         scoreLimitSelectBox.addListener(createPreferencesUpdateChangeListener());
     }
@@ -224,8 +235,12 @@ public class HostServer extends AbstractLmlView {
 
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (clientService.isHost()) {
+                    serverService.stop();
+                } else {
+                    clientService.disconnect();
+                }
                 ((LanBallGame) Gdx.app.getApplicationListener()).setView(Menu.class);
-                serverService.stop();
             }
         };
     }

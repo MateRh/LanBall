@@ -21,8 +21,9 @@ import com.unicornstudio.lanball.util.CompressionUtil;
 
 public class ClientRequestBuilder {
 
-    public static PlayerJoinClientRequest createPlayerJoinRequest(String name, PlayerRole role) {
+    public static PlayerJoinClientRequest createPlayerJoinRequest(Integer networkProtocolVersion, String name, PlayerRole role) {
         PlayerJoinClientRequest request = new PlayerJoinClientRequest();
+        request.setNetworkProtocolVersion(networkProtocolVersion);
         request.setName(name);
         request.setRole(role);
         return request;

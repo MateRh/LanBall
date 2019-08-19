@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 <:macro alias="window" replace="content" title="" pad="2" oneColumn="true">
-	<window oneColumn="true" background="white" >
-		<table width="1392" height="783" onecolumn="true" background="background">
+	<window oneColumn="true" background="background" fillparent="true">
+		<table id="mainTable" onecolumn="true" >
 			<:tablerow>
 				<separator expandy="true"/>
 			</:tablerow>
@@ -27,49 +27,31 @@
 	</window>
 </:macro>
 <:macro alias="window-menu" replace="content" title="" pad="2" oneColumn="true">
-<window oneColumn="true" background="white">
-	<table width="1392" height="783" onecolumn="true" background="background">
-		<:tablerow>
-			<separator expandy="true"/>
-		</:tablerow>
-		<:tablerow>
+<window oneColumn="true" background="background" fillparent="true">
+
 			<window title="{title}" titleAlign="left" defaultPad="{pad}" oneColumn="{oneColumn}">
 				{content}
 			</window>
-		</:tablerow>
-		<:tablerow>
-			<separator expandy="true"/>
-		</:tablerow>
-	</table>
 </window>
 </:macro>
 <:macro alias="window-game" replace="content" title="" pad="2" oneColumn="true">
-<window oneColumn="true" background="white" >
-	<table width="1392" height="783" onecolumn="true" background="background">
+<window oneColumn="true" background="gradient" r="0.51" g="0.65" b="0.43" fillparent="true">
+	<table onecolumn="true" >
 		<:tablerow>
-			<table id="hudWindow" height="42" width="512" defaultpad="10" background="translucent">
+			<table id="hudWindow" height="42" width="512" defaultpad="10" background="translucent2">
 				<visimage id="team1Square" width="24" height="24" style="square" r="0.89f" b="0.098f" g="0.098f" a="0.89f"/>
 				<vislabel id="teamScore" width="64"/>
 				<visimage id="team2Square" width="24" height="24" style="square" r="0.098f" b="0.89f" g="0.098f" a="0.89f"/>
 				<separator width="192"/>
 				<vislabel id="timeLabel" width="64"/>
 			</table>
-			<separator expandy="true"/>
+			<separator expandy="true" fillparent="true"/>
 		</:tablerow>
 		<:tablerow>
 			{content}
 		</:tablerow>
 		<:tablerow>
-		    <separator expandy="true"/>
-			<window oneColumn="true" height="42" background="transparent" defaultpad="10"/>
-
-<!--			<window onecolumn="true" width="1392">
-				<textarea width="800" height="140" readonly="true">
-				</textarea>
-				<separator/>
-				<textarea width="800" height="30">
-				</textarea>
-			</window>-->
+		    <separator expandy="true" fillparent="true"/>
 		</:tablerow>
 	</table>
 </window>

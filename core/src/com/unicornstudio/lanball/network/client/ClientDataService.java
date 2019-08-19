@@ -4,6 +4,7 @@ import com.google.inject.Singleton;
 import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.common.GameState;
 import com.unicornstudio.lanball.network.dto.PlayerDto;
+import com.unicornstudio.lanball.util.GameTimer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,9 +20,9 @@ import java.util.zip.CRC32;
 @Singleton
 public class ClientDataService {
 
-    private Map<TeamType, List<PlayerDto>> players;
+    private Map<TeamType, List<PlayerDto>> players = new HashMap<>();
 
-    private Map<TeamType, CRC32> playersCRC;
+    private Map<TeamType, CRC32> playersCRC = new HashMap<>();
 
     private PlayerDto remotePlayer;
 
@@ -31,28 +32,24 @@ public class ClientDataService {
 
     private Integer scoreLimitSelectBoxIndex;
 
-    private Long timeLimit;
-
-    private Long lastTimeMillis;
-
     private Integer team1Score = 0;
 
     private Integer team2Score = 0;
 
+    private GameTimer timer;
+
     public ClientDataService() {
-        players = new HashMap<>();
-        players.put(TeamType.SPECTATORS, new ArrayList<>());
-        players.put(TeamType.TEAM1, new ArrayList<>());
-        players.put(TeamType.TEAM2, new ArrayList<>());
-        playersCRC = new HashMap<>();
-        playersCRC.put(TeamType.SPECTATORS, createCrcOfList(TeamType.SPECTATORS));
-        playersCRC.put(TeamType.TEAM1, createCrcOfList(TeamType.TEAM1));
-        playersCRC.put(TeamType.TEAM2, createCrcOfList(TeamType.TEAM2));
+        initialize();
     }
 
     public void setTimeLimitSelectBoxIndex(Integer timeLimitSelectBoxIndex) {
         this.timeLimitSelectBoxIndex = timeLimitSelectBoxIndex;
-        timeLimit = (long) ((timeLimitSelectBoxIndex + 1) * 60 * 1000);
+        createNewTimer();
+    }
+
+    public void createNewTimer() {
+        timer = new GameTimer((long) ((timeLimitSelectBoxIndex + 1) * 60 * 1000));
+        timer.setPause(!gameState.equals(GameState.IN_PROGRESS));
     }
 
     public void addPlayer(PlayerDto player, TeamType teamType) {
@@ -94,19 +91,39 @@ public class ClientDataService {
         return playersCRC.get(teamType);
     }
 
-    public void updateTimer() {
-        if (lastTimeMillis == null) {
-            lastTimeMillis = System.currentTimeMillis();
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+        if (timer != null) {
+            timer.setPause(!gameState.equals(GameState.IN_PROGRESS));
         }
-        timeLimit = timeLimit - (System.currentTimeMillis() - lastTimeMillis);
-        lastTimeMillis = System.currentTimeMillis();
     }
 
+    public void clear() {
+        initialize();
+    }
+
+    public long getTimerTime() {
+        if (timer == null) {
+            return 0L;
+        }
+        return timer.getTime();
+    }
 
     private CRC32 createCrcOfList(TeamType teamType) {
         CRC32 crc = new CRC32();
         crc.update(getPlayersByTeam(teamType).toString().getBytes());
         return crc;
+    }
+
+    private void initialize() {
+        players.clear();
+        players.put(TeamType.SPECTATORS, new ArrayList<>());
+        players.put(TeamType.TEAM1, new ArrayList<>());
+        players.put(TeamType.TEAM2, new ArrayList<>());
+        playersCRC.clear();
+        playersCRC.put(TeamType.SPECTATORS, createCrcOfList(TeamType.SPECTATORS));
+        playersCRC.put(TeamType.TEAM1, createCrcOfList(TeamType.TEAM1));
+        playersCRC.put(TeamType.TEAM2, createCrcOfList(TeamType.TEAM2));
     }
 
 }

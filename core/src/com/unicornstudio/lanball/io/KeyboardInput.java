@@ -65,7 +65,7 @@ public class KeyboardInput {
                                 clientService.sendRequest(
                                         ClientRequestBuilder.createPlayerKickBallClientRequest(
                                                 clientDataService.getRemotePlayer().getId(),
-                                                getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)).scl(6),
+                                                getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)).scl(4.5f),
                                                 contact.getWorldManifold().getNormal())
                                 );
                             }

@@ -34,17 +34,6 @@ public class ServerRequestBuilder {
         return request;
     }
 
-    public static PlayerUpdateServerRequest createPlayerUpdateServerRequest(Player player, boolean remote) {
-        PlayerUpdateServerRequest request = new PlayerUpdateServerRequest();
-        request.setId(player.getId());
-        request.setRemote(remote);
-        request.setPositionX(player.getPositionX());
-        request.setPositionY(player.getPositionY());
-        request.setVelocityX(player.getVelocityX());
-        request.setVelocityY(player.getVelocityY());
-        return request;
-    }
-
     public static PlayerSetStartPositionServerRequest createPlayerSetStartPositionServerRequest(Player player, boolean remote, TeamType teamType, int positionId) {
         PlayerSetStartPositionServerRequest request = new PlayerSetStartPositionServerRequest();
         request.setId(player.getId());

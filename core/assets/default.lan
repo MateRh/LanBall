@@ -26,7 +26,7 @@
       },
       {
         "name": "Red Team",
-        "color": "#e56e56",
+        "color": "#ff2121",
         "positions": [
             {
                 "angle": 344,
@@ -52,7 +52,7 @@
       },
       {
         "name": "Blue Team",
-        "color": "#5689e5",
+        "color": "#2424ff",
         "positions": [
             {
                 "angle": 16,
@@ -79,9 +79,9 @@
     ],
     "player":
       {
-        "radius": 25,
-        "velocity": 0.75,
-        "maxVelocity": 10,
+        "radius": 26,
+        "velocity": 0.9,
+        "maxVelocity": 12.5,
         "linearDamping": 1.0,
         "friction": 0.05,
         "restitution": 0.0,

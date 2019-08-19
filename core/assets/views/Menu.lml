@@ -10,13 +10,13 @@
 	<textButton id="hostServerButton">
 		@host
 	</textButton>
-	<textButton onChange="setView" id="com.github.czyzby.views.Images">
+	<textButton onChange="setView" id="com.unicornstudio.lanball.views.Settings">
 		@settings
 	</textButton>
-	<textButton onChange="setView" id="com.github.czyzby.views.Images">
+	<textButton>
 		@help
 	</textButton>
-	<textButton onChange="exit" id="com.github.czyzby.views.Images">
+	<textButton onChange="exit">
 		@quit
 	</textButton>
 	<label style="small" height="20" textAlign="right">@credits</label>

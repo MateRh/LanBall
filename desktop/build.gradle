@@ -25,13 +25,25 @@ task debug(dependsOn: classes, type: JavaExec) {
 }
 
 task dist(type: Jar) {
-    from files(sourceSets.main.output.classesDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
-    from files(project.assetsDir);
- 
-    manifest {
-        attributes 'Main-Class': project.mainClassName
+    doFirst {
+        println "dist"
+        from files(sourceSets.main.output.classesDir)
+        from files(sourceSets.main.output.resourcesDir)
+        from {configurations.compile.collect {zipTree(it)}}
+        from files(project.assetsDir);
+
+        manifest {
+            attributes 'Main-Class': project.mainClassName
+        }
+    }
+}
+
+task relase {
+    doFirst {
+        println "relase"
+        Integer _version = read("core/assets/version") + 1;
+        version = "-build-" + _version;
+        write("core/assets/version", _version)
     }
 }
 
@@ -53,4 +65,15 @@ task afterEclipseImport(description: "Post processing after project generation",
     printer.setPreserveWhitespace(true)
     printer.print(classpath)
   }
+}
+
+static def read(String path) {
+    return Integer.valueOf(new FileReader(path).readLine())
+}
+
+static def write(String path, Integer data) {
+    println("writing " + data )
+    PrintWriter printer = new PrintWriter(new FileWriter(new File(path)));
+    printer.append(data.toString());
+    printer.close();
 }

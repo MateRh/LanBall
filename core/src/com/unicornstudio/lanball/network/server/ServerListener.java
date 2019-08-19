@@ -7,13 +7,16 @@ import com.google.inject.Singleton;
 import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.common.GameState;
 import com.unicornstudio.lanball.network.common.NetworkObject;
+import com.unicornstudio.lanball.network.common.NetworkProtocol;
 import com.unicornstudio.lanball.network.protocol.PlayerJoinClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.GateContactClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerDisconnectRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientRequest;
 import com.unicornstudio.lanball.network.server.dto.MatchEndReason;
 import com.unicornstudio.lanball.network.server.dto.Player;
@@ -27,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 public class ServerListener extends Listener {
@@ -37,15 +41,19 @@ public class ServerListener extends Listener {
     @Inject
     private WorldUtilService worldUtilService;
 
-    public void connected (Connection connection) {
+    public void connected(Connection connection) {
         if (serverDataService.getPlayerByConnection(connection) == null) {
             serverDataService.addPlayer(connection, new Player(connection.getID()));
         }
     }
 
-    public void disconnected (Connection connection) {
+    public void disconnected(Connection connection) {
         Optional.ofNullable(serverDataService.getPlayerByConnection(connection))
-                .ifPresent(player -> serverDataService.removePlayer(connection, player));
+                .ifPresent(player -> {
+                            ServerUtils.propagateData(new PlayerDisconnectRequest(player.getId()), serverDataService.getPlayers(), connection);
+                            serverDataService.removePlayer(connection, player);
+                        }
+                );
     }
 
     public void received(Connection connection, Object object) {
@@ -55,14 +63,22 @@ public class ServerListener extends Listener {
     }
 
     public void idle(Connection connection) {
+        if (serverDataService.getTimer() != null) {
+            serverDataService.getTimer().tick();
+        }
         if (serverDataService.getGameState() == GameState.IN_PROGRESS) {
-            serverDataService.updateTimer();
-            if (serverDataService.getTimeLimit() <= 0) {
+            if (serverDataService.getTimer().isFinished()) {
                 serverDataService.setGameState(GameState.LOBBY);
                 if (serverDataService.getTeam1Score() > serverDataService.getTeam2Score()) {
-                    ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_1_VICTORY_TIME_OUT);
+                    ServerUtils.propagateData(
+                        ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_1_VICTORY_TIME_OUT),
+                        serverDataService.getPlayers(),
+                        null);
                 } else if (serverDataService.getTeam2Score() > serverDataService.getTeam1Score()) {
-                    ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_2_VICTORY_TIME_OUT);
+                    ServerUtils.propagateData(
+                        ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_2_VICTORY_TIME_OUT),
+                        serverDataService.getPlayers(),
+                        null);
                 }
             }
         }
@@ -72,7 +88,9 @@ public class ServerListener extends Listener {
         Player player = serverDataService.getPlayerByConnection(connection);
         switch (networkObject.getType()) {
             case PLAYER_JOIN:
-                onPlayerJoin(connection, player, (PlayerJoinClientRequest) networkObject);
+                if (validateNetworkProtocol(connection, (PlayerJoinClientRequest) networkObject)) {
+                    onPlayerJoin(connection, player, (PlayerJoinClientRequest) networkObject);
+                }
                 break;
             case PLAYER_UPDATE:
                 onPlayerUpdate(connection, player, (PlayerUpdateClientRequest) networkObject);
@@ -113,17 +131,19 @@ public class ServerListener extends Listener {
         setPlayersStartPosition(TeamType.TEAM1);
         setPlayersStartPosition(TeamType.TEAM2);
         setPlayersStartPosition(TeamType.SPECTATORS);
+        serverDataService.createNewTimer();
     }
 
     private void setPlayersStartPosition(TeamType teamType) {
         Map<Connection, Player> players = serverDataService.getPlayersByTeamType(teamType);
         System.out.println(teamType);
-        int i = 3;
-        System.out.println(i);
+        AtomicInteger i = new AtomicInteger();
+        i.set(1);
         players.forEach((key, value) -> {
-            ServerUtils.propagateData(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, true, teamType, i),
+            ServerUtils.propagateData(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, true, teamType, i.get()),
                     serverDataService.getPlayers(), key);
-            key.sendUDP(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, false, teamType, i));
+            key.sendUDP(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, false, teamType, i.get()));
+            i.set(i.get() + 1);
         });
     }
 
@@ -160,7 +180,15 @@ public class ServerListener extends Listener {
         player.setPositionY(object.getPositionY());
         player.setVelocityX(object.getVelocityX());
         player.setVelocityY(object.getVelocityY());
-        ServerUtils.propagateData(ServerRequestBuilder.createPlayerUpdateServerRequest(player, true), serverDataService.getPlayers(), connection);
+        Sender.send(serverDataService.getConnectionsSet(connection),
+                PlayerUpdateServerRequest.builder()
+                        .id(player.getId())
+                        .remote(true)
+                        .positionX(player.getPositionX())
+                        .positionY(player.getPositionY())
+                        .velocityX(player.getVelocityX())
+                        .velocityY(player.getVelocityY())
+                        .build());
     }
 
     private void onGetPlayersList(Connection connection) {
@@ -214,12 +242,18 @@ public class ServerListener extends Listener {
         }
         if (serverDataService.getTeam1Score() >= serverDataService.getScoreLimit()) {
             serverDataService.setGameState(GameState.LOBBY);
+            serverDataService.setTimeLimitSelectBoxIndex(serverDataService.getTimeLimitSelectBoxIndex());
+            serverDataService.setTeam1Score(0);
+            serverDataService.setTeam2Score(0);
             ServerUtils.propagateData(
             ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_1_VICTORY),
                     serverDataService.getPlayers(),
                     null);
         } else if (serverDataService.getTeam2Score() >= serverDataService.getScoreLimit()) {
             serverDataService.setGameState(GameState.LOBBY);
+            serverDataService.setTimeLimitSelectBoxIndex(serverDataService.getTimeLimitSelectBoxIndex());
+            serverDataService.setTeam1Score(0);
+            serverDataService.setTeam2Score(0);
             ServerUtils.propagateData(
             ServerRequestBuilder.createMatchEndServerRequest(MatchEndReason.TEAM_2_VICTORY),
                     serverDataService.getPlayers(),
@@ -259,6 +293,14 @@ public class ServerListener extends Listener {
                 serverDataService.getPlayers(),
                 null);
         serverDataService.setGameState(GameState.IN_PROGRESS);
+    }
+
+    private boolean validateNetworkProtocol(Connection connection, PlayerJoinClientRequest object) {
+        if (object.getNetworkProtocolVersion() != NetworkProtocol.VERSION) {
+            connection.close();
+            return false;
+        }
+        return true;
     }
 
 }

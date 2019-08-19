@@ -12,9 +12,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.depth = 24;
 		config.samples = 3;
-		config.backgroundFPS = 60;
-		config.foregroundFPS = 60;
-		config.addIcon("icon.png", Files.FileType.Internal);
+		config.addIcon("images/icon.png", Files.FileType.Internal);
 		new LwjglApplication(new LanBallGame(), config);
 	}
 }

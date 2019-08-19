@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import com.unicornstudio.lanball.network.common.Ports;
 import com.unicornstudio.lanball.network.common.NetworkClassRegisterer;
 import com.unicornstudio.lanball.network.common.NetworkObject;
+import com.unicornstudio.lanball.network.common.NetworkProtocol;
 import com.unicornstudio.lanball.network.dto.Host;
 import com.unicornstudio.lanball.network.server.dto.PlayerRole;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
@@ -63,6 +64,11 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
+    public boolean isPortOpen(Integer port) {
+        return !Optional.ofNullable(client.discoverHost(port, DISCOVERY_TIMEOUT))
+                .isPresent();
+    }
+
     public boolean isConnected() {
         return client.isConnected();
     }
@@ -97,7 +103,7 @@ public class ClientService {
         if (PlayerRole.HOST.equals(role)) {
             host = true;
         }
-        sendRequest(ClientRequestBuilder.createPlayerJoinRequest(SettingsType.GLOABL.getPreference().getString(SettingsKeys.NICKNAME), role));
+        sendRequest(ClientRequestBuilder.createPlayerJoinRequest(NetworkProtocol.VERSION, SettingsType.GLOABL.getPreference().getString(SettingsKeys.NICKNAME), role));
     }
 
 }

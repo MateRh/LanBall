@@ -26,6 +26,10 @@ public class WorldContactListener implements ContactListener {
         listeners.remove(listener);
     }
 
+    public void clear() {
+        listeners.clear();
+    }
+
     @Override
     public void beginContact(Contact contact) {
         listeners.forEach(listener -> listener.beginContact(contact));

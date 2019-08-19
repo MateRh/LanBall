@@ -7,6 +7,7 @@ public class SettingsKeys {
 
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
+    public static final String DISPLAY_MODE = "display_mode";
     public static final String FULL_SCREEN = "full_screen";
 
     public static final String UP_CONTROL = "up_control";

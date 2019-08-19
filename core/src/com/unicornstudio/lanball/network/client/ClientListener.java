@@ -14,6 +14,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.unicornstudio.lanball.builder.FontBuilder;
+import com.unicornstudio.lanball.network.protocol.request.PlayerDisconnectRequest;
 import com.unicornstudio.lanball.network.protocol.request.RoundResetRequest;
 import com.unicornstudio.lanball.service.BallService;
 import com.unicornstudio.lanball.service.EntitiesService;
@@ -43,7 +45,6 @@ import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.service.StageService;
 import com.unicornstudio.lanball.service.WorldService;
 import com.unicornstudio.lanball.util.CompressionUtil;
-import com.unicornstudio.lanball.util.FontProvider;
 import com.unicornstudio.lanball.util.WorldUtilService;
 import com.unicornstudio.lanball.views.Game;
 import com.unicornstudio.lanball.views.HostServer;
@@ -84,9 +85,13 @@ public class ClientListener extends Listener {
         }
     }
 
+    public void disconnected(Connection connection) {
+        clientDataService.clear();
+    }
+
     public void idle(Connection connection) {
-        if (clientDataService.getGameState() == GameState.IN_PROGRESS) {
-            clientDataService.updateTimer();
+        if (clientDataService.getTimer() != null) {
+            clientDataService.getTimer().tick();
         }
     }
 
@@ -97,6 +102,9 @@ public class ClientListener extends Listener {
                 break;
             case PLAYER_UPDATE:
                 onPlayerUpdate((PlayerUpdateServerRequest) object);
+                break;
+            case PLAYER_DISCONNECT:
+                onPlayerDisconnect((PlayerDisconnectRequest) object);
                 break;
             case SERVER_STATE:
                 onServerState((ServerStateServerRequest) object);
@@ -138,7 +146,6 @@ public class ClientListener extends Listener {
     }
 
     private void onRoundReset(RoundResetRequest request) {
-        clientDataService.setGameState(GameState.IN_PROGRESS);
         worldService.updateInitialRoundBoundsFilter(request.getStartingTeam());
         worldService.setInitialRoundBoundsActive(true);
         ballService.reset();
@@ -146,6 +153,7 @@ public class ClientListener extends Listener {
     }
 
     private void onStartGame() {
+        clientDataService.createNewTimer();
         Gdx.app.postRunnable(() -> {
             clientDataService.setGameState(GameState.PENDING);
             ((LanBallGame) Gdx.app.getApplicationListener()).setView(Game.class);
@@ -187,6 +195,17 @@ public class ClientListener extends Listener {
                         new Vector2(object.getVelocityX(), object.getVelocityY()));
             }
         });
+    }
+
+    private void onPlayerDisconnect(PlayerDisconnectRequest request) {
+        PlayerDto player = clientDataService.getPlayerById(request.getId());
+        if (player != null) {
+            Gdx.app.postRunnable(() -> {
+                entitiesService.removeContestant(player.getId());
+                soundService.playSound(SoundType.DISCONNECT);
+            });
+            clientDataService.removePlayer(player, player.getTeamType());
+        }
     }
 
     private void onSetStartPosition(PlayerSetStartPositionServerRequest object) {
@@ -276,6 +295,12 @@ public class ClientListener extends Listener {
                     public void run() {
                         System.out.println("matchEnd_backToMenu");
                         clientDataService.setGameState(GameState.LOBBY);
+                        clientDataService.setTimeLimitSelectBoxIndex(clientDataService.getTimeLimitSelectBoxIndex());
+                        clientDataService.setTeam1Score(0);
+                        clientDataService.setTeam2Score(0);
+                        Gdx.app.postRunnable(() -> {
+                            mapService.dispose();
+                        });
                         ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
                     }
                 }, 9500
@@ -327,12 +352,22 @@ public class ClientListener extends Listener {
         verticalGroup.space(10f);
         VisLabel titleLabel = new VisLabel();
         Label.LabelStyle titleLabelStyle = new Label.LabelStyle(titleLabel.getStyle());
-        titleLabelStyle.font = FontProvider.provide("CuteFont-Regular", 64, Color.RED, 2);
+        titleLabelStyle.font = new FontBuilder()
+                .name("CuteFont-Regular")
+                .size(64)
+                .color(Color.RED)
+                .borderWidth(2f)
+                .build();
         titleLabel.setText(title);
         titleLabel.setStyle(titleLabelStyle);
         VisLabel subTitleLabel = new VisLabel();
         Label.LabelStyle subTitleLabelStyle = new Label.LabelStyle(titleLabel.getStyle());
-        subTitleLabelStyle.font = FontProvider.provide("CuteFont-Regular", 32, Color.WHITE, 1);
+        subTitleLabelStyle.font =  new FontBuilder()
+                .name("CuteFont-Regular")
+                .size(32)
+                .color(Color.RED)
+                .borderWidth(1f)
+                .build();
         subTitleLabel.setText(subTitle);
         subTitleLabel.setStyle(subTitleLabelStyle);
         verticalGroup.addActor(titleLabel);

@@ -8,9 +8,7 @@ import static com.unicornstudio.lanball.prefernces.SettingsKeys.*;
 
 public class DefaultSettings {
 
-    private static final float CURRENT_SETTINGS_VERSION = 0.01f;
-    private static final int DEFAULT_WIDTH = 1392;
-    private static final int DEFAULT_HEIGHT = 783;
+    private static final float CURRENT_SETTINGS_VERSION = 0.02f;
     private static final boolean DEFAULT_FULL_SCREEN = false;
     private static final int DEFAULT_TIME_LIMIT = 4;
     private static final int DEFAULT_SCORE_LIMIT = 4;
@@ -35,8 +33,6 @@ public class DefaultSettings {
 
     private static void generateVideoSettings() {
         Preferences preferences = SettingsType.VIDEO.getPreference();
-        putInteger(preferences, WIDTH, DEFAULT_WIDTH);
-        putInteger(preferences, HEIGHT, DEFAULT_HEIGHT);
         putBoolean(preferences, FULL_SCREEN, DEFAULT_FULL_SCREEN);
         preferences.flush();
     }

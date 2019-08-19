@@ -14,6 +14,7 @@ import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.MatchEndServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamServerRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerDisconnectRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerSetStartPositionServerRequest;
@@ -73,6 +74,7 @@ public class NetworkClassRegisterer {
         kryo.register(RoundResetRequest.class);
         kryo.register(BallContactRequest.class);
         kryo.register(MatchEndReason.class);
+        kryo.register(PlayerDisconnectRequest.class);
         kryo.register(byte[].class);
     }
 }

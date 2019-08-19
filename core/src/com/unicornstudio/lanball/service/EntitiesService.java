@@ -54,6 +54,10 @@ public class EntitiesService {
         entities.put(key, entity);
     }
 
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
+
     public Entity getEntity(String key) {
         return entities.get(key);
     }
@@ -97,6 +101,14 @@ public class EntitiesService {
             Body body = contestant.getPhysicsEntity().getBody();
             body.setTransform(position, 0f);
             body.setLinearVelocity(velocity);
+        }
+    }
+
+    public void removeContestant(int id) {
+        Contestant contestant = getContestantById(id);
+        if (contestant != null) {
+            contestant.getActor().remove();
+            removeEntity(contestant);
         }
     }
 

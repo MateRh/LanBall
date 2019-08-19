@@ -84,6 +84,10 @@ public class MapService {
         gateService.initialize();
     }
 
+    public void dispose() {
+        worldService.dispose();
+    }
+
     private void createPlayer(PlayerDto player) {
         if (player.isRemotePlayer()) {
             entitiesService.createPlayer(map.getSettings().getTeams().get(player.getTeamType().getType()), player.getTeamType());

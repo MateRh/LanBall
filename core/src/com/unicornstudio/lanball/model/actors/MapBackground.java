@@ -22,7 +22,7 @@ public class MapBackground extends Actor {
     private final Texture texture;
 
     public MapBackground(SizeDto sizeDto, GroundPlane foreground) {
-        texture = provideTexture(sizeDto.getWidth(), sizeDto.getHeight(), MapBackgroundType.GRASS_PATTERN_ONE, foreground.getColor());
+        texture = provideTexture(sizeDto.getWidth(), sizeDto.getHeight(), MapBackgroundType.GRASS_STRIPES_PATTERN_x2, foreground.getColor());
     }
 
     @Override

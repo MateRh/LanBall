@@ -2,6 +2,7 @@ package com.unicornstudio.lanball.network.common;
 
 public enum NetworkObjectType {
     PLAYER_JOIN,
+    PLAYER_DISCONNECT,
     PLAYER_UPDATE,
     GET_PLAYERS_LIST,
     PLAYERS_LIST,

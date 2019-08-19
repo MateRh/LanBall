@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public enum SettingsType {
-    VIDEO(Gdx.app.getPreferences("Video settings")),
-    CONTROL(Gdx.app.getPreferences("Control settings")),
-    SERVER(Gdx.app.getPreferences("Server settings")),
-    AUDIO(Gdx.app.getPreferences("Audio settings")),
-    GLOABL(Gdx.app.getPreferences("Global settings"));
+    VIDEO(Gdx.app.getPreferences("videoSettings")),
+    CONTROL(Gdx.app.getPreferences("controlSettings")),
+    SERVER(Gdx.app.getPreferences("serverSettings")),
+    AUDIO(Gdx.app.getPreferences("audioSettings")),
+    GLOABL(Gdx.app.getPreferences("globalSettings"));
 
     private Preferences preference;
 

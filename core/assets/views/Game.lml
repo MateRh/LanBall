@@ -2,7 +2,7 @@
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 
 <:window-game title="" titleAlign="left" defaultPad="0" defaultGrowX="true" oneColumn="true">
-    <window id="core" width="1052" height="680" bg="background">
+    <window id="core" width="1052" height="680" bg="square-5">
 
     </window>
 </:window-game>

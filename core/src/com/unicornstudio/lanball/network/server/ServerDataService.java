@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.unicornstudio.lanball.util.GameTimer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,11 +27,6 @@ public class ServerDataService {
 
     private Ball ball = new Ball();
 
-    private Long timeLimit;
-
-    private Long lastTimeMillis;
-
-    @Setter
     private GameState gameState = GameState.LOBBY;
 
     private Integer timeLimitSelectBoxIndex;
@@ -44,6 +40,8 @@ public class ServerDataService {
     private Integer team2Score = 0;
 
     private Integer scoreLimit;
+
+    private GameTimer timer;
 
     public void addPlayer(Connection connection, Player player) {
         players.put(connection, player);
@@ -75,7 +73,15 @@ public class ServerDataService {
         return new HashSet<>(players.values());
     }
 
-    public  Map<Connection, Player> getPlayersByTeamType(TeamType teamType) {
+    public Set<Connection> getConnectionsSet(Connection connection) {
+        Set<Connection> connections = new HashSet<>(players.keySet());
+        if (connection != null) {
+            connections.remove(connection);
+        }
+        return connections;
+    }
+
+    public Map<Connection, Player> getPlayersByTeamType(TeamType teamType) {
         return players.entrySet().stream()
                 .filter(entry -> entry.getValue().getTeamType().equals(teamType))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -90,20 +96,35 @@ public class ServerDataService {
 
     public void setTimeLimitSelectBoxIndex(Integer timeLimitSelectBoxIndex) {
         this.timeLimitSelectBoxIndex = timeLimitSelectBoxIndex;
-        timeLimit = (long) ((timeLimitSelectBoxIndex + 1) * 60 * 1000);
+        createNewTimer();
     }
 
-    public void updateTimer() {
-        if (lastTimeMillis == null) {
-            lastTimeMillis = System.currentTimeMillis();
-        }
-        timeLimit = timeLimit - (System.currentTimeMillis() - lastTimeMillis);
-        lastTimeMillis = System.currentTimeMillis();
+    public void createNewTimer() {
+        timer = new GameTimer((long) ((timeLimitSelectBoxIndex + 1) * 60 * 1000));
+        timer.setPause(!gameState.equals(GameState.IN_PROGRESS));
     }
 
     public void setScoreLimitSelectBoxIndex(Integer scoreLimitSelectBoxIndex) {
         this.scoreLimitSelectBoxIndex = scoreLimitSelectBoxIndex;
         scoreLimit = scoreLimitSelectBoxIndex + 1;
+    }
+
+    public void clear() {
+        players.clear();
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+        if (timer != null) {
+            timer.setPause(!gameState.equals(GameState.IN_PROGRESS));
+        }
+    }
+
+    public long getTimerTime() {
+        if (timer == null) {
+            return 0L;
+        }
+        return timer.getTime();
     }
 
 }

@@ -8,9 +8,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 @Getter
 public class Player extends Entity {
 
-    public final static Float MAX_VELOCITY = 10f;
+    public final static Float MAX_VELOCITY = 11.25f;
 
-    public final static Float VELOCITY = 0.8f;
+    public final static Float VELOCITY = 0.85f;
 
     private PhysicsEntity sensor;
 

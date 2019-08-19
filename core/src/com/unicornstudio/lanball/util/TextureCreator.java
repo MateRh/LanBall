@@ -22,5 +22,4 @@ public class TextureCreator {
         pixmap.fillRectangle(0, 0, width, height);
         return new Texture(pixmap);
     }
-
 }

@@ -2,25 +2,28 @@ package com.unicornstudio.lanball.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.github.czyzby.lml.annotation.LmlAction;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.annotation.LmlAfter;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.kotcrab.vis.ui.widget.ListView;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.dto.Host;
 import com.unicornstudio.lanball.network.server.dto.PlayerRole;
-import com.unicornstudio.lanball.util.UserInterfaceUtils;
 import com.unicornstudio.lanball.util.adapter.ListAdapter;
 import com.unicornstudio.lanball.util.adapter.dto.ListRow;
 import com.unicornstudio.lanball.util.adapter.dto.ListRowElement;
 import java.util.List;
 import java.util.Random;
 
+@Singleton
 public class ServerBrowser extends AbstractLmlView {
 
     private static final String NAME_ROW_LABEL = "name";
@@ -47,6 +50,15 @@ public class ServerBrowser extends AbstractLmlView {
         adapter = new ListAdapter<>(new Array<>(ListRow.class));
         table.add(new ListView<>(adapter).getMainTable()).grow();
         parseServerListToView(clientService.getServers());
+        table.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked (InputEvent event, float x, float y) {
+                        if (event.getListenerActor() == table && getTapCount() > 1) {
+                            join();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -69,7 +81,6 @@ public class ServerBrowser extends AbstractLmlView {
     private void join() {
         adapter.getSelection().forEach(
                 selection -> {
-                    UserInterfaceUtils.createLoadingDialog().show(getStage());
                     if (clientService.connect(selection.get(HOST_ROW_LABEL).getLabel(), PlayerRole.PLAYER)) {
                         ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
                     }
@@ -92,5 +103,4 @@ public class ServerBrowser extends AbstractLmlView {
         listRow.put(PING_ROW_LABEL, new ListRowElement(ping, PING_ROW_WIDTH));
         return listRow;
     }
-
 }

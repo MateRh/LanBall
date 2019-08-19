@@ -7,9 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class FPSCounterActor extends Actor {
 
+    private BitmapFont font = new BitmapFont();
+
     @Override
-    public void draw (Batch batch, float parentAlpha) {
-        new BitmapFont().draw(
+    public void draw(Batch batch, float parentAlpha) {
+        if (getZIndex() != Integer.MAX_VALUE) {
+            toFront();
+        }
+        font.draw(
                 batch,
                 "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, Gdx.graphics.getHeight() - 10);
     }
