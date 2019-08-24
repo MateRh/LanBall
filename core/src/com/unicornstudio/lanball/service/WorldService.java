@@ -1,6 +1,7 @@
 package com.unicornstudio.lanball.service;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -94,7 +95,7 @@ public class WorldService {
     }
 
     public void setInitialRoundBoundsActive(boolean active) {
-        initialRoundBounds.forEach(physicsEntity -> physicsEntity.getBody().setActive(active));
+        Gdx.app.postRunnable(() -> initialRoundBounds.forEach(physicsEntity -> physicsEntity.getBody().setActive(active)));
     }
 
     public void updateInitialRoundBoundsFilter(TeamType teamType) {
@@ -147,7 +148,7 @@ public class WorldService {
                         .world(getWorld())
                         .bodyType(BodyDef.BodyType.StaticBody)
                         .linearDamping(1f)
-                        .restitution(1f)
+                        .restitution(0.5625f)
                         .density(1f)
                         .categoryBits(EntitiesService.BIT_BALL_BOUND)
                         .maskBits(EntitiesService.BIT_BALL)
@@ -201,7 +202,6 @@ public class WorldService {
                         .world(getWorld())
                         .bodyType(BodyDef.BodyType.StaticBody)
                         .linearDamping(1f)
-                        .restitution(1f)
                         .density(1f)
                         .categoryBits(EntitiesService.BIT_BALL_BOUND)
                         .maskBits((short) (BIT_PLAYER_TEAM1 | BIT_PLAYER_TEAM2 | EntitiesService.BIT_BALL))
@@ -261,7 +261,6 @@ public class WorldService {
                 .world(getWorld())
                 .bodyType(BodyDef.BodyType.StaticBody)
                 .linearDamping(1f)
-                .restitution(1f)
                 .density(1f)
                 .categoryBits(EntitiesService.BIT_PLAYER_BOUND)
                 .maskBits((short) (BIT_PLAYER_TEAM1 | BIT_PLAYER_TEAM2))

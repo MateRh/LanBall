@@ -6,18 +6,19 @@ import lombok.Setter;
 @Getter
 public class GameTimer {
 
+    private long time = 0L;
+
     private Long lastTick;
 
-    @Setter
-    private Long time;
+    private Long endTime;
 
     @Setter
     private boolean pause = false;
 
     private boolean finished = false;
 
-    public GameTimer(long time) {
-        this.time = time;
+    public GameTimer(long endTime) {
+        this.endTime = endTime;
     }
 
     public void tick() {
@@ -37,7 +38,7 @@ public class GameTimer {
             lastTick = System.currentTimeMillis();
             return;
         }
-        time = time - (System.currentTimeMillis() - lastTick);
+        time = time + (System.currentTimeMillis() - lastTick);
         lastTick = System.currentTimeMillis();
     }
 
@@ -46,8 +47,9 @@ public class GameTimer {
     }
 
     private void validate() {
-        if (time <= 0) {
+        if (time >= endTime) {
             finished = true;
+            time = endTime;
         }
     }
 

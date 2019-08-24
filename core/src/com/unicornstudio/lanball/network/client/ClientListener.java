@@ -262,13 +262,7 @@ public class ClientListener extends Listener {
 
     private void onMatchEnd(MatchEndServerRequest object) {
         clientDataService.setGameState(GameState.PENDING);
-        Timer timer = new Timer("matchEnd");
         Timer timer_backToMenu = new Timer("matchEnd_backToMenu");
-        timer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-
                         switch (object.getEndReason()) {
                             case CANCELED:
                                 Gdx.app.postRunnable(() -> showMatchEndModal("Match canceled.", ""));
@@ -286,9 +280,6 @@ public class ClientListener extends Listener {
                                 Gdx.app.postRunnable(() -> showMatchEndModal("Team 2 won the match.", "Time's up."));
                                 break;
                         }
-                    }
-                }, 4500
-        );
         timer_backToMenu.schedule(
                 new TimerTask() {
                     @Override
@@ -303,7 +294,7 @@ public class ClientListener extends Listener {
                         });
                         ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
                     }
-                }, 9500
+                }, 4000
         );
     }
 

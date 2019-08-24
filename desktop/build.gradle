@@ -26,7 +26,9 @@ task debug(dependsOn: classes, type: JavaExec) {
 
 task dist(type: Jar) {
     doFirst {
-        println "dist"
+        archivesBaseName = "LanBall";
+        Integer _version = read("core/assets/version");
+        version = "build-" + _version;
         from files(sourceSets.main.output.classesDir)
         from files(sourceSets.main.output.resourcesDir)
         from {configurations.compile.collect {zipTree(it)}}
@@ -40,9 +42,7 @@ task dist(type: Jar) {
 
 task relase {
     doFirst {
-        println "relase"
         Integer _version = read("core/assets/version") + 1;
-        version = "-build-" + _version;
         write("core/assets/version", _version)
     }
 }
@@ -72,7 +72,6 @@ static def read(String path) {
 }
 
 static def write(String path, Integer data) {
-    println("writing " + data )
     PrintWriter printer = new PrintWriter(new FileWriter(new File(path)));
     printer.append(data.toString());
     printer.close();

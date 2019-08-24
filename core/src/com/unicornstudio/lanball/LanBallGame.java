@@ -82,14 +82,20 @@ public class LanBallGame extends LmlApplicationListener {
 	}
 
 	@Override
-	public void render () {
-		game.render();
-		super.render();
-		if (game.getWorldService().getMapWorld() != null) {
+	public void render() {
+		try {
+			game.render();
+			super.render();
+		} catch (Exception e) {
+			System.out.println("Main loop exception: " + e);
+		}
+	/*	if (game.getWorldService().getMapWorld() != null) {
 			Matrix4 matrix4 = new Matrix4(new OrthographicCamera(Screen.getWidth(), Screen.getHeight()).combined);
 			matrix4.scale(10f, 10f, 1f);
 			//debugRenderer.render(game.getWorldService().getWorld(), matrix4);
 		}
+
+	 */
 	}
 
 	public static Stage newStage() {
