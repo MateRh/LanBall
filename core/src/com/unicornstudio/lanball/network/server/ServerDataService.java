@@ -62,6 +62,14 @@ public class ServerDataService {
                 .orElse(null);
     }
 
+    public Connection getConnectionByPlayer(Player player) {
+        return players.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(player))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
+
     public Set<Player> getPlayersSet(Connection connection) {
         return players.entrySet().stream()
                 .filter(set -> !set.getKey().equals(connection))

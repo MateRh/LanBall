@@ -251,8 +251,36 @@ public class WorldService {
                 .height(((float) GATE_HEIGHT + LINE_SPACE))
                 .build();
 
-        gateService.createLeftGateSensor(LINE_SPACE, LINE_SPACE + halfHeight, 1f, GATE_HEIGHT + LINE_SPACE);
-        gateService.createRightGateSensor(width - LINE_SPACE , LINE_SPACE + halfHeight, 1, GATE_HEIGHT + LINE_SPACE);
+        // left goalpost top
+
+        builder.position(LINE_SPACE, height - halfHeight - LINE_SPACE)
+                .radius(4f)
+                .shapeType(Shape.Type.Circle)
+                .build();
+
+        // left goalpost bottom
+
+        builder.position(LINE_SPACE, LINE_SPACE + halfHeight )
+                .radius(4f)
+                .shapeType(Shape.Type.Circle)
+                .build();
+
+        // right goalpost top
+
+        builder.position(width - LINE_SPACE, height - halfHeight - LINE_SPACE)
+                .radius(4f)
+                .shapeType(Shape.Type.Circle)
+                .build();
+
+        // right goalpost bottom
+
+        builder.position(width - LINE_SPACE, LINE_SPACE + halfHeight )
+                .radius(4f)
+                .shapeType(Shape.Type.Circle)
+                .build();
+
+        gateService.createLeftGateSensor(LINE_SPACE -2, LINE_SPACE + halfHeight, 1f, GATE_HEIGHT + LINE_SPACE);
+        gateService.createRightGateSensor(width - LINE_SPACE + 2, LINE_SPACE + halfHeight, 1, GATE_HEIGHT + LINE_SPACE);
     }
 
     private void createWorldInnerBounds(int width, int height) {

@@ -19,7 +19,7 @@ public class ContestantActor extends Actor {
     private final static BitmapFont font = new FontBuilder()
             .name("Gravity-Book")
             .size(14)
-            .renderCount(5)
+            .renderCount(6)
             .color(Color.WHITE)
             .shadowOffsetX(1)
             .shadowOffsetY(1)
@@ -46,7 +46,7 @@ public class ContestantActor extends Actor {
     }
 
     private int getTextWidth(String text) {
-        return Math.round(text.length() * font.getSpaceWidth() * 1.25f);
+        return Math.round(text.length() * font.getSpaceXadvance() * 1.25f);
     }
 
 }

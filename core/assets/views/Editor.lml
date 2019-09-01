@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<window oneColumn="true" background="background" fillparent="true">
+
+    <window x="0" align="left" defaultalign="left" title="Menu" titleAlign="left" defaultPad="5" oneColumn="true">
+        Test
+    </window>
+    <window align="right" title="Editor" titleAlign="left" defaultPad="5" oneColumn="true">
+        Test
+    </window>
+</window>

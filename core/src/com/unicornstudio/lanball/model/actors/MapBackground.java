@@ -82,11 +82,9 @@ public class MapBackground extends Actor {
         fillRectangle(pixmap, x, y, LINE_THICKNESS, height);
         fillRectangle(pixmap, x, endY, width, LINE_THICKNESS);
         fillRectangle(pixmap, endX, y, LINE_THICKNESS, height);
-
         fillRectangle(pixmap, leftGateX, leftGateY, LINE_THICKNESS, GATE_SIZE);
         fillRectangle(pixmap, leftGateX, leftGateY, leftGateX, LINE_THICKNESS);
         fillRectangle(pixmap, leftGateX, leftGateY + GATE_SIZE, leftGateX, LINE_THICKNESS);
-
         fillRectangle(pixmap, rightGateX, rightGateY, LINE_THICKNESS, GATE_SIZE);
         fillRectangle(pixmap, rightGateX - leftGateX, rightGateY, leftGateX, LINE_THICKNESS);
         fillRectangle(pixmap, rightGateX- leftGateX, rightGateY + GATE_SIZE, leftGateX, LINE_THICKNESS);
@@ -103,6 +101,12 @@ public class MapBackground extends Actor {
                 pixmap.drawPixel(map.get("x"), map.get("y") + 1);
             }
         }
+
+        pixmap.setColor(0.98f, 0.5f, 0, 1f);
+        pixmap.fillCircle(leftGateX * 2, leftGateY, LINE_THICKNESS);
+        pixmap.fillCircle(leftGateX * 2, leftGateY + GATE_SIZE, LINE_THICKNESS);
+        pixmap.fillCircle(rightGateX - leftGateX, rightGateY, LINE_THICKNESS);
+        pixmap.fillCircle(rightGateX - leftGateX, rightGateY + GATE_SIZE, LINE_THICKNESS);
     }
 
     private void fillRectangle(Pixmap pixmap, int x, int y, int width, int height) {

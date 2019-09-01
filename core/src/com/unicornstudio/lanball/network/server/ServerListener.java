@@ -136,15 +136,15 @@ public class ServerListener extends Listener {
 
     private void setPlayersStartPosition(TeamType teamType) {
         Map<Connection, Player> players = serverDataService.getPlayersByTeamType(teamType);
-        System.out.println(teamType);
         AtomicInteger i = new AtomicInteger();
-        i.set(1);
-        players.forEach((key, value) -> {
-            ServerUtils.propagateData(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, true, teamType, i.get()),
-                    serverDataService.getPlayers(), key);
-            key.sendUDP(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(value, false, teamType, i.get()));
-            i.set(i.get() + 1);
-        });
+        i.set(0);
+        players.forEach((key, value) -> setPlayerStartPosition(key, value, teamType, i.addAndGet(1)));
+    }
+
+    private void setPlayerStartPosition(Connection connection, Player player, TeamType teamType, Integer spawnPointId) {
+        ServerUtils.propagateData(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(player, true, teamType, spawnPointId),
+                serverDataService.getPlayers(), connection);
+        connection.sendUDP(ServerRequestBuilder.createPlayerSetStartPositionServerRequest(player, false, teamType, spawnPointId));
     }
 
     private void onMapLoad(Connection connection, MapLoadClientRequest request) {
@@ -200,6 +200,11 @@ public class ServerListener extends Listener {
         if (remotePlayer != null) {
             remotePlayer.setTeamType(object.getTeamType());
             ServerUtils.propagateData(ServerRequestBuilder.createPlayerChangeTeamServerRequest(remotePlayer), serverDataService.getPlayers(), null);
+            if (!serverDataService.getGameState().equals(GameState.LOBBY)) {
+                Connection connection = serverDataService.getConnectionByPlayer(player);
+                connection.sendUDP(ServerRequestBuilder.createGameStartServerRequest());
+                setPlayerStartPosition(connection, player, object.getTeamType(), 1);
+            }
         }
     }
 
@@ -283,7 +288,7 @@ public class ServerListener extends Listener {
                             roundResetTimer.cancel();
                         }
                     },
-            5000);
+            4000);
         }
     }
 
