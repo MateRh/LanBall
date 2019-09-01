@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+<:window title="@host" oneColumn="true">
+    <table defaultwidth="128" width="768" defaultspace="5">
+        <:tablerow>
+            <button width="192" color="red">@team1</button>
+            <button width="192">@spectators</button>
+            <button width="192" color="blue">@team2</button>
+        </:tablerow>
+        <:tablerow>
+            <dragpane id="teamOneDragPane" type="vertical" width="192" height="256" background="list">
+            </dragpane>
+            <dragpane id="teamSpectatorsDragPane" type="vertical" width="192" height="256" background="list">
+            </dragpane>
+            <dragpane id="teamTwoDragPane" type="vertical" width="192" height="256" background="list">
+            </dragpane>
+        </:tablerow>
+    </table>
+    <table width="768" defaultspace="5" align="top">
+        <:tablerow>
+            Time Limit
+            <selectbox id="timeLimitSelectBox">
+                <:loop times="10">
+                    <:if test="{loop:index}<9">0</:if>{={loop:index}+1}:00
+                </:loop>
+            </selectbox>
+        </:tablerow>
+        <:tablerow>
+            Score Limit
+            <selectbox id="scoreLimitSelectBox">
+                <:loop times="10">
+                    {={loop:index}+1}
+                </:loop>
+            </selectbox>
+        </:tablerow>
+        <:tablerow>
+            Map
+            <vislabel id="mapNameLabel">Default</vislabel>
+            <button id="pickMapButton">Pick</button>
+        </:tablerow>
+        <:tablerow>
+            <separator/>
+            <button id="startTheGameButton">Start the game!</button>
+        </:tablerow>
+    </table>
+    <textButton id="backToMenuTextMenu">Back</textButton>
+</:window>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<:window-menu title="@menu" titleAlign="center" defaultHeight="32" defaultwidth="384" defaultPad="4"
+        defaultGrowX="true" oneColumn="true">
+	<visimage width="300" height="150" style="logo"/>
+	<textButton onChange="setView" id="com.unicornstudio.lanball.views.ServerBrowser">
+		@servers
+	</textButton>
+	<textButton id="hostServerButton">
+		@host
+	</textButton>
+    <textButton onChange="setView" id="com.unicornstudio.lanball.views.Editor">
+        @editor
+    </textButton>
+	<textButton onChange="setView" id="com.unicornstudio.lanball.views.Settings">
+		@settings
+	</textButton>
+	<textButton>
+		@help
+	</textButton>
+	<textButton onChange="exit">
+		@quit
+	</textButton>
+	<label style="small" height="20" textAlign="right">@credits</label>
+</:window-menu>

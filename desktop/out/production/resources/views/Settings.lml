@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<:window title="@settings" titleAlign="left" defaultPad="4" defaultGrowX="true" oneColumn="true">
+    <tabbedPane width="384" height="256" defaultPad="5" bg="transparent" selected="0">
+    <tab title="Miscellaneous" closeable="false">
+        <table defaultPad="5">
+            Name:<textField id="settingsNameTextField"/>
+            <:row/>
+                <separator/>
+            <:row/>
+                Resolution:<selectBox id="resolutionsSelectBox">1392x783</selectBox>
+            <:row/>
+                Fullscreen:<vischeckbox id="fullScreenCheckBox"/>
+            <:row/>
+                <separator/>
+            <:row/>
+                Audio:<checkBox />
+            <:row/>
+                Volume:<visslider/>
+            <:row/>
+        </table>
+    </tab>
+    <tab title="Input" closeable="false">
+        <table defaultPad="5">
+            Up:
+            <button>W</button>
+            <:row/>
+            Down:
+            <button>S</button>
+            <:row/>
+            Left:
+            <button>A</button>
+            <:row/>
+            Right:
+            <button>D</button>
+            <:row/>
+            Kick:
+            <button>SPACE</button>
+            <:row/>
+        </table>
+    </tab>
+</tabbedPane>
+    <horizontalgroup>
+        <vistextbutton onChange="setView" id="com.unicornstudio.lanball.views.Menu">Back</vistextbutton>
+        <separator></separator>
+        <vistextbutton id="settingsApplyButton">Apply</vistextbutton>
+    </horizontalgroup>
+</:window>

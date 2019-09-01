@@ -10,6 +10,9 @@
 	<textButton id="hostServerButton">
 		@host
 	</textButton>
+    <textButton onChange="setView" id="com.unicornstudio.lanball.views.Editor">
+        @editor
+    </textButton>
 	<textButton onChange="setView" id="com.unicornstudio.lanball.views.Settings">
 		@settings
 	</textButton>

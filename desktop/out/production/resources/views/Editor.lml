@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<window oneColumn="true" background="gradient" r="0.51" g="0.65" b="0.43" fillparent="true">
+    <gridgroup itemSize="2">
+            <window id="leftPanel" onecolumn="true" width="600" height="500">
+                <tree fillparent="true">
+                    <buttonGroup node="true">
+                        <label>Name:</label>
+                        <textField id="name"/>
+                    </buttonGroup>
+                    <buttonGroup node="true">
+                        <label>Name:</label>
+                        <textField id="name"/>
+                    </buttonGroup>
+                    <buttonGroup node="true">
+                        <label>Name:</label>
+                        <textField id="name"/>
+                    </buttonGroup>
+                </tree>
+            </window>
+            <window id="editor" bg="square-5" onecolumn="true">
+            </window>
+    </gridgroup>
+</window>

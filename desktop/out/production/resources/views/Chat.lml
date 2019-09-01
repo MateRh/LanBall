@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+<table width="1392" height="880">
+
+    <:tablerow>
+        <textarea width="600" height="200">
+
+        </textarea>
+    </:tablerow>
+    <:tablerow>
+        <textarea width="600" height="50">
+
+        </textarea>
+    </:tablerow>
+</table>
