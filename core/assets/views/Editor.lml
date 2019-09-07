@@ -1,12 +1,40 @@
 <?xml version="1.0"?>
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 
-<window oneColumn="true" background="background" fillparent="true">
+<window background="background" fillparent="true">
 
-    <window x="0" align="left" defaultalign="left" title="Menu" titleAlign="left" defaultPad="5" oneColumn="true">
-        Test
+    <window x="0" align="left" defaultalign="left" title="Menu" titleAlign="left" defaultPad="5" oneColumn="true" growy="true" width="300">
+        <menubar growx="true" align="top">
+            <menu text="File">
+                <menuItem>New</menuItem>
+                <menuItem>Open</menuItem>
+                <menuItem>Save</menuItem>
+                <menuItem>Save As</menuItem>
+                <menuItem>Close</menuItem>
+            </menu>
+            <menu text="New">
+                <menuItem>Spawn point</menuItem>
+                <menuItem>Ball</menuItem>
+                <menuItem>Rentagle</menuItem>
+                <menuItem>Circle</menuItem>
+                <menuItem>Gate field</menuItem>
+            </menu>
+            <menu text="Settings">
+            </menu>
+        </menubar>
+        <buttongroup>
+            <textfield>dssdsd</textfield>
+            <button>sddsd</button>
+        </buttongroup>
+        <label>Elements:</label>
+        <list selected="" fillx="true">
+            Raz
+            Dwa
+            Trzy
+            Cztery
+        </list>
     </window>
-    <window align="right" title="Editor" titleAlign="left" defaultPad="5" oneColumn="true">
+    <window align="right" title="Editor" titleAlign="left" defaultPad="5" oneColumn="true" grow="true">
         Test
     </window>
 </window>
