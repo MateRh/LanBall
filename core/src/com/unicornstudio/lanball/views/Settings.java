@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.annotation.LmlAfter;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -17,6 +18,7 @@ import com.unicornstudio.lanball.prefernces.SettingsAdapter;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.prefernces.SettingsType;
 import com.unicornstudio.lanball.prefernces.VideoSettings;
+import com.unicornstudio.lanball.service.StageService;
 
 @Singleton
 public class Settings extends AbstractLmlView {
@@ -33,8 +35,9 @@ public class Settings extends AbstractLmlView {
     @LmlActor("fullScreenCheckBox")
     private VisCheckBox fullScreenCheckBox;
 
-    public Settings() {
-        super(LanBallGame.newStage());
+    @Inject
+    public Settings(StageService stageService) {
+        super(stageService.getStage(true));
     }
 
     @Override

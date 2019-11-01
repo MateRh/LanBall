@@ -11,6 +11,7 @@
                 <menuItem>Save</menuItem>
                 <menuItem>Save As</menuItem>
                 <menuItem>Close</menuItem>
+                <menuItem>Exit</menuItem>
             </menu>
             <menu text="New">
                 <menuItem>Spawn point</menuItem>
@@ -22,19 +23,42 @@
             <menu text="Settings">
             </menu>
         </menubar>
-        <buttongroup>
-            <textfield>dssdsd</textfield>
-            <button>sddsd</button>
-        </buttongroup>
+        <verticalGroup id="verticalGroup" spacing="5">
+            <horizontalgroup spacing="5">
+                Name:
+                <textfield>dssdsd</textfield>
+                <button>sddsd</button>
+            </horizontalgroup>
+            <horizontalgroup spacing="5">
+                Name:
+                <textfield>dssdsd</textfield>
+                <button>sddsd</button>
+            </horizontalgroup>
+        </verticalGroup>
         <label>Elements:</label>
+        <container id="listViewContainer" fillx="true"/>
         <list selected="" fillx="true">
             Raz
             Dwa
             Trzy
             Cztery
         </list>
+        <button id="createElementButton" onclick="onCreateElementChange">Create new element</button>
     </window>
-    <window align="right" title="Editor" titleAlign="left" defaultPad="5" oneColumn="true" grow="true">
-        Test
-    </window>
+        <window align="right" grow="true" debug="true" background="background" >
+            <dragpane id="dragpane" width="1052" height="680" type="floating" align="center" debug="true">
+                <image style="icon-arrow-left" pack="true"/>
+                <window size="200" pack="true" keepwithinparent="true"/>
+            </dragpane>
+        </window>
+    <isolate>
+        <window id="createElementWindow" title="Create new element" defaultpad="5" onecolumn="true" modal="true" width="250" height="325">
+            Select new element from list:
+            <container id="createElementWindowListViewContainer" growx="true" fillx="true" background="window-bg"/>
+            <buttongroup defaultpad="5">
+                <button id="createElementOkButton" onclick="onCreateElementOkButton">Ok</button>
+                <button id="createElementCancelButton" onclick="onCreateElementCancelButton">Cancel</button>
+            </buttongroup>
+        </window>
+    </isolate>
 </window>

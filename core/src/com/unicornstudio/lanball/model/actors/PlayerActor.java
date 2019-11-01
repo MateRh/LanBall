@@ -23,6 +23,7 @@ public class PlayerActor extends Actor {
     public void draw (Batch batch, float parentAlpha) {
         batch.setColor(getColor());
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+        batch.setColor(Color.WHITE);
         super.draw(batch, parentAlpha);
     }
 

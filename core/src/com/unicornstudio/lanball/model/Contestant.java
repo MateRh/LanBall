@@ -9,7 +9,7 @@ public class Contestant extends Entity {
     private String name;
 
     public Contestant(Actor actor, PhysicsEntity physicsEntity) {
-        super(actor, physicsEntity, EntityType.ENTITY);
+        super(actor, physicsEntity, null, EntityType.ENTITY);
     }
 
 }

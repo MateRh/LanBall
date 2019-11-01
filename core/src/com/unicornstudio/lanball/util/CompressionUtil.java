@@ -8,7 +8,7 @@ import java.util.zip.Inflater;
 public class CompressionUtil {
 
     public static byte[] compress(String input) {
-        byte[] output = new byte[2048];
+        byte[] output = new byte[65507];
         Deflater deflater = new Deflater();
         deflater.setInput(input.getBytes(StandardCharsets.UTF_8));
         deflater.finish();
@@ -19,7 +19,7 @@ public class CompressionUtil {
 
     public static String decompress(byte[] input) {
         try {
-            byte[] result = new byte[4096];
+            byte[] result = new byte[376800];
             Inflater inflater = new Inflater();
             inflater.setInput(input);
             int length = inflater.inflate(result);

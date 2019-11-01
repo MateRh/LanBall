@@ -133,8 +133,8 @@ public class EntitiesService {
     private void synchronizeEntityPosition(Entity entity) {
         Vector2 position = entity.getPhysicsEntity().getBody().getPosition();
         entity.getActor().setPosition(
-                (position.x * Screen.getPixelPerMeter() - entity.getActor().getWidth()/2),
-                position.y * Screen.getPixelPerMeter() - entity.getActor().getHeight()/2
+                (position.x * Screen.getPixelPerMeter() - entity.getActor().getWidth()/2f),
+                position.y * Screen.getPixelPerMeter() - entity.getActor().getHeight()/2f
         );
         if (entity.getType() == EntityType.PLAYER) {
             Player player = (Player) entity;

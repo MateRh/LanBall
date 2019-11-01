@@ -42,6 +42,7 @@ public class ContestantActor extends Actor {
         batch.setColor(getColor());
         batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         font.draw(batch, nickName, getX(Align.center) - getTextWidth(nickName),getY(Align.center) - font.getLineHeight() * 1.25f);
+        batch.setColor(Color.WHITE);
         super.draw(batch, parentAlpha);
     }
 

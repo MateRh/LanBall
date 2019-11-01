@@ -2,13 +2,9 @@ package com.unicornstudio.lanball;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.github.czyzby.kiwi.util.gdx.asset.Disposables;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
 import com.github.czyzby.lml.util.LmlApplicationListener;
@@ -25,55 +21,33 @@ import com.unicornstudio.lanball.prefernces.VideoSettings;
 
 public class LanBallGame extends LmlApplicationListener {
 
+	private final static String VIS_UI_SKIN = "skins/vis/x1/uiskin.json";
+
+	private final static String GLOBAL_MACRO = "views/macros/Global.lml";
+
+	private final static String PROPERTIES_PATH = "i18n/nls";
+
 	private Game game;
 
-	private SpriteBatch batch;
-
 	private Injector injector;
-
-	private static Stage stage;
-
-	private Box2DDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
 		DefaultSettings.generate();
-		batch = new SpriteBatch();
-		VisUI.load("skins/vis/x1/uiskin.json");
+		VisUI.load(VIS_UI_SKIN);
 		super.create();
 		new VideoSettings().apply();
 		parseTemplate();
 		injector = Guice.createInjector(new LanBallGameModule());
 		game = injector.getInstance(Game.class);
-		game.getStageService().init();
-		stage = game.getStageService().getStage();
-
-		//game.getSceneService().showMainMenuScene();
 		setView(com.unicornstudio.lanball.views.Menu.class);
-/*
-		setView(com.unicornstudio.lanball.views.Game.class);
-		com.unicornstudio.lanball.views.Game gameView = (com.unicornstudio.lanball.views.Game)getCurrentView();
-		game.getStageService().setGroup(gameView.getWindow());
-		//stage.setRoot(gameView.getWindow());
-
-		game.getMapService().loadMap("exampleMap.lan");
-		String ip = game.getClientService().scanPort(Ports.getList().get(1));
-		if (ip != null) {
-			System.out.println("client");
-			game.getClientService().connect("localhost:" + Ports.getList().get(1), PlayerRole.PLAYER);
-		} else {
-			System.out.println("server");
-			game.getServerService().start(Ports.getList().get(1));
-		}
-		*/
-		debugRenderer = new Box2DDebugRenderer();
 	}
 
 	@Override
 	protected LmlParser createParser() {
 		return VisLml.parser()
 				.actions("global", new GlobalActions())
-				.i18nBundle(I18NBundle.createBundle(Gdx.files.internal("i18n/nls")))
+				.i18nBundle(I18NBundle.createBundle(Gdx.files.internal(PROPERTIES_PATH)))
 				.build();
 	}
 
@@ -89,32 +63,16 @@ public class LanBallGame extends LmlApplicationListener {
 		} catch (Exception e) {
 			System.out.println("Main loop exception: " + e);
 		}
-	/*	if (game.getWorldService().getMapWorld() != null) {
-			Matrix4 matrix4 = new Matrix4(new OrthographicCamera(Screen.getWidth(), Screen.getHeight()).combined);
-			matrix4.scale(10f, 10f, 1f);
-			//debugRenderer.render(game.getWorldService().getWorld(), matrix4);
-		}
-
-	 */
-	}
-
-	public static Stage newStage() {
-		return new Stage(new ScreenViewport(new OrthographicCamera(Screen.getWidth(), Screen.getHeight())));
-	}
-
-	public static Stage getStage() {
-		return stage;
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		Disposables.disposeOf(batch);
 		VisUI.dispose();
 	}
 
 	private void parseTemplate() {
-		getParser().parseTemplate(Gdx.files.internal("views/macros/Global.lml"));
+		getParser().parseTemplate(Gdx.files.internal(GLOBAL_MACRO));
 	}
 
 	@Override

@@ -83,6 +83,7 @@ project(":core") {
         compile "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion"
         compile "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion"
         compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.28'
         providedCompile "org.projectlombok:lombok:$lombokVersion"
     }
 }

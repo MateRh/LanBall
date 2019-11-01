@@ -55,8 +55,9 @@ public class Game extends AbstractLmlView {
 
     private DateFormat timeFormat = new SimpleDateFormat("mm:ss");
 
-    public Game() {
-        super(LanBallGame.getStage());
+    @Inject
+    public Game(StageService stageService) {
+        super(stageService.getStage(false));
     }
 
     @Override

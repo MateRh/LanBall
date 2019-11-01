@@ -27,6 +27,7 @@ import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.server.ServerService;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.prefernces.SettingsType;
+import com.unicornstudio.lanball.service.StageService;
 
 
 import javax.inject.Singleton;
@@ -80,8 +81,9 @@ public class HostServer extends AbstractLmlView {
 
     private Map<TeamType, CRC32> previousPlayersCRC;
 
-    public HostServer() {
-        super(LanBallGame.newStage());
+    @Inject
+    public HostServer(StageService stageService) {
+        super(stageService.getStage(true));
     }
 
     @Override

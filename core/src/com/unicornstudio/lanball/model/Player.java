@@ -17,7 +17,7 @@ public class Player extends Entity {
     private String name = RandomStringUtils.randomAlphabetic(8);
 
     public Player(Actor actor, PhysicsEntity physicsEntity, PhysicsEntity sensor) {
-        super(actor, physicsEntity, EntityType.PLAYER);
+        super(actor, physicsEntity, null, EntityType.PLAYER);
         this.sensor = sensor;
     }
 

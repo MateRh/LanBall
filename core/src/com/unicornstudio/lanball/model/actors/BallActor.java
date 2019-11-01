@@ -17,12 +17,12 @@ public class BallActor extends Actor {
     }
 
     @Override
-    public void draw (Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(texture, getX(), getY());
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
     }
 
     private Texture provideTexture(int size, String color) {
-        return TextureCreator.createCircleTexture(size, color, 3);
+        return TextureCreator.createDiskTexture(size * 3, color, 6);
     }
 }

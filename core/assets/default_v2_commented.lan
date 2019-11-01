@@ -1,0 +1,207 @@
+{
+  "information": {
+    "name": "Example Map",
+    "description": "First ever created map for LanBall! For presentation purposes only.",
+    "version": "1.0",
+    "author": "Mate_",
+    "createdAt": "23:06-12-07.2018"
+  },
+  "settings": {
+    "ball": {
+      "positionX": 525,
+      "positionY": 340,
+      "size": 15,
+      "speed": 0,
+      "linearDamping": 0.5,
+      "friction": 0,
+      "restitution": 0,
+      "density": 0.09,
+      "color": "#ff9933"
+    },
+    "teams": [
+      {
+        "name": "Spectators",
+        "color": "#ffffff",
+        "positions": null
+      },
+      {
+        "name": "Red Team",
+        "color": "#ff2121",
+        "positions": [
+            {
+                "angle": 344,
+                "distance": 150
+            },
+            {
+                "angle": 307,
+                "distance": 150
+            },
+            {
+                "angle": 270,
+                "distance": 150
+            },
+            {
+                "angle": 233,
+                "distance": 150
+            },
+            {
+                "angle": 196,
+                "distance": 150
+            }
+        ]
+      },
+      {
+        "name": "Blue Team",
+        "color": "#2424ff",
+        "positions": [
+            {
+                "angle": 16,
+                "distance": 100
+            },
+            {
+                "angle": 53,
+                "distance": 150
+            },
+            {
+                "angle": 90,
+                "distance": 150
+            },
+            {
+                "angle": 127,
+                "distance": 150
+            },
+            {
+                "angle": 164,
+                "distance": 150
+            }
+        ]
+      }
+    ],
+    "player":
+      {
+        "radius": 26,
+        "velocity": 0.9,
+        "maxVelocity": 12.5,
+        "linearDamping": 1.0,
+        "friction": 0.05,
+        "restitution": 0.0,
+        "density": 0.6
+      }
+  },
+  "world": {
+    "size": {
+      "width": 1152,
+      "height": 680
+    },
+    "foreground": {
+      "color": "#009933",
+      "texture": "GRASS"
+    },
+    "background": {
+      "color": "#666699",
+      "texture": ""
+    },
+    "gates": {
+      "offsetPositionX": 10,
+      "offsetPositionY": 250,
+      "width": 100,
+      "height": 10
+    }
+  },
+  "elements": [
+    {
+        "x": 50,
+        "y": 550,
+        "radius": 20,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#D89210",
+        "type": "disk"
+    },
+    {
+        "x": 550,
+        "y": 650,
+        "radius": 20,
+        "lineThickness": 5,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#564699",
+        "type": "circle"
+    },
+    {
+        "x": 550,
+        "y": 350,
+        "width": 600,
+        "height": 5,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1CBD5B",
+        "type": "edge"
+    },
+    {
+        "x": 450,
+        "y": 150,
+        "width": 50,
+        "height": 55,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    },
+     # Bottom ball bound
+    {
+        "x": 100,
+        "y": 47,
+        "width": 952,
+        "height": 6,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    },
+     # Top ball bound
+    {
+        "x": 100,
+        "y": 627,
+        "width": 952,
+        "height": 6,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    },
+     # Bottom Left Ball Bound
+    {
+        "x": 100,
+        "y": 53,
+        "width": 6,
+        "height": 207,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    },
+     # Top Left Ball Bound
+    {
+        "x": 100,
+        "y": 420,
+        "width": 6,
+        "height": 207,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    },
+     # left gate middle section
+    {
+        "x": 50,
+        "y": 260,
+        "width": 3,
+        "height": 160,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    },
+    {
+        "x": 50,
+        "y": 260,
+        "width": 50,
+        "height": 3,
+        "figureType": "PHYSICAL_AND_GRAPHICAL",
+        "color": "#1D8CDE",
+        "type": "rectangle"
+    }
+  ]
+}

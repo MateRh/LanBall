@@ -1,6 +1,7 @@
 package com.unicornstudio.lanball.model;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.unicornstudio.lanball.model.map.elements.FunctionalType;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +21,8 @@ public class Entity {
     @NonNull
     private PhysicsEntity physicsEntity;
 
-    private EntityType type = EntityType.ENTITY;
+    private FunctionalType functionalType;
 
+    private EntityType type = EntityType.ENTITY;
 
 }

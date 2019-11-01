@@ -78,7 +78,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	radio: {checkboxOn: radio-on, checkboxOff: radio-off, font: small-font, fontColor: white, disabledFontColor: grey }
 },
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
-	default: {fontColorUnselected: white, selection: padded-list-selection, fontColorSelected: white, font: small-font }
+	default: {fontColorUnselected: white, selection: padded-list-selection, fontColorSelected: white, font: small-font, background: window-bg }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
 	default: {background: default-pane, knob: touchpad-knob }

@@ -8,9 +8,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.unicornstudio.lanball.BallKickAnimation;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.common.GameState;
-import com.unicornstudio.lanball.network.dto.Host;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
@@ -28,6 +29,8 @@ import java.util.Optional;
 
 public class KeyboardInput {
 
+    private static final float FRAME_TIME = 16666666.6667f;
+
     private final EntitiesService entitiesService;
 
     @Inject
@@ -40,6 +43,10 @@ public class KeyboardInput {
 
     private Long lastKickInputMillis = System.currentTimeMillis();
 
+    private Long previousFrameMillis = System.nanoTime();
+
+    private BallKickAnimation ballKickAnimation;
+
     @Inject
     public KeyboardInput(EntitiesService entitiesService) {
         this.entitiesService = entitiesService;
@@ -47,6 +54,8 @@ public class KeyboardInput {
     }
 
     public void onInput() {
+        float scale = (System.nanoTime() - previousFrameMillis) / FRAME_TIME;
+        previousFrameMillis = System.nanoTime();
         Body playerBody = getPlayerBody();
         if (playerBody != null) {
             Vector2 velocity = playerBody.getLinearVelocity();
@@ -65,29 +74,32 @@ public class KeyboardInput {
                                 clientService.sendRequest(
                                         ClientRequestBuilder.createPlayerKickBallClientRequest(
                                                 clientDataService.getRemotePlayer().getId(),
-                                                getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)).scl(4.5f),
+                                                getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)).scl(4.5f).scl(scale),
                                                 contact.getWorldManifold().getNormal())
                                 );
                             }
                     );
+                    if (ballKickAnimation == null || ballKickAnimation.isFinished()) {
+                        ballKickAnimation = new BallKickAnimation(getPlayerActor());
+                    }
                 }
             }
 
             if (velocity.len() < Player.MAX_VELOCITY) {
                 if (isPressed(SettingsKeys.LEFT_CONTROL, SettingsKeys.LEFT_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(-Player.VELOCITY, 0, position.x, position.y, true);
+                    playerBody.applyLinearImpulse(-Player.VELOCITY * scale, 0, position.x, position.y, true);
                 }
 
                 if (isPressed(SettingsKeys.RIGHT_CONTROL, SettingsKeys.RIGHT_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(Player.VELOCITY, 0, position.x, position.y, true);
+                    playerBody.applyLinearImpulse(Player.VELOCITY * scale, 0, position.x, position.y, true);
                 }
 
                 if (isPressed(SettingsKeys.DOWN_CONTROL, SettingsKeys.DOWN_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(0, -Player.VELOCITY, position.x, position.y, true);
+                    playerBody.applyLinearImpulse(0, -Player.VELOCITY * scale, position.x, position.y, true);
                 }
 
                 if (isPressed(SettingsKeys.UP_CONTROL, SettingsKeys.UP_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(0, Player.VELOCITY, position.x, position.y, true);
+                    playerBody.applyLinearImpulse(0, Player.VELOCITY * scale, position.x, position.y, true);
                 }
             }
 
@@ -126,6 +138,14 @@ public class KeyboardInput {
             return null;
         }
         return entity.getPhysicsEntity().getBody();
+    }
+
+    private Actor getPlayerActor() {
+        Entity entity = entitiesService.getEntity("player");
+        if (entity == null) {
+            return null;
+        }
+        return entity.getActor();
     }
 
     private Body getPlayerSensor() {

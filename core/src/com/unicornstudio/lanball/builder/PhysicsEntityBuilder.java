@@ -50,6 +50,8 @@ public class PhysicsEntityBuilder {
 
     private Float radius;
 
+    private boolean active = true;
+
     public PhysicsEntityBuilder world(World world) {
         this.world = world;
         return this;
@@ -66,6 +68,11 @@ public class PhysicsEntityBuilder {
     }
 
     public PhysicsEntityBuilder position(int x, int y) {
+        this.position = new Vector2(x, y);
+        return this;
+    }
+
+    public PhysicsEntityBuilder position(float x, float y) {
         this.position = new Vector2(x, y);
         return this;
     }
@@ -130,6 +137,11 @@ public class PhysicsEntityBuilder {
         return this;
     }
 
+    public PhysicsEntityBuilder active(boolean active) {
+        this.active = active;
+        return this;
+    }
+
     public PhysicsEntity build() {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.friction = friction;
@@ -170,6 +182,7 @@ public class PhysicsEntityBuilder {
 
         Body body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
+        body.setActive(active);
 
         return new PhysicsEntity(body);
     }

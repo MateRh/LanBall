@@ -364,7 +364,7 @@ public class ClientListener extends Listener {
         verticalGroup.addActor(titleLabel);
         verticalGroup.addActor(subTitleLabel);
         dialog.add(verticalGroup);
-        dialog.show(LanBallGame.getStage());
+        dialog.show(stageService.getStage());
         Timer timer = new Timer("showMatchEndModal_" + title);
         timer.schedule(
                 new TimerTask() {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.unicornstudio.lanball.listner.WorldContactListener;
 import com.unicornstudio.lanball.network.client.ClientDataService;
 import com.unicornstudio.lanball.network.client.ClientService;
+import lombok.Setter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,8 +29,10 @@ public class GateService {
     @Inject
     private WorldContactListener worldContactListener;
 
+    @Setter
     private Body leftGateSensor;
 
+    @Setter
     private Body rightGateSensor;
 
     public void createLeftGateSensor(int x, int y, float width, float height) {

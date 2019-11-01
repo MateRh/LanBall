@@ -12,6 +12,9 @@ import com.unicornstudio.lanball.core.Screen;
 import com.unicornstudio.lanball.model.actors.FPSCounterActor;
 import lombok.Data;
 
+import java.util.LinkedList;
+import java.util.List;
+
 
 @Data
 @Singleton
@@ -21,28 +24,26 @@ public class StageService {
 
     private Group group;
 
-    public void init() {
-        stage = new Stage(new ScreenViewport(new OrthographicCamera(Screen.getWidth(), Screen.getHeight())));
-        stage.getCamera().position.set(Screen.getHalfWidth(), Screen.getHalfHeight(), 0);
-    }
+    private LinkedList<Stage> stages = new LinkedList<>();
 
-    public Stage initAndReturn() {
-        stage = new Stage(new ScreenViewport(new OrthographicCamera(Screen.getWidth(), Screen.getHeight())));
-        stage.getCamera().position.set(Screen.getHalfWidth(), Screen.getHalfHeight(), 0);
-        return stage;
+    public StageService() {
+        stages.add(createStage());
+        stages.add(createStage());
     }
 
     public void render() {
-        stage.act();
-        stage.draw();
+        //stage.act();
+        //stage.draw();
+    }
+
+    public Stage getStage(boolean clear) {
+        Stage stage = stages.poll();
+        stages.addLast(stage);
+        return stage;
     }
 
     public void dispose() {
         stage.dispose();
-    }
-
-    public Camera getCamera() {
-        return stage.getCamera();
     }
 
     public void addActor(Actor actor) {
@@ -56,7 +57,13 @@ public class StageService {
     }
 
     public void addFPSCounterActor() {
-        stage.addActor(new FPSCounterActor());
+        //stage.addActor(new FPSCounterActor());
+    }
+
+    private Stage createStage() {
+        Stage stage = new Stage(new ScreenViewport(new OrthographicCamera(Screen.getWidth(), Screen.getHeight())));
+        stage.getCamera().position.set(Screen.getHalfWidth(), Screen.getHalfHeight(), 0);
+        return stage;
     }
 
 }

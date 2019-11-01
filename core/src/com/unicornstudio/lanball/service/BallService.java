@@ -19,6 +19,8 @@ import lombok.Data;
 @Singleton
 public class BallService {
 
+    public final static int BALL_Z_INDEX = Short.MAX_VALUE;
+
     @Inject
     private StageService stageService;
 

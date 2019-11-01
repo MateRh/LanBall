@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class TextureCreator {
 
-    public static Texture createCircleTexture(int size, String color, int borderSize) {
+    public static Texture createDiskTexture(int size, String color, int borderSize) {
         Pixmap pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
         pixmap.setFilter(Pixmap.Filter.BiLinear);
         pixmap.setColor(Color.BLACK);
@@ -16,10 +16,36 @@ public class TextureCreator {
         return new Texture(pixmap);
     }
 
+    public static Texture createDiskTexture(int size, String color) {
+        Pixmap pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
+        pixmap.setFilter(Pixmap.Filter.BiLinear);
+        pixmap.setColor(Color.valueOf(color));
+        pixmap.fillCircle(size / 2, size / 2, (size / 2) - 1);
+        return new Texture(pixmap);
+    }
+
+    public static Texture createCircleTexture(int size, int lineThickness, String color) {
+        Pixmap pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
+        pixmap.setFilter(Pixmap.Filter.BiLinear);
+        pixmap.setColor(Color.valueOf(color));
+        for (int i = 0; i < lineThickness; i++) {
+            pixmap.drawCircle(size / 2, size /2, size /2 - i);
+        }
+        return new Texture(pixmap);
+    }
+
     public static Texture createSolidColorTexture(int width, int height, String color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.valueOf(color));
         pixmap.fillRectangle(0, 0, width, height);
         return new Texture(pixmap);
     }
+
+    public static Texture createSolidRectangleTexture(int width, int height, String color) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.valueOf(color));
+        pixmap.fillRectangle(0, 0, width, height);
+        return new Texture(pixmap);
+    }
+
 }

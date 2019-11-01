@@ -13,9 +13,9 @@
 	<textButton onChange="setView" id="com.unicornstudio.lanball.views.Settings">
 		@settings
 	</textButton>
-	<textButton onChange="setView" id="com.unicornstudio.lanball.views.Editor">
-		@help
-	</textButton>
+	<!--<textButton onChange="setView" id="com.unicornstudio.lanball.views.Editor" disabled="true">
+		@editor
+	</textButton>-->
 	<textButton>
 		@help
 	</textButton>

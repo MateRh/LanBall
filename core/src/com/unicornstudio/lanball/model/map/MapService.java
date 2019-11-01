@@ -6,6 +6,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.esotericsoftware.kryo.io.Input;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.builder.EntityFactory;
+import com.unicornstudio.lanball.model.Entity;
+import com.unicornstudio.lanball.model.map.elements.FunctionalType;
 import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.service.GateService;
@@ -27,7 +30,8 @@ import java.util.Map;
 @Singleton
 public class MapService {
 
-    private static final String DEFAULT_MAP_FILE_NAME = "default.lan";
+    //private static final String DEFAULT_MAP_FILE_NAME = "default.lan";
+    private static final String DEFAULT_MAP_FILE_NAME = "default_v2.lan";
 
     @Inject
     private WorldService worldService;
@@ -71,14 +75,30 @@ public class MapService {
         worldService.create(map);
     }
 
-    public void loadMap(Input file) {
-        map = MapMapper.map(file.getInputStream())
-                .orElse(null);
-        worldService.create(map);
-    }
-
     public void initialize(Map<TeamType, List<PlayerDto>> players) {
         worldService.initialize();
+        EntityFactory factory = new EntityFactory(worldService.getWorld());
+        map.getElements().forEach(
+                mapElement -> {
+                    Entity entity = factory.create(mapElement);
+                    stageService.addActor(entity.getActor());
+                    if (entity.getFunctionalType() != null) {
+                        switch (entity.getFunctionalType()) {
+                            case MIDDLE_ELEMENT:
+                                worldService.addToInitialRoundBounds(entity.getPhysicsEntity());
+                                break;
+                            case TEAM1_GATE_AREA:
+                                gateService.setLeftGateSensor(entity.getPhysicsEntity().getBody());
+                                break;
+                            case TEAM2_GATE_AREA:
+                                gateService.setRightGateSensor(entity.getPhysicsEntity().getBody());
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+        );
         ballService.createBall(getMapSettings().getBallSettings());
         players.forEach((key, value) -> value.forEach(this::createPlayer));
         gateService.initialize();

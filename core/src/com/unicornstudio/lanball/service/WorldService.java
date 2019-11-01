@@ -109,6 +109,10 @@ public class WorldService {
         );
     }
 
+    public void addToInitialRoundBounds(PhysicsEntity physicsEntity) {
+        initialRoundBounds.add(physicsEntity);
+    }
+
     private World createWorld() {
         return new World(WORLD_GRAVITY_VECTOR, false);
     }
@@ -135,10 +139,10 @@ public class WorldService {
 
          */
 
-        createWorldInnerBounds(sizeDto.getWidth(), sizeDto.getHeight());
-        createGates(sizeDto.getWidth(), sizeDto.getHeight());
-        createWorldOuterBounds(sizeDto.getWidth(), sizeDto.getHeight());
-        createCenterBounds(sizeDto.getWidth(), sizeDto.getHeight());
+        //createWorldInnerBounds(sizeDto.getWidth(), sizeDto.getHeight());
+        //createGates(sizeDto.getWidth(), sizeDto.getHeight());
+        //createWorldOuterBounds(sizeDto.getWidth(), sizeDto.getHeight());
+        //createCenterBounds(sizeDto.getWidth(), sizeDto.getHeight());
     }
 
     private void createWorldOuterBounds(int width, int height) {
@@ -211,8 +215,8 @@ public class WorldService {
 
         // left gate top
 
-        builder.position(LINE_SPACE / 2, height - halfHeight - LINE_SPACE)
-                .width(LINE_SPACE / 2f)
+        builder.position(LINE_SPACE / 4, height - halfHeight - LINE_SPACE)
+                .width((float) (LINE_SPACE - (LINE_SPACE / 4)))
                 .height(1f)
                 .build();
 

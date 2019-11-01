@@ -3,7 +3,6 @@ package com.unicornstudio.lanball.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.github.czyzby.lml.annotation.LmlActor;
@@ -14,10 +13,9 @@ import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.common.Ports;
 import com.unicornstudio.lanball.network.server.ServerService;
-import com.unicornstudio.lanball.util.UserInterfaceUtils;
+import com.unicornstudio.lanball.service.StageService;
 
 import javax.inject.Singleton;
-import java.util.Random;
 
 @Singleton
 public class Menu extends AbstractLmlView {
@@ -31,8 +29,9 @@ public class Menu extends AbstractLmlView {
     @LmlActor("hostServerButton")
     private TextButton hostServerButton;
 
-    public Menu() {
-        super(LanBallGame.newStage());
+    @Inject
+    public Menu(StageService stageService) {
+        super(stageService.getStage(true));
     }
 
     @Override
