@@ -57,6 +57,5 @@ public class Game {
                 gameListener.update();
             }
         }
-        stageService.render();
     }
 }

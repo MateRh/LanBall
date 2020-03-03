@@ -1,10 +1,10 @@
 package com.unicornstudio.lanball;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
 import com.github.czyzby.lml.util.LmlApplicationListener;
@@ -31,6 +31,8 @@ public class LanBallGame extends LmlApplicationListener {
 
 	private Injector injector;
 
+	//private Box2DDebugRenderer debugRenderer;
+
 	@Override
 	public void create () {
 		DefaultSettings.generate();
@@ -41,6 +43,7 @@ public class LanBallGame extends LmlApplicationListener {
 		injector = Guice.createInjector(new LanBallGameModule());
 		game = injector.getInstance(Game.class);
 		setView(com.unicornstudio.lanball.views.Menu.class);
+		//debugRenderer = new Box2DDebugRenderer();
 	}
 
 	@Override
@@ -60,6 +63,7 @@ public class LanBallGame extends LmlApplicationListener {
 		try {
 			game.render();
 			super.render();
+			//debugRenderer.render(game.getWorldService().getWorld(), this.getCurrentView().getStage().getCamera().combined.scale(Screen.getPixelPerMeter(), Screen.getPixelPerMeter(), Screen.getPixelPerMeter()));
 		} catch (Exception e) {
 			System.out.println("Main loop exception: " + e);
 		}

@@ -21,7 +21,6 @@ import com.kotcrab.vis.ui.widget.Separator;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextField;
-import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.model.map.elements.MapElement;
 import com.unicornstudio.lanball.model.map.elements.RectangleElement;
 import com.unicornstudio.lanball.service.StageService;
@@ -62,7 +61,7 @@ public class Editor extends AbstractLmlView {
 
     @Inject
     public Editor(StageService stageService) {
-        super(stageService.getStage(true));
+        super(stageService.getStage());
     }
 
     @Override

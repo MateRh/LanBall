@@ -11,6 +11,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.depth = 24;
+		config.foregroundFPS = 0;
 		config.addIcon("images/icon.png", Files.FileType.Internal);
 		new LwjglApplication(new LanBallGame(), config);
 	}

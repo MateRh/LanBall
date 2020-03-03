@@ -57,7 +57,7 @@ public class Game extends AbstractLmlView {
 
     @Inject
     public Game(StageService stageService) {
-        super(stageService.getStage(false));
+        super(stageService.getStage());
     }
 
     @Override

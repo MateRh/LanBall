@@ -44,7 +44,7 @@ public class ServerBrowser extends AbstractLmlView {
 
     @Inject
     public ServerBrowser(StageService stageService) {
-        super(stageService.getStage(true));
+        super(stageService.getStage());
     }
 
     @LmlAfter

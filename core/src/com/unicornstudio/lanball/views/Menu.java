@@ -31,7 +31,7 @@ public class Menu extends AbstractLmlView {
 
     @Inject
     public Menu(StageService stageService) {
-        super(stageService.getStage(true));
+        super(stageService.getStage());
     }
 
     @Override

@@ -37,7 +37,7 @@ public class Settings extends AbstractLmlView {
 
     @Inject
     public Settings(StageService stageService) {
-        super(stageService.getStage(true));
+        super(stageService.getStage());
     }
 
     @Override

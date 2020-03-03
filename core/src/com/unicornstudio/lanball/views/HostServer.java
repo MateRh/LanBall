@@ -83,7 +83,7 @@ public class HostServer extends AbstractLmlView {
 
     @Inject
     public HostServer(StageService stageService) {
-        super(stageService.getStage(true));
+        super(stageService.getStage());
     }
 
     @Override
