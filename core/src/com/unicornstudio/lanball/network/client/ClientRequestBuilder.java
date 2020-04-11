@@ -13,6 +13,7 @@ import com.unicornstudio.lanball.network.protocol.request.GameStartClientRequest
 import com.unicornstudio.lanball.network.protocol.request.GateContactClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerKeyPressClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateClientRequest;
@@ -64,6 +65,10 @@ public class ClientRequestBuilder {
 
     public static GateContactClientRequest createGateContactClientRequest(TeamType teamType) {
         return new GateContactClientRequest(teamType);
+    }
+
+    public static PlayerKeyPressClientRequest createPlayerKeyPressClientRequest(Integer playerId) {
+        return new PlayerKeyPressClientRequest(playerId);
     }
 
     public static BallContactRequest createBallContactRequest() {

@@ -88,6 +88,48 @@ project(":core") {
     }
 }
 
+project(":server") {
+    apply plugin: "java"
+    apply plugin: "war"
+
+
+    dependencies {
+        compile project(":network-model")
+        compile project(":commons")
+        compile "com.google.inject:guice:$googleInjectVersion"
+        compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+        compile "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+        compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+        compile "com.google.guava:guava:$guavaVersion"
+        compile "org.apache.commons:commons-lang3:$apacheCommonsVersion"
+        compile "org.glassfish.jersey.core:jersey-client:$jerseyVersion"
+        compile "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion"
+        compile "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion"
+        compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.28'
+        compile group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.8.1'
+        providedCompile "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
+project(":network-model") {
+    apply plugin: "java"
+    apply plugin: "war"
+
+    dependencies {
+        providedCompile "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
+project(":commons") {
+    apply plugin: "java"
+    apply plugin: "war"
+
+    dependencies {
+        providedCompile "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
 tasks.eclipse.doLast {
     delete ".project"
 }

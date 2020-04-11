@@ -6,6 +6,7 @@ import com.unicornstudio.lanball.io.KeyboardInput;
 import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.server.ServerService;
+import com.unicornstudio.lanball.service.AnimationService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.service.GameListenerService;
 import com.unicornstudio.lanball.service.WorldService;
@@ -46,16 +47,19 @@ public class Game {
     @Inject
     private ClientService clientService;
 
-    public void render () {
-        Gdx.gl20.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-        if (worldService.isCreated()) {
-            physicsTimeStep.processStep(worldService.getWorld());
-            entitiesService.synchronizeEntitiesPosition();
+    @Inject
+    private AnimationService animationService;
 
+    public void render(double frameTimeMillis) {
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
+        if (worldService.isCreated()) {
+            physicsTimeStep.processStep(worldService.getWorld(), (float) (frameTimeMillis / 1000f));
+            entitiesService.synchronizeEntitiesPosition();
             keyboardInput.onInput();
             for (GameListener gameListener : gameListenerService.getGameListeners()) {
                 gameListener.update();
             }
+            animationService.render(frameTimeMillis);
         }
     }
 }

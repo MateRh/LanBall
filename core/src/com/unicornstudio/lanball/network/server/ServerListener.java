@@ -14,6 +14,7 @@ import com.unicornstudio.lanball.network.protocol.request.GateContactClientReque
 import com.unicornstudio.lanball.network.protocol.request.MapLoadClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerDisconnectRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerKeyPressClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateServerRequest;
@@ -121,6 +122,9 @@ public class ServerListener extends Listener {
                 break;
             case BALL_CONTACT:
                 onBallContact();
+                break;
+            case KEY_PRESS:
+                onKeyPress(connection, (PlayerKeyPressClientRequest) networkObject);
                 break;
         }
     }
@@ -298,6 +302,13 @@ public class ServerListener extends Listener {
                 serverDataService.getPlayers(),
                 null);
         serverDataService.setGameState(GameState.IN_PROGRESS);
+    }
+
+    private void onKeyPress(Connection connection, PlayerKeyPressClientRequest object) {
+        ServerUtils.propagateData(
+                ServerRequestBuilder.createPlayerKeyPressServerRequest(object.getPlayerId()),
+                serverDataService.getPlayers(),
+                connection);
     }
 
     private boolean validateNetworkProtocol(Connection connection, PlayerJoinClientRequest object) {

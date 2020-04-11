@@ -126,7 +126,7 @@ public class EntitiesService {
         body.setLinearVelocity(velocity);
     }
 
-    private Contestant getContestantById(Integer id) {
+    public Contestant getContestantById(Integer id) {
         return (Contestant) entities.getOrDefault("contestant_" + id, null);
     }
 

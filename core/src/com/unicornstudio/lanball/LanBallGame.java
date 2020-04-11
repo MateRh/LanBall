@@ -31,6 +31,8 @@ public class LanBallGame extends LmlApplicationListener {
 
 	private Injector injector;
 
+	private double lastTimeMillis = System.currentTimeMillis();
+
 	//private Box2DDebugRenderer debugRenderer;
 
 	@Override
@@ -60,13 +62,15 @@ public class LanBallGame extends LmlApplicationListener {
 
 	@Override
 	public void render() {
+		double frameTimeMillis = System.currentTimeMillis() - lastTimeMillis;
 		try {
-			game.render();
+			game.render(frameTimeMillis);
 			super.render();
 			//debugRenderer.render(game.getWorldService().getWorld(), this.getCurrentView().getStage().getCamera().combined.scale(Screen.getPixelPerMeter(), Screen.getPixelPerMeter(), Screen.getPixelPerMeter()));
 		} catch (Exception e) {
 			System.out.println("Main loop exception: " + e);
 		}
+		lastTimeMillis = System.currentTimeMillis();
 	}
 
 	@Override

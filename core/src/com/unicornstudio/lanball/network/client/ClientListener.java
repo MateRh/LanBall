@@ -15,8 +15,12 @@ import com.google.inject.Singleton;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.unicornstudio.lanball.builder.FontBuilder;
+import com.unicornstudio.lanball.model.Contestant;
+import com.unicornstudio.lanball.model.animations.BallKickAnimation;
 import com.unicornstudio.lanball.network.protocol.request.PlayerDisconnectRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerKeyPressServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.RoundResetRequest;
+import com.unicornstudio.lanball.service.AnimationService;
 import com.unicornstudio.lanball.service.BallService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.LanBallGame;
@@ -78,6 +82,9 @@ public class ClientListener extends Listener {
 
     @Inject
     private StageService stageService;
+
+    @Inject
+    private AnimationService animationService;
 
     public void received(Connection connection, Object object) {
         if (object instanceof NetworkObject) {
@@ -142,6 +149,8 @@ public class ClientListener extends Listener {
             case BALL_CONTACT:
                 onBallContact();
                 break;
+            case KEY_PRESS:
+                onKeyPress((PlayerKeyPressServerRequest) object);
         }
     }
 
@@ -320,6 +329,13 @@ public class ClientListener extends Listener {
         clientDataService.addPlayer(PlayerDtoMapper.createPlayer(request), request.getTeamType());
         if (!clientDataService.getGameState().equals(GameState.LOBBY) && !request.isRemotePlayer()) {
             Gdx.app.postRunnable(() -> entitiesService.createContestant(request.getId(), request.getName(), getTeamByType(request.getTeamType()), request.getTeamType()));
+        }
+    }
+
+    private void onKeyPress(PlayerKeyPressServerRequest request) {
+        Contestant contestant = entitiesService.getContestantById(request.getPlayerId());
+        if (contestant != null) {
+            animationService.addAnimation(new BallKickAnimation(contestant.getActor()));
         }
     }
 

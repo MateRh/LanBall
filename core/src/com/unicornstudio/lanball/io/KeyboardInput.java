@@ -9,9 +9,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.unicornstudio.lanball.BallKickAnimation;
 import com.unicornstudio.lanball.LanBallGame;
+import com.unicornstudio.lanball.model.animations.BallKickAnimation;
 import com.unicornstudio.lanball.network.common.GameState;
+import com.unicornstudio.lanball.service.AnimationService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
@@ -33,23 +34,25 @@ public class KeyboardInput {
 
     private final EntitiesService entitiesService;
 
-    @Inject
-    private ClientService clientService;
+    private final ClientService clientService;
 
-    @Inject
-    private ClientDataService clientDataService;
+    private final ClientDataService clientDataService;
 
-    private Preferences preferences;
+    private final AnimationService animationService;
+
+    private final Preferences preferences;
 
     private Long lastKickInputMillis = System.currentTimeMillis();
 
     private Long previousFrameMillis = System.nanoTime();
 
-    private BallKickAnimation ballKickAnimation;
-
     @Inject
-    public KeyboardInput(EntitiesService entitiesService) {
+    public KeyboardInput(EntitiesService entitiesService, ClientService clientService, ClientDataService clientDataService,
+            AnimationService animationService) {
         this.entitiesService = entitiesService;
+        this.clientService = clientService;
+        this.clientDataService = clientDataService;
+        this.animationService = animationService;
         preferences = SettingsType.CONTROL.getPreference();
     }
 
@@ -57,63 +60,90 @@ public class KeyboardInput {
         float scale = (System.nanoTime() - previousFrameMillis) / FRAME_TIME;
         previousFrameMillis = System.nanoTime();
         Body playerBody = getPlayerBody();
+
         if (playerBody != null) {
-            Vector2 velocity = playerBody.getLinearVelocity();
-            Vector2 position = playerBody.getPosition();
-
             if (isPressed(SettingsKeys.SHOT_CONTROL, SettingsKeys.SHOT_CONTROL_ALTERNATIVE)) {
-                if (System.currentTimeMillis() - lastKickInputMillis < 500) {
-                    return;
-                }
-                Body ballBody = getBallBody();
-                Body sensorBody = getPlayerSensor();
-                if (ballBody != null && sensorBody != null) {
-                    getContact(ballBody, sensorBody).ifPresent(
-                            contact -> {
-                                lastKickInputMillis = System.currentTimeMillis();
-                                clientService.sendRequest(
-                                        ClientRequestBuilder.createPlayerKickBallClientRequest(
-                                                clientDataService.getRemotePlayer().getId(),
-                                                getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)).scl(4.5f).scl(scale),
-                                                contact.getWorldManifold().getNormal())
-                                );
-                            }
-                    );
-                    if (ballKickAnimation == null || ballKickAnimation.isFinished()) {
-                        ballKickAnimation = new BallKickAnimation(getPlayerActor());
-                    }
-                }
+                onKickInput(playerBody, scale);
             }
-
-            if (velocity.len() < Player.MAX_VELOCITY) {
-                if (isPressed(SettingsKeys.LEFT_CONTROL, SettingsKeys.LEFT_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(-Player.VELOCITY * scale, 0, position.x, position.y, true);
-                }
-
-                if (isPressed(SettingsKeys.RIGHT_CONTROL, SettingsKeys.RIGHT_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(Player.VELOCITY * scale, 0, position.x, position.y, true);
-                }
-
-                if (isPressed(SettingsKeys.DOWN_CONTROL, SettingsKeys.DOWN_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(0, -Player.VELOCITY * scale, position.x, position.y, true);
-                }
-
-                if (isPressed(SettingsKeys.UP_CONTROL, SettingsKeys.UP_CONTROL_ALTERNATIVE)) {
-                    playerBody.applyLinearImpulse(0, Player.VELOCITY * scale, position.x, position.y, true);
-                }
+            if (isPressed(SettingsKeys.LEFT_CONTROL, SettingsKeys.LEFT_CONTROL_ALTERNATIVE)) {
+                onLeftInput(playerBody, scale);
             }
-
+            if (isPressed(SettingsKeys.RIGHT_CONTROL, SettingsKeys.RIGHT_CONTROL_ALTERNATIVE)) {
+                onRightInput(playerBody, scale);
+            }
+            if (isPressed(SettingsKeys.DOWN_CONTROL, SettingsKeys.DOWN_CONTROL_ALTERNATIVE)) {
+                onDownInput(playerBody, scale);
+            }
+            if (isPressed(SettingsKeys.UP_CONTROL, SettingsKeys.UP_CONTROL_ALTERNATIVE)) {
+                onUpInput(playerBody, scale);
+            }
             if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                if (clientDataService.getGameState() == GameState.LOBBY) {
-                    return;
-                }
-                if (((LanBallGame) Gdx.app.getApplicationListener()).getCurrentView() instanceof Game) {
-                    ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
-                } else if (((LanBallGame) Gdx.app.getApplicationListener()).getCurrentView() instanceof HostServer) {
-                    ((LanBallGame) Gdx.app.getApplicationListener()).setView(Game.class);
-                }
+                switchBetweenGameAndHostServerViews();
             }
+        }
+    }
 
+    private void onKickInput(Body playerBody, float scale) {
+        if (System.currentTimeMillis() - lastKickInputMillis < 500) {
+            return;
+        }
+        Body ballBody = getBallBody();
+        Body sensorBody = getPlayerSensor();
+        if (ballBody != null && sensorBody != null) {
+            getContact(ballBody, sensorBody).ifPresent(
+                    contact -> {
+                        clientService.sendRequest(
+                                ClientRequestBuilder.createPlayerKickBallClientRequest(
+                                        clientDataService.getRemotePlayer().getId(),
+                                        getForceFromAngle(getAngleBetweenTwoBodies(ballBody, playerBody)).scl(4.5f).scl(scale),
+                                        contact.getWorldManifold().getNormal())
+                        );
+                    }
+            );
+            Actor playerActor = getPlayerActor();
+            if (playerActor != null) {
+                clientService.sendRequest(ClientRequestBuilder.createPlayerKeyPressClientRequest(
+                        clientDataService.getRemotePlayer().getId()));
+                lastKickInputMillis = System.currentTimeMillis();
+                animationService.addAnimation(new BallKickAnimation(playerActor));
+            }
+        }
+    }
+
+    private void onLeftInput(Body playerBody, float scale) {
+        Vector2 position = playerBody.getPosition();
+        applyImpulse(playerBody,-Player.VELOCITY * scale, 0, position.x, position.y);
+    }
+
+    private void onRightInput(Body playerBody, float scale) {
+        Vector2 position = playerBody.getPosition();
+        applyImpulse(playerBody,Player.VELOCITY * scale, 0, position.x, position.y);
+    }
+
+    private void onUpInput(Body playerBody, float scale) {
+        Vector2 position = playerBody.getPosition();
+        applyImpulse(playerBody,0, Player.VELOCITY * scale, position.x, position.y);
+    }
+
+    private void onDownInput(Body playerBody, float scale) {
+        Vector2 position = playerBody.getPosition();
+        applyImpulse(playerBody,0, -Player.VELOCITY * scale, position.x, position.y);
+    }
+
+
+    private void applyImpulse(Body body, float impulseX, float impulseY, float pointX, float pointY) {
+        body.applyLinearImpulse(impulseX, impulseY, pointX, pointY, true);
+        body.setLinearVelocity(body.getLinearVelocity().limit(Player.MAX_VELOCITY));
+    }
+
+    private void switchBetweenGameAndHostServerViews() {
+        if (clientDataService.getGameState() == GameState.LOBBY) {
+            return;
+        }
+        if (((LanBallGame) Gdx.app.getApplicationListener()).getCurrentView() instanceof Game) {
+            ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
+        } else if (((LanBallGame) Gdx.app.getApplicationListener()).getCurrentView() instanceof HostServer) {
+            ((LanBallGame) Gdx.app.getApplicationListener()).setView(Game.class);
         }
     }
 

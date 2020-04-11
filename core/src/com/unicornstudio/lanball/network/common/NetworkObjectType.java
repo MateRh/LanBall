@@ -20,5 +20,6 @@ public enum NetworkObjectType {
     SCORE_UPDATE,
     START_POSITION,
     ROUND_RESET,
-    BALL_CONTACT
+    BALL_CONTACT,
+    KEY_PRESS
 }

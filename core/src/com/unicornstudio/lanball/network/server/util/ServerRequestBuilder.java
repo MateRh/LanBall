@@ -8,6 +8,7 @@ import com.unicornstudio.lanball.network.protocol.request.GameStartServerRequest
 import com.unicornstudio.lanball.network.protocol.request.MapLoadServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.MatchEndServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamServerRequest;
+import com.unicornstudio.lanball.network.protocol.request.PlayerKeyPressServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.PlayerSetStartPositionServerRequest;
 import com.unicornstudio.lanball.network.protocol.request.RemotePlayerServerRequest;
@@ -100,6 +101,10 @@ public class ServerRequestBuilder {
 
     public static BallContactRequest createBallContactRequest() {
         return new BallContactRequest();
+    }
+
+    public static PlayerKeyPressServerRequest createPlayerKeyPressServerRequest(Integer playerId) {
+        return new PlayerKeyPressServerRequest(playerId);
     }
 
 }
