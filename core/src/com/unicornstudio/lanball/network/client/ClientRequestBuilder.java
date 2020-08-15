@@ -6,6 +6,7 @@ import com.unicornstudio.lanball.model.Ball;
 import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.model.TeamType;
+import com.unicornstudio.lanball.network.model.protocol.common.BallUpdate;
 import com.unicornstudio.lanball.network.protocol.PlayerJoinClientRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallContactRequest;
 import com.unicornstudio.lanball.network.protocol.request.BallUpdateClientRequest;
@@ -36,10 +37,10 @@ public class ClientRequestBuilder {
         return new PlayerUpdateClientRequest(position.x, position.y, velocity.x, velocity.y);
     }
 
-    public static BallUpdateClientRequest createBallUpdateClientRequest(Ball ball) {
+    public static BallUpdate createBallUpdateClientRequest(Ball ball) {
         Vector2 position = getPosition(ball);
         Vector2 velocity = getVelocity(ball);
-        return new BallUpdateClientRequest(position.x, position.y, velocity.x, velocity.y);
+        return new BallUpdate(position.x, position.y, velocity.x, velocity.y);
     }
 
     public static MapLoadClientRequest createMapLoadClientRequest(FileHandle mapFile) {

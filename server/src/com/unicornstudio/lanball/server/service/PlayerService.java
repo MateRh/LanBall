@@ -1,14 +1,8 @@
 package com.unicornstudio.lanball.server.service;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.unicornstudio.lanball.commons.GameTimer;
-import com.unicornstudio.lanball.network.model.Ball;
 import com.unicornstudio.lanball.network.model.Player;
-import com.unicornstudio.lanball.network.model.enumeration.GameState;
 import com.unicornstudio.lanball.network.model.enumeration.TeamType;
-import com.unicornstudio.lanball.server.data.ServerData;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.inject.Singleton;
 import java.util.HashMap;
@@ -17,34 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Getter
 @Singleton
-public class ServerDataService {
-
-    private final ServerData serverData = new ServerData();
+public class PlayerService {
 
     private final Map<Connection, Player> players = new HashMap<>();
-
-    @Setter
-    private byte[] mapData;
-
-    private final Ball ball = new Ball();
-
-    private GameState gameState = GameState.LOBBY;
-
-    private Integer timeLimitSelectBoxIndex;
-
-    private Integer scoreLimitSelectBoxIndex;
-
-    @Setter
-    private Integer team1Score = 0;
-
-    @Setter
-    private Integer team2Score = 0;
-
-    private Integer scoreLimit;
-
-    private GameTimer timer;
 
     public void addPlayer(Connection connection, Player player) {
         players.put(connection, player);
@@ -96,46 +66,6 @@ public class ServerDataService {
         return players.entrySet().stream()
                 .filter(entry -> entry.getValue().getTeamType().equals(teamType))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    public void updateBall(Float positionX, Float positionY, Float velocityX, Float velocityY) {
-        ball.setPositionX(positionX);
-        ball.setPositionY(positionY);
-        ball.setVelocityX(velocityX);
-        ball.setVelocityY(velocityY);
-    }
-
-    public void setTimeLimitSelectBoxIndex(Integer timeLimitSelectBoxIndex) {
-        this.timeLimitSelectBoxIndex = timeLimitSelectBoxIndex;
-        createNewTimer();
-    }
-
-    public void createNewTimer() {
-        timer = new GameTimer((timeLimitSelectBoxIndex + 1) * 60 * 1000);
-        timer.setPause(!gameState.equals(GameState.IN_PROGRESS));
-    }
-
-    public void setScoreLimitSelectBoxIndex(Integer scoreLimitSelectBoxIndex) {
-        this.scoreLimitSelectBoxIndex = scoreLimitSelectBoxIndex;
-        scoreLimit = scoreLimitSelectBoxIndex + 1;
-    }
-
-    public void clear() {
-        players.clear();
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-        if (timer != null) {
-            timer.setPause(!gameState.equals(GameState.IN_PROGRESS));
-        }
-    }
-
-    public long getTimerTime() {
-        if (timer == null) {
-            return 0L;
-        }
-        return timer.getTime();
     }
 
 }

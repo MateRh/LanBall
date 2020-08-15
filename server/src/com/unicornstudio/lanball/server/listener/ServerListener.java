@@ -11,7 +11,6 @@ import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import com.unicornstudio.lanball.network.model.protocol.NetworkObject;
 import com.unicornstudio.lanball.network.model.protocol.NetworkProtocol;
 import com.unicornstudio.lanball.network.model.protocol.PlayerDisconnect;
-import com.unicornstudio.lanball.network.model.protocol.client.BallUpdateClient;
 import com.unicornstudio.lanball.network.model.protocol.client.GateContactClient;
 import com.unicornstudio.lanball.network.model.protocol.client.MapLoadClient;
 import com.unicornstudio.lanball.network.model.protocol.client.PlayerChangeTeamClient;
@@ -20,6 +19,7 @@ import com.unicornstudio.lanball.network.model.protocol.client.PlayerKeyPressCli
 import com.unicornstudio.lanball.network.model.protocol.client.PlayerKickBallClient;
 import com.unicornstudio.lanball.network.model.protocol.client.PlayerUpdateClient;
 import com.unicornstudio.lanball.network.model.protocol.client.SelectBoxUpdateClient;
+import com.unicornstudio.lanball.network.model.protocol.common.BallUpdate;
 import com.unicornstudio.lanball.network.model.protocol.server.PlayerUpdateServer;
 import com.unicornstudio.lanball.server.builder.ServerRequestBuilder;
 import com.unicornstudio.lanball.server.builder.ServerResponseBuilder;
@@ -106,7 +106,7 @@ public class ServerListener extends Listener {
                 onPlayerChangeTeam(player, (PlayerChangeTeamClient) networkObject);
                 break;
             case BALL_UPDATE:
-                onBallUpdate(connection, (BallUpdateClient) networkObject);
+                onBallUpdate(connection, (BallUpdate) networkObject);
                 break;
             case MAP_LOAD:
                 onMapLoad(connection, (MapLoadClient) networkObject);
@@ -159,9 +159,9 @@ public class ServerListener extends Listener {
         propagateData(ServerRequestBuilder.createMapLoadServer(request.getMapData()), serverDataService.getPlayers(), null);
     }
 
-    private void onBallUpdate(Connection connection, BallUpdateClient request) {
+    private void onBallUpdate(Connection connection, BallUpdate request) {
         serverDataService.updateBall(request.getPositionX(), request.getPositionY(), request.getVelocityX(), request.getVelocityY());
-        propagateData(ServerRequestBuilder.createBallUpdateServer(serverDataService.getBall()), serverDataService.getPlayers(), connection);
+        propagateData(request, serverDataService.getPlayers(), connection);
     }
 
     private void onPlayerJoin(Connection connection, Player player, PlayerJoinClient object) {

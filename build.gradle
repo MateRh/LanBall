@@ -19,14 +19,14 @@ allprojects {
 
     ext {
         appName = "LanBall"
-        gdxVersion = '1.9.10'
+        libGdxVersion = '1.9.12'
         gdxLmlVersion = '1.9'
         lombokVersion = '1.18.8'
         gdxLmlVersion = '1.9.1.9.6'
         libGdxUtilsVersion = '0.13.4'
         libGdxUtilsBox2dVersion = '0.13.4'
         visUiVersion = '1.4.4'
-        googleInjectVersion = '4.2.2'
+        googleInjectVersion = '4.2.3'
         jacksonVersion = '2.9.9'
         kyronetVersion = '2.22.0-RC1'
         guavaVersion = '28.0-jre'
@@ -50,10 +50,10 @@ project(":desktop") {
 
     dependencies {
         compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-platform:$libGdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-box2d-platform:$libGdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-tools:$libGdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$libGdxVersion:natives-desktop"
     }
 }
 
@@ -63,10 +63,11 @@ project(":core") {
     apply plugin: "war"
 
     dependencies {
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile project(":server")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$libGdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$libGdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$libGdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$libGdxVersion"
         compile "com.github.czyzby:gdx-lml:$gdxLmlVersion"
         compile "com.github.czyzby:gdx-lml-vis:$gdxLmlVersion"
         compile "com.github.czyzby:gdx-kiwi:$gdxLmlVersion"

@@ -1,6 +1,5 @@
 package com.unicornstudio.lanball.server.builder;
 
-import com.unicornstudio.lanball.network.model.Ball;
 import com.unicornstudio.lanball.network.model.Player;
 import com.unicornstudio.lanball.network.model.enumeration.GameState;
 import com.unicornstudio.lanball.network.model.enumeration.MatchEndReason;
@@ -8,7 +7,6 @@ import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import com.unicornstudio.lanball.network.model.protocol.BallContact;
 import com.unicornstudio.lanball.network.model.protocol.RoundReset;
 import com.unicornstudio.lanball.network.model.protocol.ScoreUpdate;
-import com.unicornstudio.lanball.network.model.protocol.server.BallUpdateServer;
 import com.unicornstudio.lanball.network.model.protocol.server.GameStartServer;
 import com.unicornstudio.lanball.network.model.protocol.server.MapLoadServer;
 import com.unicornstudio.lanball.network.model.protocol.server.MatchEndServer;
@@ -56,14 +54,6 @@ public class ServerRequestBuilder {
         serverStateServer.setScoreLimitSelectBoxIndex(scoreLimitSelectedIndex);
         serverStateServer.setTimeLimitSelectBoxIndex(timeLimitSelectedIndex);
         return serverStateServer;
-    }
-
-    public static BallUpdateServer createBallUpdateServer(Ball ball) {
-        return new BallUpdateServer(ball.getPositionX(),
-                ball.getPositionY(),
-                ball.getVelocityX(),
-                ball.getVelocityY()
-        );
     }
 
     public static MapLoadServer createMapLoadServer(byte[] mapData) {
