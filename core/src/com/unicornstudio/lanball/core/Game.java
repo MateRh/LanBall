@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.unicornstudio.lanball.io.KeyboardInput;
 import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.network.client.ClientService;
-import com.unicornstudio.lanball.network.server.ServerService;
+import com.unicornstudio.lanball.server.service.ServerService;
 import com.unicornstudio.lanball.service.AnimationService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.service.GameListenerService;

@@ -2,11 +2,11 @@ package com.unicornstudio.lanball.network.client;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.network.model.enumeration.GameState;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.core.GameListener;
 import com.unicornstudio.lanball.model.Ball;
 import com.unicornstudio.lanball.model.Player;
-import com.unicornstudio.lanball.network.common.GameState;
 
 @Singleton
 public class ClientSynchronizerService implements GameListener {

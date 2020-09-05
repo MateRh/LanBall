@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.model.animations.BallKickAnimation;
-import com.unicornstudio.lanball.network.common.GameState;
+import com.unicornstudio.lanball.network.model.enumeration.GameState;
 import com.unicornstudio.lanball.service.AnimationService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.model.Entity;

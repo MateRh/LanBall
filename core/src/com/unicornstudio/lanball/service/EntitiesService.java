@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.unicornstudio.lanball.core.Screen;
-import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.model.map.settings.PlayerSettings;
 import com.unicornstudio.lanball.model.map.settings.Team;
@@ -22,6 +21,7 @@ import com.unicornstudio.lanball.model.Player;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
 import com.unicornstudio.lanball.model.actors.ContestantActor;
 import com.unicornstudio.lanball.model.actors.PlayerActor;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 
 @Singleton
 public class EntitiesService {

@@ -19,7 +19,7 @@ allprojects {
 
     ext {
         appName = "LanBall"
-        libGdxVersion = '1.9.12'
+        libGdxVersion = '1.9.11'
         gdxLmlVersion = '1.9'
         lombokVersion = '1.18.8'
         gdxLmlVersion = '1.9.1.9.6'
@@ -64,6 +64,7 @@ project(":core") {
 
     dependencies {
         compile project(":server")
+        compile project(":network-model")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$libGdxVersion"
         compile "com.badlogicgames.gdx:gdx:$libGdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$libGdxVersion"

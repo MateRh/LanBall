@@ -5,11 +5,11 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.client.ClientDataService;
 import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
-import com.unicornstudio.lanball.network.common.GameState;
+import com.unicornstudio.lanball.network.model.enumeration.GameState;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import lombok.Setter;
 
 public class GateListener implements ContactListener {

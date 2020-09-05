@@ -1,9 +1,9 @@
 package com.unicornstudio.lanball.network.client;
 
 import com.google.inject.Singleton;
-import com.unicornstudio.lanball.model.TeamType;
-import com.unicornstudio.lanball.network.common.GameState;
-import com.unicornstudio.lanball.network.dto.PlayerDto;
+import com.unicornstudio.lanball.network.model.PlayerDto;
+import com.unicornstudio.lanball.network.model.enumeration.GameState;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import com.unicornstudio.lanball.util.GameTimer;
 import lombok.Getter;
 import lombok.Setter;

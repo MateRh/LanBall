@@ -7,7 +7,7 @@ import com.unicornstudio.lanball.core.Screen;
 import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.model.map.settings.BallSettings;
 import com.unicornstudio.lanball.model.map.settings.Position;
-import com.unicornstudio.lanball.model.TeamType;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 
 @Singleton
 public class WorldUtilService {

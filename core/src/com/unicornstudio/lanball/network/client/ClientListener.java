@@ -1,6 +1,5 @@
 package com.unicornstudio.lanball.network.client;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -17,9 +16,24 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.unicornstudio.lanball.builder.FontBuilder;
 import com.unicornstudio.lanball.model.Contestant;
 import com.unicornstudio.lanball.model.animations.BallKickAnimation;
-import com.unicornstudio.lanball.network.protocol.request.PlayerDisconnectRequest;
-import com.unicornstudio.lanball.network.protocol.request.PlayerKeyPressServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.RoundResetRequest;
+import com.unicornstudio.lanball.network.model.PlayerDto;
+import com.unicornstudio.lanball.network.model.enumeration.GameState;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
+import com.unicornstudio.lanball.network.model.protocol.NetworkObject;
+import com.unicornstudio.lanball.network.model.protocol.PlayerDisconnect;
+import com.unicornstudio.lanball.network.model.protocol.RoundReset;
+import com.unicornstudio.lanball.network.model.protocol.ScoreUpdate;
+import com.unicornstudio.lanball.network.model.protocol.server.BallUpdateServer;
+import com.unicornstudio.lanball.network.model.protocol.server.MapLoadServer;
+import com.unicornstudio.lanball.network.model.protocol.server.MatchEndServer;
+import com.unicornstudio.lanball.network.model.protocol.server.PlayerChangeTeamServer;
+import com.unicornstudio.lanball.network.model.protocol.server.PlayerKeyPressServer;
+import com.unicornstudio.lanball.network.model.protocol.server.PlayerKickBallServer;
+import com.unicornstudio.lanball.network.model.protocol.server.PlayerSetStartPositionServer;
+import com.unicornstudio.lanball.network.model.protocol.server.PlayerUpdateServer;
+import com.unicornstudio.lanball.network.model.protocol.server.RemotePlayerServer;
+import com.unicornstudio.lanball.network.model.protocol.server.SelectBoxUpdateServer;
+import com.unicornstudio.lanball.network.model.protocol.server.ServerStateServer;
 import com.unicornstudio.lanball.service.AnimationService;
 import com.unicornstudio.lanball.service.BallService;
 import com.unicornstudio.lanball.service.EntitiesService;
@@ -29,22 +43,7 @@ import com.unicornstudio.lanball.audio.SoundType;
 import com.unicornstudio.lanball.model.map.MapService;
 import com.unicornstudio.lanball.model.map.settings.Team;
 import com.unicornstudio.lanball.model.Entity;
-import com.unicornstudio.lanball.model.TeamType;
-import com.unicornstudio.lanball.network.common.GameState;
-import com.unicornstudio.lanball.network.common.NetworkObject;
 import com.unicornstudio.lanball.network.common.PlayerDtoMapper;
-import com.unicornstudio.lanball.network.dto.PlayerDto;
-import com.unicornstudio.lanball.network.protocol.request.BallUpdateServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.MapLoadServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.MatchEndServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.PlayerChangeTeamServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.PlayerKickBallServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.PlayerSetStartPositionServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.PlayerUpdateServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.RemotePlayerServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.ScoreUpdateRequest;
-import com.unicornstudio.lanball.network.protocol.request.SelectBoxUpdateServerRequest;
-import com.unicornstudio.lanball.network.protocol.request.ServerStateServerRequest;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.service.StageService;
 import com.unicornstudio.lanball.service.WorldService;
@@ -105,56 +104,56 @@ public class ClientListener extends Listener {
     private void networkObjectReceived(Connection connection, NetworkObject object) {
         switch (object.getType()) {
             case REMOTE_PLAYER:
-                onRemotePlayer((RemotePlayerServerRequest) object);
+                onRemotePlayer((RemotePlayerServer) object);
                 break;
             case PLAYER_UPDATE:
-                onPlayerUpdate((PlayerUpdateServerRequest) object);
+                onPlayerUpdate((PlayerUpdateServer) object);
                 break;
             case PLAYER_DISCONNECT:
-                onPlayerDisconnect((PlayerDisconnectRequest) object);
+                onPlayerDisconnect((PlayerDisconnect) object);
                 break;
             case SERVER_STATE:
-                onServerState((ServerStateServerRequest) object);
+                onServerState((ServerStateServer) object);
                 break;
             case BALL_UPDATE:
-                onBallUpdate((BallUpdateServerRequest) object);
+                onBallUpdate((BallUpdateServer) object);
                 break;
             case MAP_LOAD:
-                onMapUpdate((MapLoadServerRequest) object);
+                onMapUpdate((MapLoadServer) object);
                 break;
             case START_GAME:
                 onStartGame();
                 break;
             case PLAYER_CHANGE_TEAM:
-                onPlayerChangeTeam((PlayerChangeTeamServerRequest) object);
+                onPlayerChangeTeam((PlayerChangeTeamServer) object);
                 break;
             case SELECT_BOX_UPDATE:
-                onSelectBoxUpdate((SelectBoxUpdateServerRequest) object);
+                onSelectBoxUpdate((SelectBoxUpdateServer) object);
                 break;
             case BALL_KICK:
-                onBallKick((PlayerKickBallServerRequest) object);
+                onBallKick((PlayerKickBallServer) object);
                 break;
             case MATCH_END:
-                onMatchEnd((MatchEndServerRequest) object);
+                onMatchEnd((MatchEndServer) object);
                 break;
             case SCORE_UPDATE:
-                onScoreUpdate((ScoreUpdateRequest) object);
+                onScoreUpdate((ScoreUpdate) object);
                 break;
             case START_POSITION:
-                onSetStartPosition((PlayerSetStartPositionServerRequest) object);
+                onSetStartPosition((PlayerSetStartPositionServer) object);
                 break;
             case ROUND_RESET:
-                onRoundReset((RoundResetRequest) object);
+                onRoundReset((RoundReset) object);
                 break;
             case BALL_CONTACT:
                 onBallContact();
                 break;
             case KEY_PRESS:
-                onKeyPress((PlayerKeyPressServerRequest) object);
+                onKeyPress((PlayerKeyPressServer) object);
         }
     }
 
-    private void onRoundReset(RoundResetRequest request) {
+    private void onRoundReset(RoundReset request) {
         worldService.updateInitialRoundBoundsFilter(request.getStartingTeam());
         worldService.setInitialRoundBoundsActive(true);
         ballService.reset();
@@ -175,23 +174,23 @@ public class ClientListener extends Listener {
         });
     }
 
-    private void onMapUpdate(MapLoadServerRequest request) {
+    private void onMapUpdate(MapLoadServer request) {
         Gdx.app.postRunnable(() ->
                 mapService.loadMap(CompressionUtil.decompress(request.getMapData())));
     }
 
-    private void onBallUpdate(BallUpdateServerRequest request) {
+    private void onBallUpdate(BallUpdateServer request) {
         Gdx.app.postRunnable(() -> entitiesService.updateBall(
                 new Vector2(request.getPositionX(), request.getPositionY()),
                 new Vector2(request.getVelocityX(), request.getVelocityY())
         ));
     }
 
-    private void onRemotePlayer(RemotePlayerServerRequest object) {
+    private void onRemotePlayer(RemotePlayerServer object) {
         createContestant(object);
     }
 
-    private void onPlayerUpdate(PlayerUpdateServerRequest object) {
+    private void onPlayerUpdate(PlayerUpdateServer object) {
         Gdx.app.postRunnable(() -> {
             if (object.isRemote()) {
                 entitiesService.updateContestantData(
@@ -206,7 +205,7 @@ public class ClientListener extends Listener {
         });
     }
 
-    private void onPlayerDisconnect(PlayerDisconnectRequest request) {
+    private void onPlayerDisconnect(PlayerDisconnect request) {
         PlayerDto player = clientDataService.getPlayerById(request.getId());
         if (player != null) {
             Gdx.app.postRunnable(() -> {
@@ -217,7 +216,7 @@ public class ClientListener extends Listener {
         }
     }
 
-    private void onSetStartPosition(PlayerSetStartPositionServerRequest object) {
+    private void onSetStartPosition(PlayerSetStartPositionServer object) {
         Vector2 position = worldUtilService.calcPosition(object.getTeamType(), object.getPositionId());
         System.out.println(position);
         Gdx.app.postRunnable(() -> {
@@ -229,7 +228,7 @@ public class ClientListener extends Listener {
         });
     }
 
-    private void onServerState(ServerStateServerRequest object) {
+    private void onServerState(ServerStateServer object) {
         clientDataService.setGameState(object.getGameState());
         object.getPlayers().forEach(this::createContestant);
         if (object.getScoreLimitSelectBoxIndex() != null) {
@@ -244,7 +243,7 @@ public class ClientListener extends Listener {
         }
     }
 
-    private void onPlayerChangeTeam(PlayerChangeTeamServerRequest object) {
+    private void onPlayerChangeTeam(PlayerChangeTeamServer object) {
         PlayerDto player = clientDataService.getPlayerById(object.getId());
         if (player != null) {
             clientDataService.changePlayerTeam(player, player.getTeamType(), object.getTeamType());
@@ -252,7 +251,7 @@ public class ClientListener extends Listener {
         }
     }
 
-    private void onSelectBoxUpdate(SelectBoxUpdateServerRequest object) {
+    private void onSelectBoxUpdate(SelectBoxUpdateServer object) {
         if (object.getSelectBoxName().equals(SettingsKeys.TIME_LIMIT)) {
             clientDataService.setTimeLimitSelectBoxIndex(object.getSelectedIndex());
         }
@@ -261,7 +260,7 @@ public class ClientListener extends Listener {
         }
     }
 
-    private void onBallKick(PlayerKickBallServerRequest object) {
+    private void onBallKick(PlayerKickBallServer object) {
         Body ballBody = getBallBody();
         if (ballBody != null) {
             soundService.playSound(SoundType.KICK);
@@ -269,7 +268,7 @@ public class ClientListener extends Listener {
         }
     }
 
-    private void onMatchEnd(MatchEndServerRequest object) {
+    private void onMatchEnd(MatchEndServer object) {
         clientDataService.setGameState(GameState.PENDING);
         Timer timer_backToMenu = new Timer("matchEnd_backToMenu");
                         switch (object.getEndReason()) {
@@ -307,7 +306,7 @@ public class ClientListener extends Listener {
         );
     }
 
-    private void onScoreUpdate(ScoreUpdateRequest object) {
+    private void onScoreUpdate(ScoreUpdate object) {
         if (object.getTeamType().equals(TeamType.TEAM1)) {
             clientDataService.setGameState(GameState.PENDING);
             clientDataService.setTeam1Score(object.getScore());
@@ -325,14 +324,14 @@ public class ClientListener extends Listener {
         clientDataService.setGameState(GameState.IN_PROGRESS);
     }
 
-    private void createContestant(RemotePlayerServerRequest request) {
+    private void createContestant(RemotePlayerServer request) {
         clientDataService.addPlayer(PlayerDtoMapper.createPlayer(request), request.getTeamType());
         if (!clientDataService.getGameState().equals(GameState.LOBBY) && !request.isRemotePlayer()) {
             Gdx.app.postRunnable(() -> entitiesService.createContestant(request.getId(), request.getName(), getTeamByType(request.getTeamType()), request.getTeamType()));
         }
     }
 
-    private void onKeyPress(PlayerKeyPressServerRequest request) {
+    private void onKeyPress(PlayerKeyPressServer request) {
         Contestant contestant = entitiesService.getContestantById(request.getPlayerId());
         if (contestant != null) {
             animationService.addAnimation(new BallKickAnimation(contestant.getActor()));

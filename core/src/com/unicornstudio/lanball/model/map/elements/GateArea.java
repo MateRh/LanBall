@@ -1,6 +1,6 @@
 package com.unicornstudio.lanball.model.map.elements;
 
-import com.unicornstudio.lanball.model.TeamType;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import lombok.Data;
 
 @Data

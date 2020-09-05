@@ -12,13 +12,13 @@ import com.badlogic.gdx.utils.Array;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.unicornstudio.lanball.listner.WorldContactListener;
-import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.model.map.MapDto;
 import com.unicornstudio.lanball.model.map.world.SizeDto;
 import com.unicornstudio.lanball.model.map.world.WorldDto;
 import com.unicornstudio.lanball.model.MapWorld;
 import com.unicornstudio.lanball.model.physics.PhysicsEntity;
 import com.unicornstudio.lanball.model.actors.MapBackground;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import lombok.Data;
 
 import java.util.ArrayList;

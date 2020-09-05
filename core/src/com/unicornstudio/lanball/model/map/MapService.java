@@ -11,14 +11,14 @@ import com.unicornstudio.lanball.model.Entity;
 import com.unicornstudio.lanball.model.map.elements.FunctionalType;
 import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
+import com.unicornstudio.lanball.network.model.PlayerDto;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import com.unicornstudio.lanball.service.GateService;
 import com.unicornstudio.lanball.service.BallService;
 import com.unicornstudio.lanball.service.EntitiesService;
 import com.unicornstudio.lanball.service.WorldService;
 import com.unicornstudio.lanball.io.mappers.MapMapper;
 import com.unicornstudio.lanball.model.map.settings.Settings;
-import com.unicornstudio.lanball.model.TeamType;
-import com.unicornstudio.lanball.network.dto.PlayerDto;
 import com.unicornstudio.lanball.service.StageService;
 import lombok.Data;
 

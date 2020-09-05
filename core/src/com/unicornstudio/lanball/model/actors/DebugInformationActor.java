@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.unicornstudio.lanball.network.client.ClientDataService;
-import com.unicornstudio.lanball.network.server.ServerDataService;
+import com.unicornstudio.lanball.server.service.ServerDataService;
 import com.unicornstudio.lanball.util.GameTimer;
 
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class DebugInformationActor extends Actor {
                 "\nServer: " +
                 "\n  state: " + serverDataService.getGameState() +
                 "\n  time: " + serverDataService.getTimerTime() +
-                "\n  timer pause: " + Optional.ofNullable(serverDataService.getTimer()).map(GameTimer::isPause).orElse(false);
+                "\n  timer pause: " + Optional.ofNullable(serverDataService.getTimer()).map(com.unicornstudio.lanball.commons.GameTimer::isPause);
     }
 
 }

@@ -5,13 +5,13 @@ import com.esotericsoftware.minlog.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.unicornstudio.lanball.network.common.Ports;
-import com.unicornstudio.lanball.network.common.NetworkClassRegisterer;
-import com.unicornstudio.lanball.network.common.NetworkObject;
+import com.unicornstudio.lanball.network.model.enumeration.PlayerRole;
+import com.unicornstudio.lanball.network.model.protocol.NetworkObject;
 import com.unicornstudio.lanball.network.common.NetworkProtocol;
 import com.unicornstudio.lanball.network.dto.Host;
-import com.unicornstudio.lanball.network.server.dto.PlayerRole;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.prefernces.SettingsType;
+import com.unicornstudio.lanball.server.commons.NetworkClassRegisterer;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 

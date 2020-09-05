@@ -16,7 +16,7 @@ import com.kotcrab.vis.ui.widget.ListView;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.dto.Host;
-import com.unicornstudio.lanball.network.server.dto.PlayerRole;
+import com.unicornstudio.lanball.network.model.enumeration.PlayerRole;
 import com.unicornstudio.lanball.service.StageService;
 import com.unicornstudio.lanball.util.adapter.ListAdapter;
 import com.unicornstudio.lanball.util.adapter.dto.ListRow;

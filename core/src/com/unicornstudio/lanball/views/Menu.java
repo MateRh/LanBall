@@ -12,10 +12,15 @@ import com.google.inject.Inject;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.network.client.ClientService;
 import com.unicornstudio.lanball.network.common.Ports;
-import com.unicornstudio.lanball.network.server.ServerService;
+import com.unicornstudio.lanball.network.model.enumeration.GameState;
+import com.unicornstudio.lanball.network.model.enumeration.PlayerRole;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
+import com.unicornstudio.lanball.server.service.ServerService;
 import com.unicornstudio.lanball.service.StageService;
 
 import javax.inject.Singleton;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Singleton
 public class Menu extends AbstractLmlView {
@@ -58,7 +63,20 @@ public class Menu extends AbstractLmlView {
                     if (clientService.isPortOpen(port)) {
                         if (serverService.start(port)) {
                             //dialog.remove();
-                            ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
+                            clientService.connect("localhost:" + port, PlayerRole.HOST);
+
+
+                            new Timer().schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    Gdx.app.postRunnable(() -> {
+
+                                        ((LanBallGame) Gdx.app.getApplicationListener()).setView(HostServer.class);
+                                    });
+                                }
+                            }, 1000);
+
+
                         }
                         break;
                     }

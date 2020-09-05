@@ -20,13 +20,13 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.layout.DragPane;
 import com.unicornstudio.lanball.LanBallGame;
 import com.unicornstudio.lanball.io.MapChooser;
-import com.unicornstudio.lanball.model.TeamType;
 import com.unicornstudio.lanball.network.client.ClientDataService;
 import com.unicornstudio.lanball.network.client.ClientRequestBuilder;
 import com.unicornstudio.lanball.network.client.ClientService;
-import com.unicornstudio.lanball.network.server.ServerService;
+import com.unicornstudio.lanball.network.model.enumeration.TeamType;
 import com.unicornstudio.lanball.prefernces.SettingsKeys;
 import com.unicornstudio.lanball.prefernces.SettingsType;
+import com.unicornstudio.lanball.server.service.ServerService;
 import com.unicornstudio.lanball.service.StageService;
 
 

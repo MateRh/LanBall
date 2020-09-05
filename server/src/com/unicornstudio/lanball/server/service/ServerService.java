@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.unicornstudio.lanball.server.commons.NetworkClassRegisterer;
 import com.unicornstudio.lanball.server.listener.ServerListener;
 import lombok.Getter;
 
@@ -26,6 +27,7 @@ public class ServerService {
         serverDataService = new ServerDataService();
         serverListener = new ServerListener(serverDataService);
         server = new Server();
+        NetworkClassRegisterer.register(server.getKryo());
         Log.set(Log.LEVEL_ERROR);
     }
 

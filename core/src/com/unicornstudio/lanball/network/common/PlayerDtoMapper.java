@@ -1,11 +1,12 @@
 package com.unicornstudio.lanball.network.common;
 
-import com.unicornstudio.lanball.network.dto.PlayerDto;
-import com.unicornstudio.lanball.network.protocol.request.RemotePlayerServerRequest;
+
+import com.unicornstudio.lanball.network.model.PlayerDto;
+import com.unicornstudio.lanball.network.model.protocol.server.RemotePlayerServer;
 
 public class PlayerDtoMapper {
 
-    public static PlayerDto createPlayer(RemotePlayerServerRequest request) {
+    public static PlayerDto createPlayer(RemotePlayerServer request) {
         PlayerDto player = new PlayerDto();
         player.setId(request.getId());
         player.setName(request.getName());
